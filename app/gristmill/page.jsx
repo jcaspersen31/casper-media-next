@@ -748,6 +748,47 @@ export default function GristmillPage() {
         </div>
       </section>
 
+
+      {/* AMBIANCE */}
+      <section style={{ background:"#080808", borderTop:"1px solid #1a1a1a", borderBottom:"1px solid #1a1a1a", padding:"4rem 2rem" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ textAlign:"center", marginBottom:"3rem" }}>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#444", letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:8 }}>COME SEE US</div>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:32, fontWeight:700, color:"white", letterSpacing:"0.04em", marginBottom:10 }}>THE OLD GRISTMILL</div>
+            <div style={{ width:48, height:2, background:GOLD, margin:"0 auto 16px" }}/>
+            <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#666", fontSize:15, maxWidth:580, margin:"0 auto", lineHeight:1.8 }}>
+              Built in the 1800s along the banks of Fishing Creek, our building has been lovingly restored and decorated to honor its history. Come for the deals — stay for the experience.
+            </div>
+          </div>
+
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:"1.5rem" }}>
+            {[
+              { icon:"🏚", title:"Historic Structure", body:"Original hand-hewn timber framing, stone foundation walls, and wide-plank floors dating back over 150 years." },
+              { icon:"⚙", title:"Working Mill Artifacts", body:"Antique millstones, gears, and equipment preserved throughout the building — history you can touch." },
+              { icon:"🪵", title:"Rustic Décor", body:"Reclaimed wood, vintage signage, and curated antiques create an atmosphere unlike any other gun shop." },
+              { icon:"📍", title:"Find Us", body:"1549 State Route 487, Orangeville PA 17859. Easy parking, right off the highway. Come say hello to Grant." },
+            ].map(({ icon, title, body }) => (
+              <div key={title} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:3, padding:"1.5rem" }}>
+                <div style={{ fontSize:28, marginBottom:12, opacity:0.6 }}>{icon}</div>
+                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:15, color:GOLD, letterSpacing:"0.08em", marginBottom:8 }}>{title.toUpperCase()}</div>
+                <div style={{ fontSize:13, color:"#666", lineHeight:1.7, fontStyle:"italic" }}>{body}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop:"2.5rem", display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
+            <a href="https://www.google.com/maps/search/?api=1&query=1549+State+Route+487+Orangeville+PA+17859" target="_blank" rel="noreferrer"
+              style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.1em", padding:"10px 24px", background:"transparent", border:`1px solid ${GOLD}`, color:GOLD, borderRadius:2, textDecoration:"none", transition:"all 0.2s" }}>
+              GET DIRECTIONS
+            </a>
+            <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer"
+              style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.1em", padding:"10px 24px", background:"transparent", border:"1px solid #333", color:"#888", borderRadius:2, textDecoration:"none" }}>
+              @GRISTMILLGUNS ON INSTAGRAM
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* CATALOG */}
       <section style={{ maxWidth:1100, margin:"0 auto", padding:"3rem 2rem 5rem" }}>
         <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", marginBottom:"1.5rem", flexWrap:"wrap", gap:12 }}>
