@@ -462,18 +462,30 @@ function AdminLogin({ onLogin, onBack }) {
 function AdminPanel({ onClose }) {
   const [products, setProducts] = useState([]);
   const [dealsQueue, setDealsQueue] = useState([]);
+  const [reservations, setReservations] = useState([]);
   const [adminLoading, setAdminLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       fetch('/api/products').then(r => r.json()),
       fetch('/api/deals').then(r => r.json()),
-    ]).then(([prods, deals]) => {
+      fetch('/api/reservations').then(r => r.json()),
+    ]).then(([prods, deals, res]) => {
       setProducts(Array.isArray(prods) ? prods.map(p => ({...p, cat:p.category, sale:p.salePrice, desc:p.description, img:p.imageUrl||"", serial:p.serialNumber||"", sku:p.sku||""})) : []);
       setDealsQueue(Array.isArray(deals) ? deals.map(d => ({...d, productId:d.productId, pct:d.discountPct})) : []);
+      setReservations(Array.isArray(res) ? res : []);
       setAdminLoading(false);
     }).catch(() => setAdminLoading(false));
   }, []);
+
+  const updateReservationStatus = async (id, status) => {
+    await fetch(`/api/reservations/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    setReservations(rs => rs.map(r => r.id === id ? { ...r, status } : r));
+  };
   const [tab, setTab] = useState("queue"); // queue | products
   const [editingProduct, setEditingProduct] = useState(null);
   const [addingDeal, setAddingDeal] = useState(false);
@@ -528,8 +540,11 @@ function AdminPanel({ onClose }) {
 
   const iStyle = { width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" };
   const lStyle = { display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 };
-  const tabBtn = (id, label) => (
-    <button onClick={() => setTab(id)} style={{ background: tab===id ? `${GOLD}18`:"transparent", border:`1px solid ${tab===id ? GOLD:"#2a2a2a"}`, color: tab===id ? GOLD:"#666", fontFamily:"'Oswald',sans-serif", fontSize:12, padding:"7px 18px", borderRadius:2, cursor:"pointer", letterSpacing:"0.1em" }}>{label}</button>
+  const tabBtn = (id, label, count) => (
+    <button onClick={() => setTab(id)} style={{ background: tab===id ? `${GOLD}18`:"transparent", border:`1px solid ${tab===id ? GOLD:"#2a2a2a"}`, color: tab===id ? GOLD:"#666", fontFamily:"'Oswald',sans-serif", fontSize:12, padding:"7px 18px", borderRadius:2, cursor:"pointer", letterSpacing:"0.1em", position:"relative" }}>
+      {label}
+      {count > 0 && <span style={{ marginLeft:6, background:"#c0392b", color:"#fff", fontSize:9, padding:"1px 5px", borderRadius:999, fontWeight:700 }}>{count}</span>}
+    </button>
   );
 
   return (
@@ -545,9 +560,10 @@ function AdminPanel({ onClose }) {
       </div>
 
       <div style={{ padding:"1.5rem", maxWidth:980, margin:"0 auto" }}>
-        <div style={{ display:"flex", gap:8, marginBottom:24 }}>
+        <div style={{ display:"flex", gap:8, marginBottom:24, flexWrap:"wrap" }}>
           {tabBtn("queue","DEALS QUEUE")}
           {tabBtn("products","INVENTORY")}
+          {tabBtn("reservations","RESERVATIONS", reservations.filter(r => r.status === "pending").length)}
         </div>
 
         {/* ── DEALS QUEUE TAB ── */}
@@ -659,6 +675,87 @@ function AdminPanel({ onClose }) {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ── RESERVATIONS TAB ── */}
+        {tab==="reservations" && (
+          <div>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, letterSpacing:"0.1em", marginBottom:6 }}>RESERVATIONS</div>
+            <div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:20 }}>Customer holds and purchases. Update status as each is handled.</div>
+
+            {reservations.length === 0 && (
+              <div style={{ textAlign:"center", padding:"3rem", color:"#333", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em" }}>NO RESERVATIONS YET</div>
+            )}
+
+            {/* Status filter tabs */}
+            {reservations.length > 0 && (() => {
+              const statuses = ["all","pending","confirmed","completed","cancelled"];
+              const [filter, setFilter] = useState("all");
+              const shown = filter === "all" ? reservations : reservations.filter(r => r.status === filter);
+              return (
+                <div>
+                  <div style={{ display:"flex", gap:6, marginBottom:16, flexWrap:"wrap" }}>
+                    {statuses.map(s => {
+                      const count = s === "all" ? reservations.length : reservations.filter(r => r.status === s).length;
+                      return (
+                        <button key={s} onClick={() => setFilter(s)} style={{ background: filter===s ? `${GOLD}18`:"transparent", border:`1px solid ${filter===s ? GOLD:"#2a2a2a"}`, color: filter===s ? GOLD:"#555", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.1em" }}>
+                          {s.toUpperCase()} ({count})
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                    {shown.map(r => {
+                      const statusColors = { pending:"#c9a84c", confirmed:"#4caf50", completed:"#2196f3", cancelled:"#c0392b" };
+                      const expires = r.expiresAt ? new Date(r.expiresAt) : null;
+                      const isExpired = expires && expires < new Date();
+                      return (
+                        <div key={r.id} style={{ background:"#111", border:`1px solid ${r.status==="pending" ? "rgba(201,168,76,0.2)":"#1a1a1a"}`, borderRadius:3, padding:"14px 16px" }}>
+                          <div style={{ display:"flex", alignItems:"flex-start", gap:12, flexWrap:"wrap" }}>
+                            <div style={{ flex:1, minWidth:200 }}>
+                              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+                                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:"#e8e0d0" }}>{r.customerName}</div>
+                                <span style={{ fontSize:9, padding:"2px 7px", borderRadius:1, fontFamily:"'Oswald',sans-serif", letterSpacing:"0.1em", background:`${statusColors[r.status]}22`, color:statusColors[r.status], border:`1px solid ${statusColors[r.status]}44` }}>{r.status.toUpperCase()}</span>
+                                <span style={{ fontSize:9, padding:"2px 7px", borderRadius:1, fontFamily:"'Oswald',sans-serif", background: r.type==="deposit" ? "rgba(201,168,76,0.1)":"rgba(33,150,243,0.1)", color: r.type==="deposit" ? GOLD:"#2196f3", border:`1px solid ${r.type==="deposit" ? GOLD+"44":"#2196f344"}` }}>{r.type.toUpperCase()}</span>
+                              </div>
+                              <div style={{ fontSize:12, color:GOLD, fontFamily:"'Oswald',sans-serif", marginBottom:4 }}>{r.product?.name || "Unknown product"}</div>
+                              <div style={{ fontSize:11, color:"#555", lineHeight:1.7 }}>
+                                <a href={`mailto:${r.customerEmail}`} style={{ color:"#666", textDecoration:"none" }}>{r.customerEmail}</a>
+                                &nbsp;·&nbsp;
+                                <a href={`tel:${r.customerPhone}`} style={{ color:"#666", textDecoration:"none" }}>{r.customerPhone}</a>
+                              </div>
+                              <div style={{ fontSize:10, color:"#444", marginTop:4, fontFamily:"'Oswald',sans-serif" }}>
+                                Paid: <span style={{ color:GOLD }}>${(r.amountPaid/100).toLocaleString()}</span>
+                                &nbsp;·&nbsp;
+                                {new Date(r.createdAt).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' })}
+                                {expires && <span style={{ color: isExpired ? "#c0392b":"#555", marginLeft:8 }}>{isExpired ? "⚠ EXPIRED" : `Holds until ${expires.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`}</span>}
+                              </div>
+                              {r.product?.serialNumber && (
+                                <div style={{ fontSize:10, color:"#444", marginTop:3, fontFamily:"'Courier New',monospace" }}>S/N: {r.product.serialNumber} &nbsp;·&nbsp; SKU: {r.product.sku}</div>
+                              )}
+                            </div>
+                            {r.status === "pending" && (
+                              <div style={{ display:"flex", flexDirection:"column", gap:6, flexShrink:0 }}>
+                                <button onClick={() => updateReservationStatus(r.id, "confirmed")} style={{ background:"transparent", border:"1px solid #2a5a2a", color:"#4caf50", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.06em" }}>CONFIRM</button>
+                                <button onClick={() => updateReservationStatus(r.id, "completed")} style={{ background:"transparent", border:"1px solid #1a3a5a", color:"#2196f3", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.06em" }}>COMPLETED</button>
+                                <button onClick={() => updateReservationStatus(r.id, "cancelled")} style={{ background:"transparent", border:"1px solid #330000", color:"#c0392b", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.06em" }}>CANCEL</button>
+                              </div>
+                            )}
+                            {r.status === "confirmed" && (
+                              <div style={{ display:"flex", flexDirection:"column", gap:6, flexShrink:0 }}>
+                                <button onClick={() => updateReservationStatus(r.id, "completed")} style={{ background:"transparent", border:"1px solid #1a3a5a", color:"#2196f3", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.06em" }}>MARK COMPLETED</button>
+                                <button onClick={() => updateReservationStatus(r.id, "cancelled")} style={{ background:"transparent", border:"1px solid #330000", color:"#c0392b", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.06em" }}>CANCEL</button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 
