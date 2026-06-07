@@ -12,6 +12,17 @@ function getDayKey() {
   const d = new Date();
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
+const SPIN_KEY = () => `gm_spun_${getDayKey()}`;
+const TIMER_KEY = () => `gm_timer_${getDayKey()}`;
+function getStoredSpin() {
+  try { return localStorage.getItem(SPIN_KEY()) === "1"; } catch { return false; }
+}
+function saveSpinResult(endTime) {
+  try { localStorage.setItem(SPIN_KEY(), "1"); localStorage.setItem(TIMER_KEY(), String(endTime)); } catch {}
+}
+function getStoredEndTime() {
+  try { const v = localStorage.getItem(TIMER_KEY()); return v ? Number(v) : null; } catch { return null; }
+}
 function seededRandom(seed) {
   let h = 0;
   for (let i = 0; i < seed.length; i++) { h = Math.imul(31, h) + seed.charCodeAt(i) | 0; }
@@ -255,7 +266,7 @@ function SpinnerWheel({ onResult, todaysDeal }) {
 
 // ── deal result ───────────────────────────────────────────────────────────
 function DealResult({ product, pct, onReserve, onPayFull }) {
-  const [endTime] = useState(() => Date.now() + 10 * 60 * 1000);
+  const [endTime] = useState(() => getStoredEndTime() || Date.now() + 10 * 60 * 1000);
   const { rem, mins, secs, expired } = useCountdown(endTime);
   const [claimed, setClaimed] = useState(false);
   const salePrice = Math.round(product.price * (1 - pct / 100));
@@ -680,7 +691,15 @@ export default function GristmillPage() {
   useEffect(() => {
     const deal = getTodaysDeal(INIT_DEALS_QUEUE);
     setTodaysDeal(deal);
+    // Restore spin state — if they already spun today, skip straight to result
+    if (getStoredSpin()) setSpinDone(true);
   }, []);
+
+  const handleSpinResult = () => {
+    const endTime = Date.now() + 10 * 60 * 1000;
+    saveSpinResult(endTime);
+    setSpinDone(true);
+  };
 
   const dealProduct = todaysDeal ? INIT_PRODUCTS.find(p => p.id === todaysDeal.productId) : null;
   const filtered = catFilter === "All" ? INIT_PRODUCTS : INIT_PRODUCTS.filter(p => p.cat === catFilter);
@@ -717,7 +736,7 @@ export default function GristmillPage() {
             Spin once a day for an exclusive in-store discount. Claim it before the clock runs out.
           </div>
           {!spinDone ? (
-            <SpinnerWheel onResult={() => setSpinDone(true)} todaysDeal={todaysDeal}/>
+            <SpinnerWheel onResult={handleSpinResult} todaysDeal={todaysDeal}/>
           ) : dealProduct ? (
             <DealResult
               product={dealProduct}
