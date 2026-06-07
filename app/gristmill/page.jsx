@@ -383,7 +383,7 @@ function Modal({ product, price, type, onClose }) {
                   </div>}
                 </div>
               )}
-              <br/><em>Questions? Call (555) 748-2291</em>
+              <br/><em>Questions? Call (570) 713-7339 or email grant@gristmillguns.com</em>
             </div>
             <button onClick={onClose} style={{ marginTop:20, background:"transparent", border:`1px solid ${GOLD}`, color:GOLD, fontFamily:"'Oswald',sans-serif", fontSize:13, padding:"9px 28px", borderRadius:2, cursor:"pointer", letterSpacing:"0.08em" }}>CLOSE</button>
           </div>
@@ -722,7 +722,7 @@ export default function GristmillPage() {
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:22, fontWeight:700, color:"white", letterSpacing:"0.1em", lineHeight:1 }}>GRISTMILL</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:GOLD, letterSpacing:"0.24em" }}>GUNS & OPTICS</div>
           </div>
-          <div style={{ marginLeft:"auto", fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#555", letterSpacing:"0.1em" }}>(555) 748-2291 &nbsp;·&nbsp; 1 Mill Road</div>
+          <div style={{ marginLeft:"auto", fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#555", letterSpacing:"0.1em" }}>(570) 713-7339 &nbsp;·&nbsp; 1549 PA-487, Orangeville PA</div>
         </div>
       </header>
 
@@ -771,7 +771,15 @@ export default function GristmillPage() {
 
       <footer style={{ background:"#050505", borderTop:"1px solid #141414", padding:"1.25rem 2rem" }}>
         <div style={{ maxWidth:1100, margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
-          <div style={{ fontSize:11, color:"#333", fontStyle:"italic" }}>Gristmill Guns & Optics · 1 Mill Road · (555) 748-2291 · All sales require valid ID & background check</div>
+          <div style={{ fontSize:11, color:"#333", fontStyle:"italic", lineHeight:1.8 }}>
+            Gristmill Guns & Optics · 1549 State Route 487, Orangeville PA 17859<br/>
+            <a href="tel:5707137339" style={{ color:"#444", textDecoration:"none" }}>(570) 713-7339</a>
+            &nbsp;·&nbsp;
+            <a href="mailto:grant@gristmillguns.com" style={{ color:"#444", textDecoration:"none" }}>grant@gristmillguns.com</a>
+            &nbsp;·&nbsp;
+            <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer" style={{ color:"#444", textDecoration:"none" }}>@gristmillguns</a>
+            &nbsp;·&nbsp; All sales require valid ID &amp; background check
+          </div>
           <button onClick={() => setView("adminlogin")} style={{ background:"transparent", border:"none", color:"#1e1e1e", fontSize:10, cursor:"pointer", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.1em", transition:"color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color="#555"} onMouseLeave={e => e.currentTarget.style.color="#1e1e1e"}>ADMIN</button>
         </div>
       </footer>
