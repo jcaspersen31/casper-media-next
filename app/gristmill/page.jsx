@@ -5,16 +5,16 @@ const GOLD = "#c9a84c";
 const GOLD2 = "#e8c84a";
 
 const PRODUCTS = [
-  { id:1, name:"Ruger 10/22 Carbine", cat:"Rifles", price:349, sale:299, desc:"The classic .22 LR semi-auto. Reliable, accurate, perfect for plinking or small game.", specs:"Caliber: .22 LR | Capacity: 10+1 | Barrel: 18.5\"", deposit:50 },
-  { id:2, name:"Mossberg 500 Field", cat:"Shotguns", price:489, sale:null, desc:"Pump-action 12-gauge. A working gun for hunters and home defense alike.", specs:"Gauge: 12 | Barrel: 28\" | Capacity: 5+1", deposit:75 },
-  { id:3, name:"S&W M&P 9", cat:"Handguns", price:599, sale:549, desc:"Full-size polymer 9mm. Trusted by law enforcement and civilian shooters.", specs:"Caliber: 9mm | Capacity: 17+1 | Barrel: 4.25\"", deposit:100 },
-  { id:4, name:"Winchester Model 70", cat:"Rifles", price:899, sale:null, desc:"The Rifleman's Rifle. Controlled-round feeding, legendary accuracy.", specs:"Caliber: .30-06 | Capacity: 5 | Barrel: 22\"", deposit:150 },
-  { id:5, name:"Glock 43X", cat:"Handguns", price:479, sale:null, desc:"Slim, reliable 9mm for everyday carry. 10+1 capacity in a compact frame.", specs:"Caliber: 9mm | Capacity: 10+1 | Barrel: 3.41\"", deposit:75 },
-  { id:6, name:"Vortex Crossfire II 3-9x40", cat:"Optics", price:179, sale:159, desc:"Crystal-clear glass, precise adjustments. Hard to beat at this price.", specs:"Magnification: 3-9x | Objective: 40mm", deposit:30 },
-  { id:7, name:"Henry Golden Boy .22 LR", cat:"Rifles", price:549, sale:null, desc:"Lever-action rimfire with brass receiver. A piece of American heritage.", specs:"Caliber: .22 LR | Capacity: 16 | Barrel: 20\"", deposit:100 },
-  { id:8, name:"Hornady 9mm 124gr 500rd", cat:"Ammunition", price:219, sale:189, desc:"Brass-cased, boxer-primed. Clean and consistent for range sessions.", specs:"Caliber: 9mm | Bullet: 124gr FMJ | Count: 500", deposit:0 },
-  { id:9, name:"Colt 1911 Government", cat:"Handguns", price:849, sale:null, desc:"Over a century of service. Single-action .45 ACP with a trigger like glass.", specs:"Caliber: .45 ACP | Capacity: 7+1 | Barrel: 5\"", deposit:150 },
-  { id:10, name:"Leupold VX-Freedom 2-7x33", cat:"Optics", price:299, sale:null, desc:"Made in Oregon. Fog-proof, waterproof, shockproof. Built for the field.", specs:"Magnification: 2-7x | Objective: 33mm", deposit:50 },
+  { id:1, name:"Ruger 10/22 Carbine", cat:"Rifles", price:349, sale:299, desc:"The classic .22 LR semi-auto. Reliable, accurate, perfect for plinking or small game.", specs:"Caliber: .22 LR | Capacity: 10+1 | Barrel: 18.5\"", deposit:50, serial:"0082741", sku:"RUG-1022-18" },
+  { id:2, name:"Mossberg 500 Field", cat:"Shotguns", price:489, sale:null, desc:"Pump-action 12-gauge. A working gun for hunters and home defense alike.", specs:"Gauge: 12 | Barrel: 28\" | Capacity: 5+1", deposit:75, serial:"P441892", sku:"MOS-500-28" },
+  { id:3, name:"S&W M&P 9", cat:"Handguns", price:599, sale:549, desc:"Full-size polymer 9mm. Trusted by law enforcement and civilian shooters.", specs:"Caliber: 9mm | Capacity: 17+1 | Barrel: 4.25\"", deposit:100, serial:"HZN3301", sku:"SW-MP9-425" },
+  { id:4, name:"Winchester Model 70", cat:"Rifles", price:899, sale:null, desc:"The Rifleman's Rifle. Controlled-round feeding, legendary accuracy.", specs:"Caliber: .30-06 | Capacity: 5 | Barrel: 22\"", deposit:150, serial:"G2274519", sku:"WIN-M70-3006" },
+  { id:5, name:"Glock 43X", cat:"Handguns", price:479, sale:null, desc:"Slim, reliable 9mm for everyday carry. 10+1 capacity in a compact frame.", specs:"Caliber: 9mm | Capacity: 10+1 | Barrel: 3.41\"", deposit:75, serial:"BSTN441", sku:"GLK-43X-9" },
+  { id:6, name:"Vortex Crossfire II 3-9x40", cat:"Optics", price:179, sale:159, desc:"Crystal-clear glass, precise adjustments. Hard to beat at this price.", specs:"Magnification: 3-9x | Objective: 40mm", deposit:30, serial:"", sku:"VTX-CF2-940" },
+  { id:7, name:"Henry Golden Boy .22 LR", cat:"Rifles", price:549, sale:null, desc:"Lever-action rimfire with brass receiver. A piece of American heritage.", specs:"Caliber: .22 LR | Capacity: 16 | Barrel: 20\"", deposit:100, serial:"H0041823", sku:"HNR-GB-22" },
+  { id:8, name:"Hornady 9mm 124gr 500rd", cat:"Ammunition", price:219, sale:189, desc:"Brass-cased, boxer-primed. Clean and consistent for range sessions.", specs:"Caliber: 9mm | Bullet: 124gr FMJ | Count: 500", deposit:0, serial:"", sku:"HRN-9MM-500" },
+  { id:9, name:"Colt 1911 Government", cat:"Handguns", price:849, sale:null, desc:"Over a century of service. Single-action .45 ACP with a trigger like glass.", specs:"Caliber: .45 ACP | Capacity: 7+1 | Barrel: 5\"", deposit:150, serial:"336291LG", sku:"CLT-1911-45" },
+  { id:10, name:"Leupold VX-Freedom 2-7x33", cat:"Optics", price:299, sale:null, desc:"Made in Oregon. Fog-proof, waterproof, shockproof. Built for the field.", specs:"Magnification: 2-7x | Objective: 33mm", deposit:50, serial:"", sku:"LEU-VXF-273" },
 ];
 
 const DEALS = [
@@ -30,6 +30,7 @@ const DEALS = [
 
 const CATS = ["All","Rifles","Shotguns","Handguns","Optics","Ammunition","Accessories"];
 const ADMIN_PASS = "gristmill2024";
+const maskSerial = (s) => s && s.length > 4 ? `···${s.slice(-4)}` : s ? `···${s}` : null;
 
 function Logo({ size = 48 }) {
   return (
@@ -348,7 +349,23 @@ function Modal({ product, price, type, onClose }) {
           <div style={{ textAlign: "center", padding: "1rem 0" }}>
             <div style={{ fontSize: 42, color: "#4caf50", marginBottom: 12 }}>✓</div>
             <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 20, color: "#4caf50", letterSpacing: "0.1em", marginBottom: 10 }}>YOU'RE ALL SET</div>
-            <div style={{ color: "#777", fontSize: 13, lineHeight: 1.7 }}>Confirmation sent to <strong style={{ color: "#e8e0d0" }}>{form.email}</strong>. Come in within 48 hours with valid ID.<br /><br /><em>Questions? Call (555) 748-2291</em></div>
+            <div style={{ color: "#777", fontSize: 13, lineHeight: 1.7 }}>
+              Confirmation sent to <strong style={{ color: "#e8e0d0" }}>{form.email}</strong>. Come in within 48 hours with valid ID.
+              {(product.sku || product.serial) && (
+                <div style={{ marginTop: 14, padding: "10px 14px", background: "#0d0d0d", border: "1px solid #2a2a2a", borderRadius: 2, textAlign: "left" }}>
+                  <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 10, color: "#555", letterSpacing: "0.15em", marginBottom: 6 }}>YOUR ITEM REFERENCE</div>
+                  {product.sku && <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                    <span style={{ color: "#555", fontSize: 12 }}>SKU</span>
+                    <span style={{ color: "#e8e0d0", fontSize: 12, fontFamily: "'Courier New', monospace" }}>{product.sku}</span>
+                  </div>}
+                  {product.serial && maskSerial(product.serial) && <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "#555", fontSize: 12 }}>Serial</span>
+                    <span style={{ color: GOLD, fontSize: 12, fontFamily: "'Courier New', monospace" }}>{maskSerial(product.serial)}</span>
+                  </div>}
+                </div>
+              )}
+              <br /><em>Questions? Call (555) 748-2291</em>
+            </div>
             <button onClick={onClose} style={{ marginTop: 20, background: "transparent", border: `1px solid ${GOLD}`, color: GOLD, fontFamily: "'Oswald', sans-serif", fontSize: 13, padding: "9px 28px", borderRadius: 2, cursor: "pointer", letterSpacing: "0.08em" }}>CLOSE</button>
           </div>
         )}
@@ -389,6 +406,159 @@ function ProductCard({ p, onReserve }) {
   );
 }
 
+function AdminLogin({ onLogin, onBack }) {
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState(false);
+  const submit = () => { if (pw === ADMIN_PASS) onLogin(); else { setErr(true); setTimeout(() => setErr(false), 2000); } };
+  return (
+    <div style={{ minHeight: "100vh", background: "#080808", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap');`}</style>
+      <div style={{ background: "#111", border: `1px solid ${GOLD}`, borderRadius: 3, padding: "2.5rem", width: 320, textAlign: "center" }}>
+        <Logo size={46} />
+        <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 14, color: GOLD, letterSpacing: "0.22em", margin: "1rem 0 1.5rem" }}>ADMIN ACCESS</div>
+        <input type="password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && submit()} placeholder="Password"
+          style={{ width: "100%", background: "#0a0a0a", border: `1px solid ${err ? "#c0392b" : "#1e1e1e"}`, color: "#e8e0d0", padding: "9px 14px", borderRadius: 2, fontFamily: "Georgia, serif", fontSize: 14, outline: "none", boxSizing: "border-box", marginBottom: err ? 8 : 14 }} />
+        {err && <div style={{ color: "#c0392b", fontSize: 12, fontStyle: "italic", marginBottom: 10 }}>Incorrect password</div>}
+        <button onClick={submit} style={{ width: "100%", background: GOLD, color: "#000", fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 14, letterSpacing: "0.1em", padding: "11px 0", border: "none", borderRadius: 2, cursor: "pointer" }}>ENTER</button>
+        <button onClick={onBack} style={{ marginTop: 12, background: "transparent", border: "none", color: "#444", fontFamily: "'Oswald', sans-serif", fontSize: 11, cursor: "pointer", letterSpacing: "0.1em" }}>← BACK TO SITE</button>
+        <div style={{ fontSize: 10, color: "#333", marginTop: 8, fontStyle: "italic" }}>Demo: gristmill2024</div>
+      </div>
+    </div>
+  );
+}
+
+function AdminPanel({ onClose }) {
+  const [products, setProducts] = useState(PRODUCTS);
+  const [editing, setEditing] = useState(null);
+  const BLANK = { id: 0, name: "", cat: "Rifles", price: "", sale: "", desc: "", specs: "", img: "", deal: false, deposit: "100", serial: "", sku: "" };
+  const [form, setForm] = useState(BLANK);
+  const [imgPreview, setImgPreview] = useState("");
+  const fileRef = useRef();
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const openEdit = p => { setEditing(p.id); setForm({ ...p, price: String(p.price), sale: p.sale != null ? String(p.sale) : "", deposit: String(p.deposit), serial: p.serial || "", sku: p.sku || "" }); setImgPreview(p.img || ""); };
+  const openNew = () => { setEditing("new"); setForm({ ...BLANK, id: Date.now() }); setImgPreview(""); };
+  const save = () => {
+    const p = { ...form, price: Number(form.price), sale: form.sale ? Number(form.sale) : null, deposit: Number(form.deposit) || 0, img: imgPreview };
+    if (editing === "new") setProducts(ps => [...ps, p]);
+    else setProducts(ps => ps.map(x => x.id === p.id ? p : x));
+    setEditing(null);
+  };
+  const del = id => setProducts(ps => ps.filter(p => p.id !== id));
+  const handleImg = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { setImgPreview(ev.target.result); set("img", ev.target.result); }; r.readAsDataURL(f); };
+
+  const iStyle = { width: "100%", background: "#0a0a0a", border: "1px solid #222", color: "#e8e0d0", padding: "8px 12px", borderRadius: 2, fontFamily: "Georgia, serif", fontSize: 13, outline: "none", boxSizing: "border-box" };
+  const lStyle = { display: "block", fontSize: 9, color: "#555", fontFamily: "'Oswald', sans-serif", letterSpacing: "0.14em", marginBottom: 4 };
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#080808", color: "#e8e0d0" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap');`}</style>
+      <div style={{ background: "#0d0d0d", borderBottom: `2px solid ${GOLD}`, padding: "0.85rem 1.5rem", display: "flex", alignItems: "center", gap: 14 }}>
+        <Logo size={36} />
+        <div>
+          <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 16, color: GOLD, letterSpacing: "0.18em" }}>ADMIN PANEL</div>
+          <div style={{ fontSize: 10, color: "#444", fontStyle: "italic" }}>Gristmill Guns & Optics</div>
+        </div>
+        <button onClick={onClose} style={{ marginLeft: "auto", background: "transparent", border: "1px solid #2a2a2a", color: "#777", fontFamily: "'Oswald', sans-serif", fontSize: 11, padding: "6px 14px", borderRadius: 2, cursor: "pointer", letterSpacing: "0.08em" }}>← BACK TO SITE</button>
+      </div>
+
+      <div style={{ padding: "1.5rem", maxWidth: 980, margin: "0 auto" }}>
+        {editing ? (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+              <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 18, color: GOLD, letterSpacing: "0.1em" }}>{editing === "new" ? "ADD NEW PRODUCT" : "EDIT PRODUCT"}</div>
+              <button onClick={() => setEditing(null)} style={{ background: "transparent", border: "1px solid #2a2a2a", color: "#777", fontFamily: "'Oswald', sans-serif", fontSize: 11, padding: "6px 14px", borderRadius: 2, cursor: "pointer" }}>CANCEL</button>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {[["Product Name", "name", "text"], ["Regular Price ($)", "price", "number"], ["Sale Price (optional)", "sale", "number"], ["Deposit Amount ($)", "deposit", "number"]].map(([l, k, t]) => (
+                  <div key={k}><label style={lStyle}>{l.toUpperCase()}</label><input type={t} value={form[k]} onChange={e => set(k, e.target.value)} style={iStyle} /></div>
+                ))}
+                <div><label style={lStyle}>CATEGORY</label>
+                  <select value={form.cat} onChange={e => set("cat", e.target.value)} style={iStyle}>
+                    {CATS.filter(c => c !== "All").map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div><label style={lStyle}>DESCRIPTION</label><textarea value={form.desc} onChange={e => set("desc", e.target.value)} rows={3} style={{ ...iStyle, resize: "vertical" }} /></div>
+                <div><label style={lStyle}>SPECS (separate with " | ")</label><input type="text" value={form.specs} onChange={e => set("specs", e.target.value)} placeholder='Caliber: 9mm | Barrel: 4" | Capacity: 17+1' style={{ ...iStyle, fontFamily: "'Courier New', monospace", fontSize: 11 }} /></div>
+
+                {/* SERIAL & SKU — admin only */}
+                <div style={{ borderTop: "1px solid #1a1a1a", paddingTop: 12, marginTop: 4 }}>
+                  <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 10, color: "#444", letterSpacing: "0.16em", marginBottom: 10 }}>UNIT TRACKING — ADMIN ONLY</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    <div>
+                      <label style={lStyle}>SERIAL NUMBER</label>
+                      <input type="text" value={form.serial} onChange={e => set("serial", e.target.value)} placeholder="e.g. G2274519" style={{ ...iStyle, fontFamily: "'Courier New', monospace", fontSize: 12 }} />
+                      <div style={{ fontSize: 9, color: "#333", marginTop: 3, fontStyle: "italic" }}>Customer sees: {form.serial ? maskSerial(form.serial) : "—"}</div>
+                    </div>
+                    <div>
+                      <label style={lStyle}>SKU / ITEM NUMBER</label>
+                      <input type="text" value={form.sku} onChange={e => set("sku", e.target.value)} placeholder="e.g. WIN-M70-3006" style={{ ...iStyle, fontFamily: "'Courier New', monospace", fontSize: 12 }} />
+                    </div>
+                  </div>
+                </div>
+
+                <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+                  <input type="checkbox" checked={form.deal} onChange={e => set("deal", e.target.checked)} style={{ width: 15, height: 15, accentColor: GOLD }} />
+                  <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: 12, color: GOLD, letterSpacing: "0.08em" }}>SET AS TODAY'S DEAL OF THE DAY</span>
+                </label>
+              </div>
+
+              <div>
+                <label style={lStyle}>PRODUCT PHOTO</label>
+                <div onClick={() => fileRef.current.click()} onMouseEnter={e => e.currentTarget.style.borderColor = GOLD} onMouseLeave={e => e.currentTarget.style.borderColor = "#1e1e1e"}
+                  style={{ aspectRatio: "4/3", background: "#0d0d0d", border: "2px dashed #1e1e1e", borderRadius: 3, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer", overflow: "hidden", transition: "border-color 0.2s" }}>
+                  {imgPreview ? <img src={imgPreview} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> :
+                    <div style={{ textAlign: "center", color: "#333" }}>
+                      <div style={{ fontSize: 28, marginBottom: 6 }}>↑</div>
+                      <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 12, letterSpacing: "0.1em" }}>CLICK TO UPLOAD</div>
+                      <div style={{ fontSize: 10, marginTop: 3, fontStyle: "italic", color: "#2a2a2a" }}>JPG / PNG → Cloudinary</div>
+                    </div>}
+                </div>
+                <input ref={fileRef} type="file" accept="image/*" onChange={handleImg} style={{ display: "none" }} />
+                {imgPreview && <button onClick={() => { setImgPreview(""); set("img", ""); }} style={{ marginTop: 6, background: "transparent", border: "1px solid #222", color: "#555", fontSize: 10, padding: "3px 10px", borderRadius: 2, cursor: "pointer", fontFamily: "'Oswald', sans-serif" }}>REMOVE</button>}
+              </div>
+            </div>
+            <button onClick={save} style={{ marginTop: 24, background: GOLD, color: "#000", fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 15, letterSpacing: "0.1em", padding: "12px 36px", border: "none", borderRadius: 2, cursor: "pointer" }}>SAVE PRODUCT</button>
+          </div>
+        ) : (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 16, color: GOLD, letterSpacing: "0.1em" }}>INVENTORY ({products.length} items)</div>
+              <button onClick={openNew} style={{ background: GOLD, color: "#000", fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.1em", padding: "8px 18px", border: "none", borderRadius: 2, cursor: "pointer" }}>+ ADD PRODUCT</button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {products.map(p => (
+                <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, background: "#111", border: `1px solid ${p.deal ? "rgba(201,168,76,0.25)" : "#1a1a1a"}`, borderRadius: 2, padding: "10px 14px" }}>
+                  <div style={{ width: 48, height: 36, background: "#161616", borderRadius: 2, flexShrink: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {p.img ? <img src={p.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ fontSize: 16, opacity: 0.15 }}>🔫</span>}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontFamily: "'Oswald', sans-serif", fontSize: 13, color: "#e8e0d0", display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+                      {p.name}
+                      {p.deal && <span style={{ background: GOLD, color: "#000", fontSize: 8, padding: "2px 5px", borderRadius: 1, fontWeight: 700, letterSpacing: "0.1em" }}>DEAL</span>}
+                      {p.sale && <span style={{ background: "#7a1515", color: "#fff", fontSize: 8, padding: "2px 5px", borderRadius: 1 }}>SALE</span>}
+                    </div>
+                    <div style={{ fontSize: 10, color: "#444", fontFamily: "'Oswald', sans-serif", marginTop: 2 }}>
+                      {p.cat} · ${p.price}{p.sale ? ` → $${p.sale}` : ""} · Deposit: ${p.deposit}
+                      {p.sku && <span style={{ color: "#333", fontFamily: "'Courier New', monospace", marginLeft: 8 }}>SKU: {p.sku}</span>}
+                      {p.serial && <span style={{ color: "#333", fontFamily: "'Courier New', monospace", marginLeft: 8 }}>S/N: {p.serial}</span>}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                    <button onClick={() => openEdit(p)} style={{ background: "transparent", border: "1px solid #2a2a2a", color: GOLD, fontFamily: "'Oswald', sans-serif", fontSize: 10, padding: "4px 9px", borderRadius: 2, cursor: "pointer", letterSpacing: "0.06em" }}>EDIT</button>
+                    <button onClick={() => del(p.id)} style={{ background: "transparent", border: "1px solid #330000", color: "#7a1515", fontFamily: "'Oswald', sans-serif", fontSize: 10, padding: "4px 9px", borderRadius: 2, cursor: "pointer", letterSpacing: "0.06em" }}>DEL</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function GristmillPage() {
   const [spinResult, setSpinResult] = useState(null);
   const [modal, setModal] = useState(null);
@@ -397,12 +567,12 @@ export default function GristmillPage() {
 
   const filtered = catFilter === "All" ? PRODUCTS : PRODUCTS.filter(p => p.cat === catFilter);
 
+  if (view === "adminlogin") {
+    return <AdminLogin onLogin={() => setView("admin")} onBack={() => setView("site")} />;
+  }
+
   if (view === "admin") {
-    return (
-      <div style={{ minHeight: "100vh", background: "#080808", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ fontFamily: "'Oswald', sans-serif", color: GOLD, fontSize: 18, letterSpacing: "0.15em" }}>ADMIN PANEL — COMING SOON</div>
-      </div>
-    );
+    return <AdminPanel onClose={() => setView("site")} />;
   }
 
   return (
@@ -474,7 +644,7 @@ export default function GristmillPage() {
       <footer style={{ background: "#050505", borderTop: "1px solid #141414", padding: "1.25rem 2rem" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
           <div style={{ fontSize: 11, color: "#333", fontStyle: "italic" }}>Gristmill Guns & Optics · 1 Mill Road · (555) 748-2291 · All sales require valid ID & background check</div>
-          <button onClick={() => setView("admin")} style={{ background: "transparent", border: "none", color: "#1e1e1e", fontSize: 10, cursor: "pointer", fontFamily: "'Oswald', sans-serif", letterSpacing: "0.1em", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = "#555"} onMouseLeave={e => e.currentTarget.style.color = "#1e1e1e"}>ADMIN</button>
+          <button onClick={() => setView("adminlogin")} style={{ background: "transparent", border: "none", color: "#1e1e1e", fontSize: 10, cursor: "pointer", fontFamily: "'Oswald', sans-serif", letterSpacing: "0.1em", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = "#555"} onMouseLeave={e => e.currentTarget.style.color = "#1e1e1e"}>ADMIN</button>
         </div>
       </footer>
 
