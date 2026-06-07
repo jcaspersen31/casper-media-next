@@ -1,15 +1,15 @@
-import path from 'node:path'
-import type { PrismaConfig } from 'prisma'
+const path = require('node:path')
 
-export default {
+/** @type {import('prisma').PrismaConfig} */
+module.exports = {
   earlyAccess: true,
   schema: path.join('prisma', 'schema.prisma'),
   migrate: {
     adapter: async () => {
-      const { PrismaPg } = await import('@prisma/adapter-pg')
-      const { Pool } = await import('pg')
+      const { PrismaPg } = require('@prisma/adapter-pg')
+      const { Pool } = require('pg')
       const pool = new Pool({ connectionString: process.env.DATABASE_URL })
       return new PrismaPg(pool)
     },
   },
-} satisfies PrismaConfig
+}
