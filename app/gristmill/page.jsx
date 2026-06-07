@@ -55,28 +55,7 @@ function getTodaysDeal(dealList) {
   } catch { return dealList[0]; }
 }
 
-// ── mock data ─────────────────────────────────────────────────────────────
-const INIT_PRODUCTS = [
-  { id:1, name:"Ruger 10/22 Carbine", cat:"Rifles", price:349, sale:299, desc:"The classic .22 LR semi-auto. Reliable and accurate.", specs:"Caliber: .22 LR | Capacity: 10+1 | Barrel: 18.5\"", deposit:50, serial:"0082741", sku:"RUG-1022-18", img:"" },
-  { id:2, name:"Mossberg 500 Field", cat:"Shotguns", price:489, sale:null, desc:"Pump-action 12-gauge for hunters and home defense.", specs:"Gauge: 12 | Barrel: 28\" | Capacity: 5+1", deposit:75, serial:"P441892", sku:"MOS-500-28", img:"" },
-  { id:3, name:"S&W M&P 9", cat:"Handguns", price:599, sale:549, desc:"Full-size polymer 9mm trusted by law enforcement.", specs:"Caliber: 9mm | Capacity: 17+1 | Barrel: 4.25\"", deposit:100, serial:"HZN3301", sku:"SW-MP9-425", img:"" },
-  { id:4, name:"Winchester Model 70", cat:"Rifles", price:899, sale:null, desc:"The Rifleman's Rifle. Controlled-round feeding, legendary accuracy.", specs:"Caliber: .30-06 | Capacity: 5 | Barrel: 22\"", deposit:150, serial:"G2274519", sku:"WIN-M70-3006", img:"" },
-  { id:5, name:"Glock 43X", cat:"Handguns", price:479, sale:null, desc:"Slim, reliable 9mm for everyday carry.", specs:"Caliber: 9mm | Capacity: 10+1 | Barrel: 3.41\"", deposit:75, serial:"BSTN441", sku:"GLK-43X-9", img:"" },
-  { id:6, name:"Vortex Crossfire II 3-9x40", cat:"Optics", price:179, sale:159, desc:"Crystal-clear glass, precise adjustments.", specs:"Magnification: 3-9x | Objective: 40mm", deposit:30, serial:"", sku:"VTX-CF2-940", img:"" },
-  { id:7, name:"Henry Golden Boy .22 LR", cat:"Rifles", price:549, sale:null, desc:"Lever-action rimfire with brass receiver.", specs:"Caliber: .22 LR | Capacity: 16 | Barrel: 20\"", deposit:100, serial:"H0041823", sku:"HNR-GB-22", img:"" },
-  { id:8, name:"Hornady 9mm 124gr 500rd", cat:"Ammunition", price:219, sale:189, desc:"Brass-cased, boxer-primed. Clean and consistent.", specs:"Caliber: 9mm | Bullet: 124gr FMJ | Count: 500", deposit:0, serial:"", sku:"HRN-9MM-500", img:"" },
-  { id:9, name:"Colt 1911 Government", cat:"Handguns", price:849, sale:null, desc:"Over a century of service. Single-action .45 ACP.", specs:"Caliber: .45 ACP | Capacity: 7+1 | Barrel: 5\"", deposit:150, serial:"336291LG", sku:"CLT-1911-45", img:"" },
-  { id:10, name:"Leupold VX-Freedom 2-7x33", cat:"Optics", price:299, sale:null, desc:"Made in Oregon. Fog-proof, waterproof, shockproof.", specs:"Magnification: 2-7x | Objective: 33mm", deposit:50, serial:"", sku:"LEU-VXF-273", img:"" },
-];
-
-// deals queue — each entry links to a product id with a fixed discount %
-const INIT_DEALS_QUEUE = [
-  { id:101, productId:4, pct:15, note:"Winchester Model 70 — 15% off" },
-  { id:102, productId:1, pct:10, note:"Ruger 10/22 — 10% off" },
-  { id:103, productId:9, pct:12, note:"Colt 1911 — 12% off" },
-  { id:104, productId:3, pct:8,  note:"S&W M&P 9 — 8% off" },
-  { id:105, productId:7, pct:18, note:"Henry Golden Boy — 18% off" },
-];
+// mock data removed — now loaded from API
 
 const CATS = ["All","Rifles","Shotguns","Handguns","Optics","Ammunition","Accessories"];
 
@@ -336,11 +315,37 @@ function DealResult({ product, pct, onReserve, onPayFull }) {
 }
 
 // ── reservation modal ─────────────────────────────────────────────────────
-function Modal({ product, price, type, onClose }) {
+function Modal({ product, price, type, dealId, onClose }) {
   const [form, setForm] = useState({ name:"", email:"", phone:"" });
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const set = (k,v) => setForm(f => ({ ...f, [k]:v }));
   const valid = form.name && form.email && form.phone;
+
+  const submit = async () => {
+    if (!valid || submitting) return;
+    setSubmitting(true);
+    try {
+      await fetch('/api/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId:     product.id,
+          dealId:        dealId || null,
+          customerName:  form.name,
+          customerEmail: form.email,
+          customerPhone: form.phone,
+          amountPaid:    type === 'deposit' ? product.deposit : price,
+          type,
+        }),
+      });
+      setDone(true);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSubmitting(false);
+    }
+  };
   return (
     <div onClick={e => e.target === e.currentTarget && onClose()} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.9)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:9999, padding:16 }}>
       <div style={{ background:"#111", border:`1px solid ${GOLD}`, borderRadius:3, padding:"2rem", width:"100%", maxWidth:400, position:"relative" }}>
@@ -361,8 +366,8 @@ function Modal({ product, price, type, onClose }) {
             </div>
             {type==="deposit" && <div style={{ fontSize:10, color:"#444", marginTop:4, fontStyle:"italic" }}>Balance of ${(price - product.deposit).toLocaleString()} due in-store</div>}
           </div>
-          <button onClick={() => setDone(true)} disabled={!valid} style={{ width:"100%", background: valid ? GOLD : "#333", color: valid ? "#000" : "#666", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:15, letterSpacing:"0.1em", padding:"12px 0", border:"none", borderRadius:2, cursor: valid ? "pointer":"not-allowed" }}>
-            PROCEED TO PAYMENT →
+          <button onClick={submit} disabled={!valid || submitting} style={{ width:"100%", background: valid && !submitting ? GOLD : "#333", color: valid && !submitting ? "#000" : "#666", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:15, letterSpacing:"0.1em", padding:"12px 0", border:"none", borderRadius:2, cursor: valid && !submitting ? "pointer":"not-allowed" }}>
+            {submitting ? "SAVING..." : "PROCEED TO PAYMENT →"}
           </button>
         </> : (
           <div style={{ textAlign:"center", padding:"1rem 0" }}>
@@ -455,8 +460,20 @@ function AdminLogin({ onLogin, onBack }) {
 
 // ── admin panel ───────────────────────────────────────────────────────────
 function AdminPanel({ onClose }) {
-  const [products, setProducts] = useState(INIT_PRODUCTS);
-  const [dealsQueue, setDealsQueue] = useState(INIT_DEALS_QUEUE);
+  const [products, setProducts] = useState([]);
+  const [dealsQueue, setDealsQueue] = useState([]);
+  const [adminLoading, setAdminLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/products').then(r => r.json()),
+      fetch('/api/deals').then(r => r.json()),
+    ]).then(([prods, deals]) => {
+      setProducts(Array.isArray(prods) ? prods.map(p => ({...p, cat:p.category, sale:p.salePrice, desc:p.description, img:p.imageUrl||"", serial:p.serialNumber||"", sku:p.sku||""})) : []);
+      setDealsQueue(Array.isArray(deals) ? deals.map(d => ({...d, productId:d.productId, pct:d.discountPct})) : []);
+      setAdminLoading(false);
+    }).catch(() => setAdminLoading(false));
+  }, []);
   const [tab, setTab] = useState("queue"); // queue | products
   const [editingProduct, setEditingProduct] = useState(null);
   const [addingDeal, setAddingDeal] = useState(false);
@@ -469,23 +486,44 @@ function AdminPanel({ onClose }) {
 
   const openEdit = p => { setEditingProduct(p.id); setForm({ ...p, price:String(p.price), sale: p.sale!=null?String(p.sale):"", deposit:String(p.deposit), serial:p.serial||"", sku:p.sku||"" }); setImgPreview(p.img||""); };
   const openNew = () => { setEditingProduct("new"); setForm({ ...BLANK, id:Date.now() }); setImgPreview(""); };
-  const saveProduct = () => {
-    const p = { ...form, price:Number(form.price), sale:form.sale?Number(form.sale):null, deposit:Number(form.deposit)||0, img:imgPreview };
-    if (editingProduct==="new") setProducts(ps => [...ps,p]);
-    else setProducts(ps => ps.map(x => x.id===p.id ? p : x));
+  const saveProduct = async () => {
+    const body = {
+      name: form.name, category: form.cat, price: Number(form.price),
+      salePrice: form.sale ? Number(form.sale) : null,
+      description: form.desc, specs: form.specs, imageUrl: imgPreview||null,
+      deposit: Number(form.deposit)||0, serialNumber: form.serial||null, sku: form.sku||null,
+    };
+    if (editingProduct === "new") {
+      const res = await fetch('/api/products', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      const p = await res.json();
+      setProducts(ps => [...ps, {...p, cat:p.category, sale:p.salePrice, desc:p.description, img:p.imageUrl||"", serial:p.serialNumber||"", sku:p.sku||""}]);
+    } else {
+      await fetch(`/api/products/${editingProduct}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      setProducts(ps => ps.map(x => x.id===editingProduct ? {...x,...body,cat:body.category,sale:body.salePrice,desc:body.description,img:body.imageUrl||""} : x));
+    }
     setEditingProduct(null);
   };
-  const delProduct = id => setProducts(ps => ps.filter(p => p.id!==id));
+  const delProduct = async id => {
+    await fetch(`/api/products/${id}`, { method:'DELETE' });
+    setProducts(ps => ps.filter(p => p.id!==id));
+  };
   const handleImg = e => { const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=ev=>{setImgPreview(ev.target.result);set("img",ev.target.result);}; r.readAsDataURL(f); };
-  const addToQueue = () => {
+  const addToQueue = async () => {
     if (!newDeal.productId || !newDeal.pct) return;
-    const prod = products.find(p => p.id === Number(newDeal.productId));
-    if (!prod) return;
-    setDealsQueue(q => [...q, { id:Date.now(), productId:Number(newDeal.productId), pct:Number(newDeal.pct), note:`${prod.name} — ${newDeal.pct}% off` }]);
+    const res = await fetch('/api/deals', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ productId: Number(newDeal.productId), discountPct: Number(newDeal.pct) }),
+    });
+    const deal = await res.json();
+    setDealsQueue(q => [...q, {...deal, productId:deal.productId, pct:deal.discountPct}]);
     setNewDeal({ productId:"", pct:"" });
     setAddingDeal(false);
   };
-  const removeFromQueue = id => setDealsQueue(q => q.filter(d => d.id!==id));
+  const removeFromQueue = async id => {
+    await fetch(`/api/deals/${id}`, { method:'DELETE' });
+    setDealsQueue(q => q.filter(d => d.id!==id));
+  };
   const moveUp = id => setDealsQueue(q => { const i=q.findIndex(d=>d.id===id); if(i<=0)return q; const n=[...q]; [n[i-1],n[i]]=[n[i],n[i-1]]; return n; });
 
   const iStyle = { width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" };
@@ -687,12 +725,22 @@ export default function GristmillPage() {
   const [catFilter, setCatFilter] = useState("All");
   const [view, setView] = useState("site");
   const [todaysDeal, setTodaysDeal] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const deal = getTodaysDeal(INIT_DEALS_QUEUE);
-    setTodaysDeal(deal);
-    // Restore spin state — if they already spun today, skip straight to result
+    // Restore spin state
     if (getStoredSpin()) setSpinDone(true);
+
+    // Load products and today's deal from API
+    Promise.all([
+      fetch('/api/products').then(r => r.json()),
+      fetch('/api/deals/today').then(r => r.json()),
+    ]).then(([prods, deal]) => {
+      setProducts(Array.isArray(prods) ? prods : []);
+      setTodaysDeal(deal);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, []);
 
   const handleSpinResult = () => {
@@ -701,8 +749,19 @@ export default function GristmillPage() {
     setSpinDone(true);
   };
 
-  const dealProduct = todaysDeal ? INIT_PRODUCTS.find(p => p.id === todaysDeal.productId) : null;
-  const filtered = catFilter === "All" ? INIT_PRODUCTS : INIT_PRODUCTS.filter(p => p.cat === catFilter);
+  // Normalize API fields to match component expectations
+  const normalizeProduct = (p) => ({
+    ...p,
+    cat: p.category,
+    sale: p.salePrice,
+    desc: p.description,
+    img: p.imageUrl || "",
+    serial: p.serialNumber || "",
+  });
+
+  const dealProduct = todaysDeal?.product ? normalizeProduct(todaysDeal.product) : null;
+  const normalizedProducts = products.map(normalizeProduct);
+  const filtered = catFilter === "All" ? normalizedProducts : normalizedProducts.filter(p => p.cat === catFilter);
 
   if (view === "adminlogin") return <AdminLogin onLogin={() => setView("admin")} onBack={() => setView("site")}/>;
   if (view === "admin") return <AdminPanel onClose={() => setView("site")}/>;
@@ -735,14 +794,16 @@ export default function GristmillPage() {
           <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#555", fontSize:14, marginBottom:32 }}>
             Spin once a day for an exclusive in-store discount. Claim it before the clock runs out.
           </div>
-          {!spinDone ? (
+          {loading ? (
+            <div style={{ padding:"4rem 0", fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#444", letterSpacing:"0.2em" }}>LOADING TODAY'S DEAL...</div>
+          ) : !spinDone ? (
             <SpinnerWheel onResult={handleSpinResult} todaysDeal={todaysDeal}/>
           ) : dealProduct ? (
             <DealResult
               product={dealProduct}
               pct={todaysDeal.pct}
-              onReserve={(p, price) => setModal({ product:p, type:"deposit", price })}
-              onPayFull={(p, price) => setModal({ product:p, type:"full", price })}
+              onReserve={(p, price) => setModal({ product:p, type:"deposit", price, dealId: todaysDeal?.id })}
+              onPayFull={(p, price) => setModal({ product:p, type:"full", price, dealId: todaysDeal?.id })}
             />
           ) : null}
         </div>
