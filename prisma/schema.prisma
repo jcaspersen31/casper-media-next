@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Product {
@@ -41,11 +40,11 @@ model DealQueue {
 }
 
 model DealHistory {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   deal      DealQueue @relation(fields: [dealId], references: [id], onDelete: Cascade)
   dealId    Int
   productId Int
-  ranOn     DateTime  @default(now()) @db.Date
+  ranOn     DateTime @default(now()) @db.Date
 
   @@unique([ranOn])
 }
@@ -60,8 +59,8 @@ model Reservation {
   customerEmail String
   customerPhone String
   amountPaid    Int
-  type          String    // 'deposit' | 'full'
-  status        String    @default("pending") // pending | confirmed | completed | cancelled
+  type          String
+  status        String    @default("pending")
   expiresAt     DateTime?
   createdAt     DateTime  @default(now())
 }
