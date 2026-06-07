@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id           Int      @id @default(autoincrement())
+  name         String
+  category     String
+  price        Int
+  salePrice    Int?
+  description  String?
+  specs        String?
+  imageUrl     String?
+  deposit      Int      @default(0)
+  serialNumber String?
+  sku          String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  dealsQueue   DealQueue[]
+  reservations Reservation[]
+}
+
+model DealQueue {
+  id          Int      @id @default(autoincrement())
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   Int
+  discountPct Int
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  history      DealHistory[]
+  reservations Reservation[]
+}
+
+model DealHistory {
+  id        Int       @id @default(autoincrement())
+  deal      DealQueue @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  dealId    Int
+  productId Int
+  ranOn     DateTime  @default(now()) @db.Date
+
+  @@unique([ranOn])
+}
+
+model Reservation {
+  id            Int       @id @default(autoincrement())
+  product       Product   @relation(fields: [productId], references: [id])
+  productId     Int
+  deal          DealQueue? @relation(fields: [dealId], references: [id])
+  dealId        Int?
+  customerName  String
+  customerEmail String
+  customerPhone String
+  amountPaid    Int
+  type          String    // 'deposit' | 'full'
+  status        String    @default("pending") // pending | confirmed | completed | cancelled
+  expiresAt     DateTime?
+  createdAt     DateTime  @default(now())
+}
+
+model Setting {
+  key       String   @id
+  value     String?
+  updatedAt DateTime @updatedAt
+}
