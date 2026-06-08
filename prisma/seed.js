@@ -6,6 +6,7 @@ async function main() {
   const settings = [
     { key: 'firstpay_merchant_id',     value: '' },
     { key: 'firstpay_checkout_url',     value: '' },
+    { key: 'admin_password',             value: '' },
     { key: 'cloudinary_cloud_name',    value: '' },
     { key: 'cloudinary_upload_preset', value: '' },
     { key: 'shop_name',                value: 'Gristmill Guns & Optics' },

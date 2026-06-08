@@ -531,7 +531,30 @@ function ReservationsList({ reservations, onUpdate }) {
 function AdminLogin({ onLogin, onBack }) {
   const [pw, setPw] = useState("");
   const [err, setErr] = useState(false);
-  const submit = () => { if (pw === ADMIN_PASS) onLogin(); else { setErr(true); setTimeout(() => setErr(false), 2000); } };
+  const [checking, setChecking] = useState(false);
+
+  const submit = async () => {
+    if (!pw || checking) return;
+    setChecking(true);
+    try {
+      // Check against stored password — falls back to hardcoded default if not set
+      const setts = await fetch('/api/settings').then(r => r.json());
+      const storedPw = setts?.admin_password || ADMIN_PASS;
+      if (pw === storedPw) {
+        onLogin();
+      } else {
+        setErr(true);
+        setTimeout(() => setErr(false), 2000);
+      }
+    } catch {
+      // Fallback to hardcoded if API fails
+      if (pw === ADMIN_PASS) onLogin();
+      else { setErr(true); setTimeout(() => setErr(false), 2000); }
+    } finally {
+      setChecking(false);
+    }
+  };
+
   return (
     <div style={{ minHeight:"100vh", background:"#080808", display:"flex", alignItems:"center", justifyContent:"center" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap');`}</style>
@@ -541,9 +564,8 @@ function AdminLogin({ onLogin, onBack }) {
         <input type="password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key==="Enter" && submit()} placeholder="Password"
           style={{ width:"100%", background:"#0a0a0a", border:`1px solid ${err ? "#c0392b":"#1e1e1e"}`, color:"#e8e0d0", padding:"9px 14px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:14, outline:"none", boxSizing:"border-box", marginBottom: err ? 8:14 }}/>
         {err && <div style={{ color:"#c0392b", fontSize:12, fontStyle:"italic", marginBottom:10 }}>Incorrect password</div>}
-        <button onClick={submit} style={{ width:"100%", background:GOLD, color:"#000", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:14, letterSpacing:"0.1em", padding:"11px 0", border:"none", borderRadius:2, cursor:"pointer" }}>ENTER</button>
+        <button onClick={submit} disabled={checking} style={{ width:"100%", background:GOLD, color:"#000", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:14, letterSpacing:"0.1em", padding:"11px 0", border:"none", borderRadius:2, cursor:"pointer", opacity: checking ? 0.6:1 }}>{checking ? "CHECKING...":"ENTER"}</button>
         <button onClick={onBack} style={{ marginTop:12, background:"transparent", border:"none", color:"#444", fontFamily:"'Oswald',sans-serif", fontSize:11, cursor:"pointer", letterSpacing:"0.1em" }}>← BACK TO SITE</button>
-        <div style={{ fontSize:10, color:"#333", marginTop:8, fontStyle:"italic" }}>Demo: gristmill2024</div>
       </div>
     </div>
   );
@@ -574,11 +596,19 @@ function AdminPanel({ onClose }) {
   }, []);
 
   const saveSettings = async () => {
+    const payload = { ...settings };
+    // Handle password change
+    if (payload.new_password && payload.new_password === payload.confirm_password) {
+      payload.admin_password = payload.new_password;
+    }
+    delete payload.new_password;
+    delete payload.confirm_password;
     await fetch('/api/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(settings),
+      body: JSON.stringify(payload),
     });
+    setSettings(s => ({ ...s, new_password: '', confirm_password: '' }));
     setSettingsSaved(true);
     setTimeout(() => setSettingsSaved(false), 3000);
   };
@@ -804,6 +834,28 @@ function AdminPanel({ onClose }) {
                   placeholder="e.g. https://checkout.firstpay.com/pay/..."
                   style={{ width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"'Courier New',monospace", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
                 <div style={{ fontSize:10, color:"#333", marginTop:3, fontStyle:"italic" }}>Find this in your FirstPay dashboard under Payment Links or Hosted Checkout.</div>
+              </div>
+            </div>
+
+            <div style={{ borderTop:"1px solid #1a1a1a", paddingTop:20, marginTop:8 }}>
+              <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, letterSpacing:"0.1em", marginBottom:6 }}>CHANGE ADMIN PASSWORD</div>
+              <div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:14 }}>Leave blank to keep your current password.</div>
+              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                <div>
+                  <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>NEW PASSWORD</label>
+                  <input type="password" value={settings.new_password || ''} onChange={e => setSettings(s => ({...s, new_password: e.target.value}))}
+                    placeholder="Enter new password"
+                    style={{ width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
+                </div>
+                <div>
+                  <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>CONFIRM NEW PASSWORD</label>
+                  <input type="password" value={settings.confirm_password || ''} onChange={e => setSettings(s => ({...s, confirm_password: e.target.value}))}
+                    placeholder="Confirm new password"
+                    style={{ width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
+                </div>
+                {settings.new_password && settings.confirm_password && settings.new_password !== settings.confirm_password && (
+                  <div style={{ fontSize:11, color:"#c0392b", fontStyle:"italic" }}>Passwords don't match</div>
+                )}
               </div>
             </div>
 
@@ -1079,14 +1131,14 @@ export default function GristmillPage() {
 
       <footer style={{ background:"#050505", borderTop:"1px solid #2a2a2a", padding:"1.5rem 2rem" }}>
         <div style={{ maxWidth:1100, margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
-          <div style={{ fontSize:12, color:"#888", fontStyle:"italic", lineHeight:2 }}>
-            <span style={{ color:"#aaa", fontStyle:"normal", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.08em" }}>Gristmill Guns & Optics</span>
+          <div style={{ fontSize:12, color:"#aaa", fontStyle:"italic", lineHeight:2 }}>
+            <span style={{ color:"#ccc", fontStyle:"normal", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.08em" }}>Gristmill Guns & Optics</span>
             &nbsp;·&nbsp; 1549 State Route 487, Orangeville PA 17859<br/>
-            <a href="tel:5707137339" style={{ color:"#888", textDecoration:"none" }}>(570) 713-7339</a>
+            <a href="tel:5707137339" style={{ color:"#aaa", textDecoration:"none" }}>(570) 713-7339</a>
             &nbsp;·&nbsp;
-            <a href="mailto:grant@gristmillguns.com" style={{ color:"#888", textDecoration:"none" }}>grant@gristmillguns.com</a>
+            <a href="mailto:grant@gristmillguns.com" style={{ color:"#aaa", textDecoration:"none" }}>grant@gristmillguns.com</a>
             &nbsp;·&nbsp;
-            <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer" style={{ color:"#888", textDecoration:"none" }}>@gristmillguns</a>
+            <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer" style={{ color:"#aaa", textDecoration:"none" }}>@gristmillguns</a>
             &nbsp;·&nbsp; All sales require valid ID &amp; background check
           </div>
           <button onClick={() => setView("adminlogin")} style={{ background:"transparent", border:"none", color:"#333", fontSize:10, cursor:"pointer", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.1em", transition:"color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color="#666"} onMouseLeave={e => e.currentTarget.style.color="#333"}>ADMIN</button>
