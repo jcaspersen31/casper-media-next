@@ -907,7 +907,8 @@ export default function GristmillPage() {
       fetch('/api/deals/today').then(r => r.json()),
     ]).then(([prods, deal]) => {
       setProducts(Array.isArray(prods) ? prods : []);
-      setTodaysDeal(deal);
+      // Normalize discountPct -> pct for frontend consistency
+      if (deal && !deal.error) setTodaysDeal({ ...deal, pct: deal.discountPct });
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
