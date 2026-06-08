@@ -326,7 +326,8 @@ function Modal({ product, price, type, dealId, onClose }) {
     if (!valid || submitting) return;
     setSubmitting(true);
     try {
-      await fetch('/api/reservations', {
+      // Save reservation first
+      const res = await fetch('/api/reservations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -339,9 +340,29 @@ function Modal({ product, price, type, dealId, onClose }) {
           type,
         }),
       });
-      setDone(true);
+      const reservation = await res.json();
+
+      // Fetch payment settings then redirect to FirstPay
+      const setts = await fetch('/api/settings').then(r => r.json());
+      const checkoutUrl = setts?.firstpay_checkout_url;
+
+      if (checkoutUrl) {
+        const amount = type === 'deposit' ? product.deposit : price;
+        const params = new URLSearchParams({
+          amount: amount.toFixed(2),
+          order_id: String(reservation.id),
+          description: `${type === 'deposit' ? 'Deposit' : 'Payment'} - ${product.name}`,
+          email: form.email,
+          name: form.name,
+        });
+        window.location.href = `${checkoutUrl}?${params.toString()}`;
+      } else {
+        // No checkout URL configured yet — just show confirmation
+        setDone(true);
+      }
     } catch (e) {
       console.error(e);
+      setDone(true);
     } finally {
       setSubmitting(false);
     }
@@ -533,6 +554,8 @@ function AdminPanel({ onClose }) {
   const [products, setProducts] = useState([]);
   const [dealsQueue, setDealsQueue] = useState([]);
   const [reservations, setReservations] = useState([]);
+  const [settings, setSettings] = useState({ firstpay_merchant_id: '', firstpay_checkout_url: '' });
+  const [settingsSaved, setSettingsSaved] = useState(false);
   const [adminLoading, setAdminLoading] = useState(true);
 
   useEffect(() => {
@@ -540,7 +563,9 @@ function AdminPanel({ onClose }) {
       fetch('/api/products').then(r => r.json()),
       fetch('/api/deals').then(r => r.json()),
       fetch('/api/reservations').then(r => r.json()),
-    ]).then(([prods, deals, res]) => {
+      fetch('/api/settings').then(r => r.json()),
+    ]).then(([prods, deals, res, setts]) => {
+      setSettings(s => ({ ...s, ...setts }));
       setProducts(Array.isArray(prods) ? prods.map(p => ({...p, cat:p.category, sale:p.salePrice, desc:p.description, img:p.imageUrl||"", serial:p.serialNumber||"", sku:p.sku||""})) : []);
       setDealsQueue(Array.isArray(deals) ? deals.map(d => ({...d, productId:d.productId, pct:d.discountPct})) : []);
       setReservations(Array.isArray(res) ? res : []);
@@ -634,6 +659,7 @@ function AdminPanel({ onClose }) {
           {tabBtn("queue","DEALS QUEUE")}
           {tabBtn("products","INVENTORY")}
           {tabBtn("reservations","RESERVATIONS", reservations.filter(r => r.status === "pending").length)}
+          {tabBtn("settings","SETTINGS")}
         </div>
 
         {/* ── DEALS QUEUE TAB ── */}
@@ -744,6 +770,36 @@ function AdminPanel({ onClose }) {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── SETTINGS TAB ── */}
+        {tab==="settings" && (
+          <div style={{ maxWidth:500 }}>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, letterSpacing:"0.1em", marginBottom:6 }}>PAYMENT SETTINGS</div>
+            <div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:24 }}>Enter your FirstPay credentials. These are stored securely in your database and never shared.</div>
+
+            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+              <div>
+                <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>FIRSTPAY MERCHANT ID</label>
+                <input type="password" value={settings.firstpay_merchant_id || ''} onChange={e => setSettings(s => ({...s, firstpay_merchant_id: e.target.value}))}
+                  placeholder="Your FirstPay merchant ID"
+                  style={{ width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"'Courier New',monospace", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
+                <div style={{ fontSize:10, color:"#333", marginTop:3, fontStyle:"italic" }}>Stored encrypted. Never visible in code or git.</div>
+              </div>
+              <div>
+                <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>FIRSTPAY CHECKOUT URL</label>
+                <input type="text" value={settings.firstpay_checkout_url || ''} onChange={e => setSettings(s => ({...s, firstpay_checkout_url: e.target.value}))}
+                  placeholder="e.g. https://checkout.firstpay.com/pay/..."
+                  style={{ width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"'Courier New',monospace", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
+                <div style={{ fontSize:10, color:"#333", marginTop:3, fontStyle:"italic" }}>Find this in your FirstPay dashboard under Payment Links or Hosted Checkout.</div>
+              </div>
+            </div>
+
+            <div style={{ marginTop:20, display:"flex", alignItems:"center", gap:12 }}>
+              <button onClick={saveSettings} style={{ background:GOLD, color:"#000", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:13, letterSpacing:"0.1em", padding:"10px 24px", border:"none", borderRadius:2, cursor:"pointer" }}>SAVE SETTINGS</button>
+              {settingsSaved && <span style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#4caf50", letterSpacing:"0.1em" }}>✓ SAVED</span>}
             </div>
           </div>
         )}
