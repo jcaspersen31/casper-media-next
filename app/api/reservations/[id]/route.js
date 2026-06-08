@@ -4,9 +4,10 @@ import { prisma } from '@/lib/prisma'
 
 export async function PUT(req, { params }) {
   try {
+    const { id } = await params
     const { status } = await req.json()
     const reservation = await prisma.reservation.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: { status },
       include: { product: true },
     })

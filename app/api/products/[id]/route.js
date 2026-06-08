@@ -4,8 +4,9 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(req, { params }) {
   try {
+    const { id } = await params
     const product = await prisma.product.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     })
     if (!product) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     return NextResponse.json(product)
@@ -16,9 +17,10 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   try {
+    const { id } = await params
     const data = await req.json()
     const product = await prisma.product.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: {
         name:         data.name,
         category:     data.category,
@@ -40,8 +42,9 @@ export async function PUT(req, { params }) {
 
 export async function DELETE(req, { params }) {
   try {
+    const { id } = await params
     await prisma.product.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: { active: false },
     })
     return NextResponse.json({ success: true })
