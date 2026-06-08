@@ -573,6 +573,16 @@ function AdminPanel({ onClose }) {
     }).catch(() => setAdminLoading(false));
   }, []);
 
+  const saveSettings = async () => {
+    await fetch('/api/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+    });
+    setSettingsSaved(true);
+    setTimeout(() => setSettingsSaved(false), 3000);
+  };
+
   const updateReservationStatus = async (id, status) => {
     await fetch(`/api/reservations/${id}`, {
       method: 'PUT',
