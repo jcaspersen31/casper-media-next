@@ -1077,18 +1077,19 @@ export default function GristmillPage() {
         </div>
       </section>
 
-      <footer style={{ background:"#050505", borderTop:"1px solid #141414", padding:"1.25rem 2rem" }}>
+      <footer style={{ background:"#050505", borderTop:"1px solid #2a2a2a", padding:"1.5rem 2rem" }}>
         <div style={{ maxWidth:1100, margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
-          <div style={{ fontSize:11, color:"#333", fontStyle:"italic", lineHeight:1.8 }}>
-            Gristmill Guns & Optics · 1549 State Route 487, Orangeville PA 17859<br/>
-            <a href="tel:5707137339" style={{ color:"#444", textDecoration:"none" }}>(570) 713-7339</a>
+          <div style={{ fontSize:12, color:"#888", fontStyle:"italic", lineHeight:2 }}>
+            <span style={{ color:"#aaa", fontStyle:"normal", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.08em" }}>Gristmill Guns & Optics</span>
+            &nbsp;·&nbsp; 1549 State Route 487, Orangeville PA 17859<br/>
+            <a href="tel:5707137339" style={{ color:"#888", textDecoration:"none" }}>(570) 713-7339</a>
             &nbsp;·&nbsp;
-            <a href="mailto:grant@gristmillguns.com" style={{ color:"#444", textDecoration:"none" }}>grant@gristmillguns.com</a>
+            <a href="mailto:grant@gristmillguns.com" style={{ color:"#888", textDecoration:"none" }}>grant@gristmillguns.com</a>
             &nbsp;·&nbsp;
-            <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer" style={{ color:"#444", textDecoration:"none" }}>@gristmillguns</a>
+            <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer" style={{ color:"#888", textDecoration:"none" }}>@gristmillguns</a>
             &nbsp;·&nbsp; All sales require valid ID &amp; background check
           </div>
-          <button onClick={() => setView("adminlogin")} style={{ background:"transparent", border:"none", color:"#1e1e1e", fontSize:10, cursor:"pointer", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.1em", transition:"color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color="#555"} onMouseLeave={e => e.currentTarget.style.color="#1e1e1e"}>ADMIN</button>
+          <button onClick={() => setView("adminlogin")} style={{ background:"transparent", border:"none", color:"#333", fontSize:10, cursor:"pointer", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.1em", transition:"color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color="#666"} onMouseLeave={e => e.currentTarget.style.color="#333"}>ADMIN</button>
         </div>
       </footer>
 
