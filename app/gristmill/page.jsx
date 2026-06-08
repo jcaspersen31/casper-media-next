@@ -420,40 +420,37 @@ function Modal({ product, price, type, dealId, onClose }) {
 }
 
 // ── product card ──────────────────────────────────────────────────────────
-function ProductCard({ p, onReserve }) {
+function ProductCard({ p }) {
   const [hov, setHov] = useState(false);
-  const dp = p.sale ?? p.price;
+  const dp = p.salePrice ?? p.sale ?? p.price;
   return (
-    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background:"#111", border:`1px solid ${hov ? GOLD : "#1e1e1e"}`, borderRadius:3, overflow:"hidden", transition:"transform 0.18s,border-color 0.18s", transform: hov ? "translateY(-3px)":"none" }}>
-      <div style={{ aspectRatio:"4/3", background:"#161616", display:"flex", alignItems:"center", justifyContent:"center", position:"relative", borderBottom:"1px solid #1e1e1e", overflow:"hidden" }}>
-        {p.img ? <img src={p.img} alt={p.name} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
-          <svg width="64" height="40" viewBox="0 0 64 40" fill="none">
-            <rect x="2" y="16" width="42" height="8" rx="2" fill="#2a2a2a" stroke="#3a3a3a" strokeWidth="1"/>
-            <rect x="12" y="10" width="30" height="6" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1"/>
-            <rect x="8" y="22" width="8" height="12" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1"/>
-            <circle cx="46" cy="20" r="7" fill="none" stroke="#3a3a3a" strokeWidth="1.5"/>
-          </svg>}
-        {p.sale && <span style={{ position:"absolute", top:7, right:7, background:"#7a1515", color:"#fff", fontSize:10, padding:"2px 7px", borderRadius:1, fontFamily:"'Oswald',sans-serif" }}>SALE</span>}
-      </div>
-      <div style={{ padding:"11px 13px 13px" }}>
-        <div style={{ fontSize:9, color:"#555", letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:3, fontFamily:"'Oswald',sans-serif" }}>{p.cat}</div>
-        <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:"#e8e0d0", fontWeight:600, lineHeight:1.2, marginBottom:4 }}>{p.name}</div>
-        <div style={{ fontSize:11, color:"#555", lineHeight:1.5, marginBottom:6, fontStyle:"italic" }}>{p.desc}</div>
-        <div style={{ display:"flex", alignItems:"baseline", gap:6, marginBottom: p.deposit > 0 ? 8:0 }}>
-          <span style={{ fontFamily:"'Oswald',sans-serif", fontSize:18, color:GOLD, fontWeight:700 }}>${dp.toLocaleString()}</span>
-          {p.sale && <span style={{ fontSize:11, color:"#444", textDecoration:"line-through" }}>${p.price.toLocaleString()}</span>}
+    <a href={`/gristmill/item/${p.id}`} style={{ textDecoration:"none" }}
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+      <div style={{ background:"#111", border:`1px solid ${hov ? GOLD : "#1e1e1e"}`, borderRadius:3, overflow:"hidden", transition:"transform 0.18s,border-color 0.18s", transform: hov ? "translateY(-3px)":"none" }}>
+        <div style={{ aspectRatio:"4/3", background:"#161616", display:"flex", alignItems:"center", justifyContent:"center", position:"relative", borderBottom:"1px solid #1e1e1e", overflow:"hidden" }}>
+          {(p.img||p.imageUrl) ? <img src={p.img||p.imageUrl} alt={p.name} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
+            <svg width="64" height="40" viewBox="0 0 64 40" fill="none">
+              <rect x="2" y="16" width="42" height="8" rx="2" fill="#2a2a2a" stroke="#3a3a3a" strokeWidth="1"/>
+              <rect x="12" y="10" width="30" height="6" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1"/>
+              <rect x="8" y="22" width="8" height="12" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1"/>
+              <circle cx="46" cy="20" r="7" fill="none" stroke="#3a3a3a" strokeWidth="1.5"/>
+            </svg>}
+          {(p.sale||p.salePrice) && <span style={{ position:"absolute", top:7, right:7, background:"#7a1515", color:"#fff", fontSize:10, padding:"2px 7px", borderRadius:1, fontFamily:"'Oswald',sans-serif" }}>SALE</span>}
         </div>
-        {onReserve && p.deposit > 0 && (
-          <button onClick={() => onReserve(p)}
-            onMouseEnter={e => { e.currentTarget.style.background=GOLD; e.currentTarget.style.color="#000"; }}
-            onMouseLeave={e => { e.currentTarget.style.background="transparent"; e.currentTarget.style.color=GOLD; }}
-            style={{ width:"100%", background:"transparent", border:`1px solid ${GOLD}`, color:GOLD, fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"6px 0", borderRadius:2, cursor:"pointer", letterSpacing:"0.08em", transition:"all 0.15s" }}>
-            RESERVE · ${p.deposit} DEPOSIT
-          </button>
-        )}
+        <div style={{ padding:"11px 13px 13px" }}>
+          <div style={{ fontSize:9, color:"#555", letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:3, fontFamily:"'Oswald',sans-serif" }}>{p.cat||p.category}</div>
+          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:"#e8e0d0", fontWeight:600, lineHeight:1.2, marginBottom:4 }}>{p.name}</div>
+          <div style={{ fontSize:11, color:"#555", lineHeight:1.5, marginBottom:6, fontStyle:"italic" }}>{p.desc||p.description}</div>
+          <div style={{ display:"flex", alignItems:"baseline", gap:6, marginBottom:8 }}>
+            <span style={{ fontFamily:"'Oswald',sans-serif", fontSize:18, color:GOLD, fontWeight:700 }}>${dp?.toLocaleString()}</span>
+            {(p.sale||p.salePrice) && <span style={{ fontSize:11, color:"#444", textDecoration:"line-through" }}>${p.price?.toLocaleString()}</span>}
+          </div>
+          <div style={{ width:"100%", background:"transparent", border:`1px solid ${GOLD}`, color:GOLD, fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"6px 0", borderRadius:2, textAlign:"center", letterSpacing:"0.08em" }}>
+            VIEW DETAILS →
+          </div>
+        </div>
       </div>
-    </div>
+    </a>
   );
 }
 
@@ -942,9 +939,7 @@ function AdminPanel({ onClose }) {
 // ── main page ─────────────────────────────────────────────────────────────
 export default function GristmillPage() {
   const [spinDone, setSpinDone] = useState(false);
-  const [modal, setModal] = useState(null);
   const [catFilter, setCatFilter] = useState("All");
-  const [view, setView] = useState("site");
   const [todaysDeal, setTodaysDeal] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -985,8 +980,8 @@ export default function GristmillPage() {
   const normalizedProducts = products.map(normalizeProduct);
   const filtered = catFilter === "All" ? normalizedProducts : normalizedProducts.filter(p => p.cat === catFilter);
 
-  if (view === "adminlogin") return <AdminLogin onLogin={() => setView("admin")} onBack={() => setView("site")}/>;
-  if (view === "admin") return <AdminPanel onClose={() => setView("site")}/>;
+
+
 
   return (
     <div style={{ minHeight:"100vh", background:"#0a0a0a", color:"#e8e0d0" }}>
@@ -1125,7 +1120,7 @@ export default function GristmillPage() {
           </div>
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"1rem" }}>
-          {filtered.map(p => <ProductCard key={p.id} p={p} onReserve={p => setModal({ product:p, type:"deposit", price: p.sale??p.price })}/>)}
+          {filtered.map(p => <ProductCard key={p.id} p={p}/>)}
         </div>
       </section>
 
@@ -1141,11 +1136,10 @@ export default function GristmillPage() {
             <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer" style={{ color:"#aaa", textDecoration:"none" }}>@gristmillguns</a>
             &nbsp;·&nbsp; All sales require valid ID &amp; background check
           </div>
-          <button onClick={() => setView("adminlogin")} style={{ background:"transparent", border:"none", color:"#333", fontSize:10, cursor:"pointer", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.1em", transition:"color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color="#666"} onMouseLeave={e => e.currentTarget.style.color="#333"}>ADMIN</button>
+          <button onClick={() => window.location.href="/gristmill/admin"} style={{ background:"transparent", border:"none", color:"#333", fontSize:10, cursor:"pointer", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.1em", transition:"color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color="#666"} onMouseLeave={e => e.currentTarget.style.color="#333"}>ADMIN</button>
         </div>
       </footer>
 
-      {modal && <Modal {...modal} onClose={() => setModal(null)}/>}
     </div>
   );
 }

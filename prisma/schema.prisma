@@ -7,22 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  sortOrder Int       @default(0)
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  products  Product[]
+}
+
 model Product {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   name         String
   category     String
+  categoryId   Int?
   price        Int
   salePrice    Int?
   description  String?
   specs        String?
   imageUrl     String?
-  deposit      Int      @default(0)
+  deposit      Int       @default(0)
   serialNumber String?
   sku          String?
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
+  categoryRef  Category?   @relation(fields: [categoryId], references: [id])
   dealsQueue   DealQueue[]
   reservations Reservation[]
 }
