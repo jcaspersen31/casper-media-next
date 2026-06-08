@@ -983,6 +983,8 @@ export default function GristmillPage() {
       {/* AMBIANCE */}
       <section style={{ background:"#080808", borderTop:"1px solid #1a1a1a", borderBottom:"1px solid #1a1a1a", padding:"4rem 2rem" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
+
+          {/* Header */}
           <div style={{ textAlign:"center", marginBottom:"3rem" }}>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#444", letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:8 }}>COME SEE US</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:32, fontWeight:700, color:"white", letterSpacing:"0.04em", marginBottom:10 }}>THE OLD GRISTMILL</div>
@@ -992,24 +994,57 @@ export default function GristmillPage() {
             </div>
           </div>
 
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))", gap:"1.5rem" }}>
+          {/* Hero photo — full width */}
+          <div style={{ width:"100%", aspectRatio:"21/9", background:"#111", border:"1px solid #1e1e1e", borderRadius:3, marginBottom:"1.5rem", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", position:"relative" }}>
+            {/* REPLACE src below with Cloudinary URL of exterior/hero shot */}
+            {false ? <img src="" alt="Gristmill Guns exterior" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : (
+              <div style={{ textAlign:"center", color:"#2a2a2a" }}>
+                <div style={{ fontSize:40, marginBottom:8 }}>🏚</div>
+                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.18em" }}>EXTERIOR PHOTO</div>
+                <div style={{ fontSize:10, marginTop:4, fontStyle:"italic", color:"#222" }}>Replace with building exterior shot</div>
+              </div>
+            )}
+          </div>
+
+          {/* 3-column photo grid */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1rem", marginBottom:"1.5rem" }}>
             {[
-              { icon:"🏚", title:"Historic Structure", body:"Original hand-hewn timber framing, stone foundation walls, and wide-plank floors dating back over 150 years." },
-              { icon:"⚙", title:"Working Mill Artifacts", body:"Antique millstones, gears, and equipment preserved throughout the building — history you can touch." },
-              { icon:"🪵", title:"Rustic Décor", body:"Reclaimed wood, vintage signage, and curated antiques create an atmosphere unlike any other gun shop." },
-              { icon:"📍", title:"Find Us", body:"1549 State Route 487, Orangeville PA 17859. Easy parking, right off the highway. Come say hello to Grant." },
-            ].map(({ icon, title, body }) => (
-              <div key={title} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:3, padding:"1.5rem" }}>
-                <div style={{ fontSize:28, marginBottom:12, opacity:0.6 }}>{icon}</div>
-                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:15, color:GOLD, letterSpacing:"0.08em", marginBottom:8 }}>{title.toUpperCase()}</div>
+              { slot:"INTERIOR", hint:"Wide shot of the shop floor / display cases", icon:"🔦" },
+              { slot:"THE MILLSTONE", hint:"Original millstone or mill equipment", icon:"⚙" },
+              { slot:"THE DÉCOR", hint:"Rustic details — reclaimed wood, vintage signs", icon:"🪵" },
+            ].map(({ slot, hint, icon }) => (
+              <div key={slot} style={{ aspectRatio:"4/3", background:"#111", border:"1px solid #1e1e1e", borderRadius:3, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                {/* REPLACE false with true and add src URL when photo is ready */}
+                {false ? <img src="" alt={slot} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : (
+                  <div style={{ textAlign:"center", color:"#2a2a2a", padding:"1rem" }}>
+                    <div style={{ fontSize:28, marginBottom:6 }}>{icon}</div>
+                    <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, letterSpacing:"0.14em" }}>{slot}</div>
+                    <div style={{ fontSize:9, marginTop:4, fontStyle:"italic", color:"#1e1e1e", lineHeight:1.5 }}>{hint}</div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Info cards row */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))", gap:"1rem", marginBottom:"2.5rem" }}>
+            {[
+              { title:"Historic Structure", body:"Original hand-hewn timber framing, stone foundation walls, and wide-plank floors dating back over 150 years." },
+              { title:"Working Mill Artifacts", body:"Antique millstones, gears, and equipment preserved throughout the building — history you can touch." },
+              { title:"Rustic Décor", body:"Reclaimed wood, vintage signage, and curated antiques create an atmosphere unlike any other gun shop." },
+              { title:"Find Us", body:"1549 State Route 487, Orangeville PA 17859. Easy parking, right off the highway. Come say hello to Grant." },
+            ].map(({ title, body }) => (
+              <div key={title} style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:3, padding:"1.25rem" }}>
+                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:GOLD, letterSpacing:"0.1em", marginBottom:6 }}>{title.toUpperCase()}</div>
                 <div style={{ fontSize:13, color:"#666", lineHeight:1.7, fontStyle:"italic" }}>{body}</div>
               </div>
             ))}
           </div>
 
-          <div style={{ marginTop:"2.5rem", display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
+          {/* CTA buttons */}
+          <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
             <a href="https://www.google.com/maps/search/?api=1&query=1549+State+Route+487+Orangeville+PA+17859" target="_blank" rel="noreferrer"
-              style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.1em", padding:"10px 24px", background:"transparent", border:`1px solid ${GOLD}`, color:GOLD, borderRadius:2, textDecoration:"none", transition:"all 0.2s" }}>
+              style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.1em", padding:"10px 24px", background:"transparent", border:`1px solid ${GOLD}`, color:GOLD, borderRadius:2, textDecoration:"none" }}>
               GET DIRECTIONS
             </a>
             <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer"
@@ -1017,6 +1052,7 @@ export default function GristmillPage() {
               @GRISTMILLGUNS ON INSTAGRAM
             </a>
           </div>
+
         </div>
       </section>
 
