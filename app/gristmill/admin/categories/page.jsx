@@ -44,7 +44,7 @@ export default function CategoriesPage() {
     setCategories(cs => cs.filter(c => c.id!==id));
   };
 
-  const iStyle = { background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"7px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" };
+  const iStyle = { background:"var(--bg)", border:"1px solid #222", color:"var(--text)", padding:"7px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" };
 
   return (
     <div style={{ maxWidth:600 }}>
@@ -59,11 +59,11 @@ export default function CategoriesPage() {
         <AdminButton onClick={add} disabled={!newName.trim()}>ADD</AdminButton>
       </div>
 
-      {loading && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"2rem 0", textAlign:"center" }}>LOADING...</div>}
+      {loading && <div style={{ color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"2rem 0", textAlign:"center" }}>LOADING...</div>}
 
       <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
         {categories.map(c => (
-          <div key={c.id} style={{ display:"flex", alignItems:"center", gap:10, background:"#111", border:"1px solid #1a1a1a", borderRadius:2, padding:"10px 14px" }}>
+          <div key={c.id} style={{ display:"flex", alignItems:"center", gap:10, background:"var(--bg-card)", border:"1px solid #1a1a1a", borderRadius:2, padding:"10px 14px" }}>
             {editingId === c.id ? (
               <>
                 <input value={editName} onChange={e => setEditName(e.target.value)} onKeyDown={e => e.key==="Enter" && save(c.id)}
@@ -74,8 +74,8 @@ export default function CategoriesPage() {
             ) : (
               <>
                 <div style={{ flex:1 }}>
-                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#e8e0d0" }}>{c.name}</div>
-                  <div style={{ fontSize:10, color:"#9e9e9e", marginTop:2 }}>{c._count?.products || 0} product{c._count?.products !== 1 ? "s":""}</div>
+                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"var(--text)" }}>{c.name}</div>
+                  <div style={{ fontSize:10, color:"var(--text-dim)", marginTop:2 }}>{c._count?.products || 0} product{c._count?.products !== 1 ? "s":""}</div>
                 </div>
                 <AdminButton variant="outline" onClick={() => { setEditingId(c.id); setEditName(c.name); }} style={{ fontSize:10, padding:"4px 10px" }}>EDIT</AdminButton>
                 <AdminButton variant="danger" onClick={() => del(c.id)} style={{ fontSize:10, padding:"4px 10px" }}>DEL</AdminButton>
@@ -86,7 +86,7 @@ export default function CategoriesPage() {
       </div>
 
       {!loading && categories.length === 0 && (
-        <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"2rem 0", textAlign:"center" }}>NO CATEGORIES YET</div>
+        <div style={{ color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"2rem 0", textAlign:"center" }}>NO CATEGORIES YET</div>
       )}
     </div>
   );

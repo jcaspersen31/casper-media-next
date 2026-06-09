@@ -7,38 +7,41 @@
 /* ── TOKENS ─────────────────────────────────────────── */
 :root {
   /* Brand */
-  --gold:         #c9a84c;
-  --gold-light:   #e8c84a;
-  --gold-dim:     rgba(201,168,76,0.15);
+  --gold:           #c9a84c;
+  --gold-light:     #e8c84a;
+  --gold-dim:       rgba(201,168,76,0.15);
 
   /* Backgrounds */
-  --bg:           #0a0a0a;
-  --bg-card:      #111111;
-  --bg-input:     #0a0a0a;
-  --bg-header:    #050505;
+  --bg:             #0a0a0a;
+  --bg-card:        #111111;
+  --bg-input:       #0a0a0a;
+  --bg-header:      #050505;
 
   /* Borders */
-  --border:       #1e1e1e;
-  --border-mid:   #2a2a2a;
-  --border-hover: rgba(201,168,76,0.5);
+  --border:         #1e1e1e;
+  --border-mid:     #2a2a2a;
+  --border-hover:   rgba(201,168,76,0.5);
 
-  /* Text — bumped up for readability */
-  --text:         #e8e0d0;   /* primary */
-  --text-mid:     #b0a898;   /* secondary — was #888, now lighter */
-  --text-muted:   #888888;   /* tertiary — was #666, now lighter */
-  --text-dim:     #9e9e9e;   /* subtle — was #444/#333, now readable */
-  --text-faint:   #9e9e9e;   /* barely there labels */
+  /* ── TEXT SCALE ──────────────────────────────────────
+     Minimum readable value: #9e9e9e
+     All text at or above this threshold.
+  ────────────────────────────────────────────────────── */
+  --text:           #e8e0d0;   /* primary content */
+  --text-mid:       #c0b8a8;   /* secondary content */
+  --text-muted:     #a8a098;   /* supporting text */
+  --text-dim:       #9e9e9e;   /* minimum — labels, hints, metadata */
+  --text-faint:     #9e9e9e;   /* same floor — tiny labels */
 
   /* Status */
-  --red:          #7a1515;
-  --red-bright:   #c0392b;
-  --green:        #4caf50;
-  --blue:         #2196f3;
+  --red:            #7a1515;
+  --red-bright:     #c0392b;
+  --green:          #4caf50;
+  --blue:           #2196f3;
 
   /* Typography */
-  --font-display: 'Oswald', sans-serif;
-  --font-body:    Georgia, serif;
-  --font-mono:    'Courier New', monospace;
+  --font-display:   'Oswald', sans-serif;
+  --font-body:      Georgia, serif;
+  --font-mono:      'Courier New', monospace;
 }
 
 /* ── RESET ───────────────────────────────────────────── */
@@ -63,7 +66,7 @@ body {
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 
 .gm-heading {
@@ -73,8 +76,9 @@ body {
   letter-spacing: 0.06em;
 }
 
-.gm-gold { color: var(--gold); }
+.gm-gold  { color: var(--gold); }
 .gm-muted { color: var(--text-muted); }
+.gm-dim   { color: var(--text-dim); }
 .gm-italic { font-style: italic; color: var(--text-muted); }
 
 /* ── CARDS ───────────────────────────────────────────── */
@@ -83,10 +87,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 3px;
 }
-
-.gm-card:hover {
-  border-color: var(--border-hover);
-}
+.gm-card:hover { border-color: var(--border-hover); }
 
 /* ── BUTTONS ─────────────────────────────────────────── */
 .gm-btn {
@@ -100,34 +101,12 @@ body {
   transition: opacity 0.15s, background 0.15s;
   border: none;
 }
-
-.gm-btn-gold {
-  background: var(--gold);
-  color: #000;
-}
+.gm-btn-gold    { background: var(--gold); color: #000; }
 .gm-btn-gold:hover { opacity: 0.85; }
-
-.gm-btn-outline {
-  background: transparent;
-  border: 1px solid var(--gold);
-  color: var(--gold);
-}
-.gm-btn-outline:hover {
-  background: var(--gold);
-  color: #000;
-}
-
-.gm-btn-ghost {
-  background: transparent;
-  border: 1px solid var(--border-mid);
-  color: var(--text-muted);
-}
-
-.gm-btn-danger {
-  background: transparent;
-  border: 1px solid #330000;
-  color: var(--red-bright);
-}
+.gm-btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+.gm-btn-outline:hover { background: var(--gold); color: #000; }
+.gm-btn-ghost   { background: transparent; border: 1px solid var(--border-mid); color: var(--text-muted); }
+.gm-btn-danger  { background: transparent; border: 1px solid #330000; color: var(--red-bright); }
 
 /* ── INPUTS ──────────────────────────────────────────── */
 .gm-input {
@@ -145,31 +124,25 @@ body {
 }
 .gm-input:focus { border-color: var(--gold); }
 
-/* ── FOOTER TEXT ─────────────────────────────────────── */
+/* ── FOOTER ──────────────────────────────────────────── */
 .gm-footer {
   background: var(--bg-header);
   border-top: 1px solid var(--border-mid);
   padding: 1.5rem 2rem;
 }
-
 .gm-footer-text {
   font-size: 12px;
-  color: var(--text-muted);   /* #888 — readable on dark bg */
+  color: var(--text-muted);
   font-style: italic;
   line-height: 2;
 }
-
 .gm-footer-text a {
   color: var(--text-muted);
   text-decoration: none;
 }
-
-.gm-footer-text a:hover {
-  color: var(--text-mid);
-}
-
+.gm-footer-text a:hover { color: var(--text-mid); }
 .gm-footer-name {
-  color: var(--text-mid);     /* #b0a898 — slightly brighter for shop name */
+  color: var(--text-mid);
   font-style: normal;
   font-family: var(--font-display);
   letter-spacing: 0.08em;
@@ -179,12 +152,11 @@ body {
 .gm-product-category {
   font-family: var(--font-display);
   font-size: 9px;
-  color: var(--text-faint);
+  color: var(--text-dim);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   margin-bottom: 3px;
 }
-
 .gm-product-name {
   font-family: var(--font-display);
   font-size: 14px;
@@ -193,38 +165,25 @@ body {
   line-height: 1.2;
   margin-bottom: 4px;
 }
-
 .gm-product-desc {
   font-size: 11px;
   color: var(--text-muted);
   line-height: 1.5;
   font-style: italic;
 }
-
-.gm-price {
-  font-family: var(--font-display);
-  font-size: 18px;
-  color: var(--gold);
-  font-weight: 700;
-}
-
-.gm-price-original {
-  font-size: 11px;
-  color: var(--text-dim);
-  text-decoration: line-through;
-}
+.gm-price         { font-family: var(--font-display); font-size: 18px; color: var(--gold); font-weight: 700; }
+.gm-price-original { font-size: 11px; color: var(--text-dim); text-decoration: line-through; }
 
 /* ── ADMIN ───────────────────────────────────────────── */
 .gm-admin-label {
   display: block;
   font-family: var(--font-display);
   font-size: 9px;
-  color: var(--text-faint);
+  color: var(--text-dim);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-bottom: 4px;
 }
-
 .gm-section-head {
   font-family: var(--font-display);
   font-size: 10px;
@@ -237,6 +196,23 @@ body {
   margin-top: 8px;
 }
 
+/* ── ADMIN SIDEBAR ───────────────────────────────────── */
+.gm-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+.gm-sidebar-link:hover { color: var(--text-muted); background: rgba(201,168,76,0.05); }
+.gm-sidebar-link.active { color: var(--gold); background: rgba(201,168,76,0.08); border-left-color: var(--gold); }
+
 /* ── SCROLLBAR ───────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
@@ -248,7 +224,6 @@ body {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.6; }

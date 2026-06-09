@@ -74,7 +74,7 @@ export default function ImportPage() {
     <div>
       <PageHeader title="IMPORT FROM ORCHID" />
 
-      <div style={{ maxWidth:700, marginBottom:24, fontFamily:"Georgia,serif", fontStyle:"italic", color:"#666", fontSize:13, lineHeight:1.7 }}>
+      <div style={{ maxWidth:700, marginBottom:24, fontFamily:"Georgia,serif", fontStyle:"italic", color:"var(--text-dim)", fontSize:13, lineHeight:1.7 }}>
         Export your inventory from Orchid Advisors and upload the file here — Excel (.xlsx) or CSV accepted. The importer previews your data before committing. Existing products matched by UPC or Part Number will be updated, not duplicated.
       </div>
 
@@ -95,10 +95,10 @@ export default function ImportPage() {
           onMouseLeave={e=>e.currentTarget.style.borderColor="#2a2a2a"}
         >
           <div style={{ fontSize:32, marginBottom:12, opacity:0.3 }}>📂</div>
-          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:"#666", letterSpacing:"0.1em" }}>
+          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:"var(--text-dim)", letterSpacing:"0.1em" }}>
             {file ? file.name : "CLICK OR DRAG ORCHID FILE HERE"}
           </div>
-          <div style={{ fontSize:11, color:"#9e9e9e", marginTop:6, fontStyle:"italic" }}>
+          <div style={{ fontSize:11, color:"var(--text-dim)", marginTop:6, fontStyle:"italic" }}>
             Accepts .xlsx (Excel) or .csv · Export from Orchid: Inventory → Reports → Inventory List
           </div>
         </div>
@@ -113,9 +113,9 @@ export default function ImportPage() {
       {preview && (
         <div>
           <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:16, flexWrap:"wrap" }}>
-            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#888", letterSpacing:"0.1em" }}>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"var(--text-muted)", letterSpacing:"0.1em" }}>
               PREVIEW — {total} PRODUCTS FOUND
-              {total > 10 && <span style={{ color:"#a0a0a0", fontSize:11, marginLeft:8 }}>(showing first 10)</span>}
+              {total > 10 && <span style={{ color:"var(--text-dim)", fontSize:11, marginLeft:8 }}>(showing first 10)</span>}
             </div>
             <div style={{ marginLeft:"auto", display:"flex", gap:8 }}>
               <AdminButton onClick={reset} variant="ghost">CANCEL</AdminButton>
@@ -128,15 +128,15 @@ export default function ImportPage() {
           <div style={{ overflowX:"auto", borderRadius:3, border:"1px solid #1a1a1a" }}>
             <table style={{ width:"100%", borderCollapse:"collapse", fontFamily:"Georgia,serif", fontSize:12 }}>
               <thead>
-                <tr style={{ background:"#111", borderBottom:"1px solid #2a2a2a" }}>
+                <tr style={{ background:"var(--bg-card)", borderBottom:"1px solid #2a2a2a" }}>
                   {PREVIEW_COLS.map(c => (
-                    <th key={c.key} style={{ padding:"8px 12px", textAlign:"left", fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#a0a0a0", letterSpacing:"0.14em", whiteSpace:"nowrap" }}>{c.label.toUpperCase()}</th>
+                    <th key={c.key} style={{ padding:"8px 12px", textAlign:"left", fontFamily:"'Oswald',sans-serif", fontSize:9, color:"var(--text-dim)", letterSpacing:"0.14em", whiteSpace:"nowrap" }}>{c.label.toUpperCase()}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {preview.map((row, i) => (
-                  <tr key={i} style={{ borderBottom:"1px solid #1a1a1a", background: i%2===0 ? "#0d0d0d":"#111" }}>
+                  <tr key={i} style={{ borderBottom:"1px solid var(--border)", background: i%2===0 ? "#0d0d0d":"#111" }}>
                     {PREVIEW_COLS.map(c => (
                       <td key={c.key} style={{ padding:"8px 12px", color: c.key==="price" ? GOLD:"#aaa", whiteSpace: c.key==="name" ? "normal":"nowrap", maxWidth: c.key==="name" ? 220:undefined }}>
                         {c.key==="price" ? (row[c.key] ? `$${row[c.key].toLocaleString()}` : "—") : (row[c.key] ?? "—")}
@@ -148,7 +148,7 @@ export default function ImportPage() {
             </table>
           </div>
 
-          <div style={{ marginTop:16, padding:"12px 16px", background:"#0a0a0a", border:"1px solid #1a1a1a", borderRadius:3, fontSize:11, color:"#a0a0a0", fontStyle:"italic" }}>
+          <div style={{ marginTop:16, padding:"12px 16px", background:"var(--bg)", border:"1px solid #1a1a1a", borderRadius:3, fontSize:11, color:"var(--text-dim)", fontStyle:"italic" }}>
             ⚠ Existing products matched by UPC or Part Number will be updated. New products will be created. Make sure the preview looks correct before importing.
           </div>
         </div>
@@ -163,11 +163,11 @@ export default function ImportPage() {
               {[
                 { label:"CREATED", value:result.created, color:"#4caf50" },
                 { label:"UPDATED", value:result.updated, color:GOLD },
-                { label:"SKIPPED", value:result.skipped, color:"#888" },
+                { label:"SKIPPED", value:result.skipped, color:"var(--text-muted)" },
               ].map(({ label, value, color }) => (
-                <div key={label} style={{ background:"#111", border:"1px solid #1a1a1a", borderRadius:2, padding:"12px 16px", textAlign:"center" }}>
+                <div key={label} style={{ background:"var(--bg-card)", border:"1px solid #1a1a1a", borderRadius:2, padding:"12px 16px", textAlign:"center" }}>
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:28, color, fontWeight:700 }}>{value}</div>
-                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#a0a0a0", letterSpacing:"0.14em", marginTop:4 }}>{label}</div>
+                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"var(--text-dim)", letterSpacing:"0.14em", marginTop:4 }}>{label}</div>
                 </div>
               ))}
             </div>

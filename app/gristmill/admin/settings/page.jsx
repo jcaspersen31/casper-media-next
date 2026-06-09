@@ -37,16 +37,16 @@ export default function SettingsPage() {
     <div style={{ maxWidth:500 }}>
       <PageHeader title="SETTINGS"/>
 
-      {loading ? <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em" }}>LOADING...</div> : <>
+      {loading ? <div style={{ color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em" }}>LOADING...</div> : <>
 
         <div style={{ marginBottom:28 }}>
-          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#888", letterSpacing:"0.12em", marginBottom:16, paddingBottom:8, borderBottom:"1px solid #1a1a1a" }}>PAYMENT</div>
+          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"var(--text-muted)", letterSpacing:"0.12em", marginBottom:16, paddingBottom:8, borderBottom:"1px solid var(--border)" }}>PAYMENT</div>
           <InputField label="FirstPay Merchant ID" value={settings.firstpay_merchant_id||""} onChange={v => set("firstpay_merchant_id",v)} type="password" hint="Stored securely. Never exposed in code or git."/>
           <InputField label="FirstPay Checkout URL" value={settings.firstpay_checkout_url||""} onChange={v => set("firstpay_checkout_url",v)} placeholder="https://checkout.firstpay.com/pay/..." hint="Find this in your FirstPay dashboard under Payment Links."/>
         </div>
 
         <div style={{ marginBottom:28 }}>
-          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#888", letterSpacing:"0.12em", marginBottom:16, paddingBottom:8, borderBottom:"1px solid #1a1a1a" }}>ADMIN PASSWORD</div>
+          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"var(--text-muted)", letterSpacing:"0.12em", marginBottom:16, paddingBottom:8, borderBottom:"1px solid var(--border)" }}>ADMIN PASSWORD</div>
           <InputField label="New Password" value={settings.new_password||""} onChange={v => set("new_password",v)} type="password" placeholder="Leave blank to keep current"/>
           <InputField label="Confirm New Password" value={settings.confirm_password||""} onChange={v => set("confirm_password",v)} type="password"/>
           {pwMismatch && <div style={{ fontSize:11, color:"#c0392b", fontStyle:"italic", marginTop:-8, marginBottom:14 }}>Passwords don't match</div>}

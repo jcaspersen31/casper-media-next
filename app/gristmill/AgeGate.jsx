@@ -38,7 +38,7 @@ export default function AgeGate({ children }) {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap'); *{box-sizing:border-box;margin:0;padding:0;}`}</style>
       <div style={{
         position:"fixed", inset:0, zIndex:99999,
-        background:"#0a0a0a",
+        background:"var(--bg)",
         display:"flex", alignItems:"center", justifyContent:"center",
         padding:24,
       }}>
@@ -50,25 +50,25 @@ export default function AgeGate({ children }) {
         <div style={{ position:"relative", textAlign:"center", maxWidth:460, width:"100%" }}>
           <Logo size={64}/>
 
-          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#9e9e9e", letterSpacing:"0.28em", margin:"1.25rem 0 0.25rem" }}>
+          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"var(--text-dim)", letterSpacing:"0.28em", margin:"1.25rem 0 0.25rem" }}>
             GRISTMILL GUNS & OPTICS
           </div>
 
           {denied ? (
             <div style={{ marginTop:"2rem" }}>
-              <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:22, color:"#e8e0d0", letterSpacing:"0.06em", marginBottom:12 }}>
+              <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:22, color:"var(--text)", letterSpacing:"0.06em", marginBottom:12 }}>
                 SORRY, YOU MUST BE 18 OR OLDER
               </div>
-              <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#a0a0a0", fontSize:13, lineHeight:1.7 }}>
+              <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"var(--text-dim)", fontSize:13, lineHeight:1.7 }}>
                 This site contains content related to the purchase of firearms and is restricted to adults 18 years of age or older.
               </div>
             </div>
           ) : (
             <>
-              <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:28, fontWeight:700, color:"white", letterSpacing:"0.05em", margin:"1.5rem 0 0.5rem", lineHeight:1.1 }}>
+              <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:28, fontWeight:700, color:"var(--text)", letterSpacing:"0.05em", margin:"1.5rem 0 0.5rem", lineHeight:1.1 }}>
                 ARE YOU 18 OR OLDER?
               </div>
-              <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#666", fontSize:13, lineHeight:1.7, marginBottom:"2.5rem" }}>
+              <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"var(--text-dim)", fontSize:13, lineHeight:1.7, marginBottom:"2.5rem" }}>
                 You must be 18 years of age or older to visit this site. Please verify your age to continue.
               </div>
 
@@ -92,11 +92,11 @@ export default function AgeGate({ children }) {
                 <button
                   onClick={decline}
                   style={{
-                    background:"transparent", color:"#666",
+                    background:"transparent", color:"var(--text-dim)",
                     fontFamily:"'Oswald',sans-serif", fontWeight:600,
                     fontSize:15, letterSpacing:"0.12em",
                     padding:"13px 36px",
-                    border:"1px solid #2a2a2a",
+                    border:"1px solid var(--border-mid)",
                     borderRadius:2, cursor:"pointer",
                     minWidth:140,
                   }}
@@ -105,7 +105,7 @@ export default function AgeGate({ children }) {
                 </button>
               </div>
 
-              <div style={{ marginTop:"2rem", fontFamily:"Georgia,serif", fontStyle:"italic", color:"#9e9e9e", fontSize:11, lineHeight:1.6 }}>
+              <div style={{ marginTop:"2rem", fontFamily:"Georgia,serif", fontStyle:"italic", color:"var(--text-dim)", fontSize:11, lineHeight:1.6 }}>
                 By entering this site you agree that you are 18 years of age or older and consent to viewing firearm-related content. This site uses session storage to remember your response.
               </div>
             </>

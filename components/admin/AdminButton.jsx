@@ -3,7 +3,7 @@ export default function AdminButton({ children, onClick, variant="gold", disable
   const styles = {
     gold:    { background:GOLD, color:"#000", border:"none" },
     outline: { background:"transparent", color:GOLD, border:`1px solid ${GOLD}` },
-    ghost:   { background:"transparent", color:"#888", border:"1px solid #2a2a2a" },
+    ghost:   { background:"transparent", color:"var(--text-muted)", border:"1px solid var(--border-mid)" },
     danger:  { background:"transparent", color:"#c0392b", border:"1px solid #330000" },
   };
   return (

@@ -58,7 +58,7 @@ export default function AdminLayout({ children }) {
 
   if (checking) return (
     <div style={{ minHeight:"100vh", background:"#080808", display:"flex", alignItems:"center", justifyContent:"center" }}>
-      <div style={{ fontFamily:"'Oswald',sans-serif", color:"#9e9e9e", fontSize:13, letterSpacing:"0.2em" }}>LOADING...</div>
+      <div style={{ fontFamily:"'Oswald',sans-serif", color:"var(--text-dim)", fontSize:13, letterSpacing:"0.2em" }}>LOADING...</div>
     </div>
   );
 
@@ -69,12 +69,12 @@ export default function AdminLayout({ children }) {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap'); * { box-sizing:border-box; margin:0; padding:0; }`}</style>
 
       {/* SIDEBAR */}
-      <aside style={{ width:220, background:"#050505", borderRight:`1px solid #1a1a1a`, display:"flex", flexDirection:"column", position:"fixed", top:0, left:0, bottom:0, zIndex:50 }}>
+      <aside style={{ width:220, background:"var(--bg-header)", borderRight:`1px solid #1a1a1a`, display:"flex", flexDirection:"column", position:"fixed", top:0, left:0, bottom:0, zIndex:50 }}>
         {/* Logo */}
         <div style={{ padding:"1.25rem 1rem", borderBottom:`1px solid #1a1a1a`, display:"flex", alignItems:"center", gap:10 }}>
           <Logo size={32}/>
           <div>
-            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, fontWeight:700, color:"white", letterSpacing:"0.1em", lineHeight:1 }}>GRISTMILL</div>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, fontWeight:700, color:"var(--text)", letterSpacing:"0.1em", lineHeight:1 }}>GRISTMILL</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:8, color:GOLD, letterSpacing:"0.2em" }}>ADMIN</div>
           </div>
         </div>
@@ -108,14 +108,14 @@ export default function AdminLayout({ children }) {
         </nav>
 
         {/* Footer */}
-        <div style={{ padding:"1rem", borderTop:"1px solid #1a1a1a" }}>
-          <a href="/gristmill" style={{ display:"block", fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#9e9e9e", letterSpacing:"0.1em", textDecoration:"none", marginBottom:8 }}>← VIEW SITE</a>
-          <button onClick={logout} style={{ background:"transparent", border:"1px solid #2a2a2a", color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", fontSize:10, letterSpacing:"0.1em", padding:"6px 12px", borderRadius:2, cursor:"pointer", width:"100%" }}>SIGN OUT</button>
+        <div style={{ padding:"1rem", borderTop:"1px solid var(--border)" }}>
+          <a href="/gristmill" style={{ display:"block", fontFamily:"'Oswald',sans-serif", fontSize:10, color:"var(--text-dim)", letterSpacing:"0.1em", textDecoration:"none", marginBottom:8 }}>← VIEW SITE</a>
+          <button onClick={logout} style={{ background:"transparent", border:"1px solid var(--border-mid)", color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", fontSize:10, letterSpacing:"0.1em", padding:"6px 12px", borderRadius:2, cursor:"pointer", width:"100%" }}>SIGN OUT</button>
         </div>
       </aside>
 
       {/* MAIN CONTENT */}
-      <main style={{ marginLeft:220, flex:1, padding:"2rem", minHeight:"100vh", color:"#e8e0d0" }}>
+      <main style={{ marginLeft:220, flex:1, padding:"2rem", minHeight:"100vh", color:"var(--text)" }}>
         {children}
       </main>
     </div>

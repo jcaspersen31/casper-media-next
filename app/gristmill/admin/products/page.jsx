@@ -17,7 +17,7 @@ const BLANK = {
 
 function SectionHead({ title }) {
   return (
-    <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#a0a0a0", letterSpacing:"0.18em", marginBottom:12, paddingBottom:6, borderBottom:"1px solid #1a1a1a", marginTop:8 }}>
+    <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"var(--text-dim)", letterSpacing:"0.18em", marginBottom:12, paddingBottom:6, borderBottom:"1px solid var(--border)", marginTop:8 }}>
       {title}
     </div>
   );
@@ -147,8 +147,8 @@ export default function ProductsPage() {
     return matchesCat && matchesSearch;
   });
 
-  const iStyle = { width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" };
-  const lStyle = { display:"block", fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 };
+  const iStyle = { width:"100%", background:"var(--bg)", border:"1px solid #222", color:"var(--text)", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" };
+  const lStyle = { display:"block", fontSize:9, color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 };
 
   // ── EDIT / ADD FORM ──
   if (editing) return (
@@ -238,7 +238,7 @@ export default function ProductsPage() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             <div>
               <InputField label="Serial Number" value={form.serialNumber} onChange={v => set("serialNumber",v)} placeholder="e.g. G2274519"/>
-              {form.serialNumber && <div style={{ fontSize:9, color:"#9e9e9e", marginTop:-10, marginBottom:14, fontStyle:"italic" }}>Customer sees: ···{form.serialNumber.slice(-4)}</div>}
+              {form.serialNumber && <div style={{ fontSize:9, color:"var(--text-dim)", marginTop:-10, marginBottom:14, fontStyle:"italic" }}>Customer sees: ···{form.serialNumber.slice(-4)}</div>}
             </div>
             <InputField label="Reorder Level" value={form.reorderLevel} onChange={v => set("reorderLevel",v)} type="number"/>
           </div>
@@ -255,11 +255,11 @@ export default function ProductsPage() {
             onClick={() => fileRef.current.click()}
             onMouseEnter={e=>e.currentTarget.style.borderColor=GOLD}
             onMouseLeave={e=>e.currentTarget.style.borderColor="#1e1e1e"}
-            style={{ aspectRatio:"4/3", background:"#0d0d0d", border:"2px dashed #1e1e1e", borderRadius:3, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", cursor:"pointer", overflow:"hidden", transition:"border-color 0.2s", marginBottom:12 }}
+            style={{ aspectRatio:"4/3", background:"var(--bg)", border:"2px dashed #1e1e1e", borderRadius:3, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", cursor:"pointer", overflow:"hidden", transition:"border-color 0.2s", marginBottom:12 }}
           >
             {imgPreview
               ? <img src={imgPreview} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
-              : <div style={{ textAlign:"center", color:"#9e9e9e" }}>
+              : <div style={{ textAlign:"center", color:"var(--text-dim)" }}>
                   <div style={{ fontSize:32, marginBottom:8 }}>↑</div>
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.1em" }}>CLICK TO UPLOAD</div>
                   <div style={{ fontSize:10, marginTop:4, fontStyle:"italic", color:"#2a2a2a" }}>JPG / PNG → Cloudinary</div>
@@ -275,7 +275,7 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      <div style={{ marginTop:24, paddingTop:16, borderTop:"1px solid #1a1a1a" }}>
+      <div style={{ marginTop:24, paddingTop:16, borderTop:"1px solid var(--border)" }}>
         <AdminButton onClick={save} disabled={saving || !form.name || !form.price}>
           {saving ? "SAVING..." : "SAVE PRODUCT"}
         </AdminButton>
@@ -298,42 +298,42 @@ export default function ProductsPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by name, make, model, SKU, UPC, caliber..."
-            style={{ flex:1, minWidth:200, background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 14px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none" }}
+            style={{ flex:1, minWidth:200, background:"var(--bg)", border:"1px solid #222", color:"var(--text)", padding:"8px 14px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none" }}
           />
           <select value={filterCat} onChange={e => setFilterCat(e.target.value)}
-            style={{ background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"'Oswald',sans-serif", fontSize:11, outline:"none", letterSpacing:"0.08em" }}>
+            style={{ background:"var(--bg)", border:"1px solid #222", color:"var(--text)", padding:"8px 12px", borderRadius:2, fontFamily:"'Oswald',sans-serif", fontSize:11, outline:"none", letterSpacing:"0.08em" }}>
             <option value="All">ALL CATEGORIES</option>
             {categories.map(c => <option key={c.id} value={c.name}>{c.name.toUpperCase()}</option>)}
           </select>
           {(search || filterCat !== "All") && (
             <button onClick={() => { setSearch(""); setFilterCat("All"); }}
-              style={{ background:"transparent", border:"1px solid #2a2a2a", color:"#666", fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"8px 14px", borderRadius:2, cursor:"pointer", letterSpacing:"0.08em" }}>
+              style={{ background:"transparent", border:"1px solid var(--border-mid)", color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"8px 14px", borderRadius:2, cursor:"pointer", letterSpacing:"0.08em" }}>
               CLEAR
             </button>
           )}
         </div>
       )}
 
-      <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#9e9e9e", letterSpacing:"0.12em", marginBottom:10 }}>
+      <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"var(--text-dim)", letterSpacing:"0.12em", marginBottom:10 }}>
         {!loading && `${filtered.length} of ${products.length} ITEMS`}
       </div>
 
-      {loading && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
-      {!loading && filtered.length === 0 && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>NO PRODUCTS MATCH</div>}
+      {loading && <div style={{ color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
+      {!loading && filtered.length === 0 && <div style={{ color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>NO PRODUCTS MATCH</div>}
 
       <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
         {filtered.map(p => (
-          <div key={p.id} style={{ display:"flex", alignItems:"center", gap:12, background:"#111", border:"1px solid #1a1a1a", borderRadius:2, padding:"10px 14px" }}>
+          <div key={p.id} style={{ display:"flex", alignItems:"center", gap:12, background:"var(--bg-card)", border:"1px solid #1a1a1a", borderRadius:2, padding:"10px 14px" }}>
             <div style={{ width:52, height:40, background:"#161616", borderRadius:2, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
               {p.imageUrl ? <img src={p.imageUrl} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <span style={{ fontSize:16, opacity:0.15 }}>🔫</span>}
             </div>
             <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#e8e0d0", display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}>
+              <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"var(--text)", display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}>
                 {p.name}
                 {p.salePrice && <span style={{ background:"#7a1515", color:"#fff", fontSize:8, padding:"2px 5px", borderRadius:1 }}>SALE</span>}
-                {p.quantityOnHand != null && <span style={{ fontFamily:"'Courier New',monospace", fontSize:9, color:"#9e9e9e" }}>QTY: {p.quantityOnHand}</span>}
+                {p.quantityOnHand != null && <span style={{ fontFamily:"'Courier New',monospace", fontSize:9, color:"var(--text-dim)" }}>QTY: {p.quantityOnHand}</span>}
               </div>
-              <div style={{ fontSize:10, color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", marginTop:2, display:"flex", gap:10, flexWrap:"wrap" }}>
+              <div style={{ fontSize:10, color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", marginTop:2, display:"flex", gap:10, flexWrap:"wrap" }}>
                 <span>{p.category}</span>
                 <span>${p.price?.toLocaleString()}{p.salePrice ? ` → $${p.salePrice.toLocaleString()}` : ""}</span>
                 {p.caliber && <span>{p.caliber}</span>}

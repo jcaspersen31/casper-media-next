@@ -52,35 +52,35 @@ export default function ReservationsPage() {
         })}
       </div>
 
-      {loading && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
-      {!loading && shown.length === 0 && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>NO RESERVATIONS</div>}
+      {loading && <div style={{ color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
+      {!loading && shown.length === 0 && <div style={{ color:"var(--text-dim)", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>NO RESERVATIONS</div>}
 
       <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
         {shown.map(r => {
           const expires = r.expiresAt ? new Date(r.expiresAt) : null;
           const isExpired = expires && expires < new Date();
           return (
-            <div key={r.id} style={{ background:"#111", border:`1px solid ${r.status==="pending" ? "rgba(201,168,76,0.25)":"#1a1a1a"}`, borderRadius:3, padding:"16px 20px" }}>
+            <div key={r.id} style={{ background:"var(--bg-card)", border:`1px solid ${r.status==="pending" ? "rgba(201,168,76,0.25)":"#1a1a1a"}`, borderRadius:3, padding:"16px 20px" }}>
               <div style={{ display:"flex", alignItems:"flex-start", gap:16, flexWrap:"wrap" }}>
                 <div style={{ flex:1, minWidth:260 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6, flexWrap:"wrap" }}>
-                    <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:"#e8e0d0" }}>{r.customerName}</div>
+                    <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:"var(--text)" }}>{r.customerName}</div>
                     <span style={{ fontSize:9, padding:"2px 7px", borderRadius:1, fontFamily:"'Oswald',sans-serif", letterSpacing:"0.1em", background:`${STATUS_COLORS[r.status]}22`, color:STATUS_COLORS[r.status], border:`1px solid ${STATUS_COLORS[r.status]}44` }}>{r.status.toUpperCase()}</span>
                     <span style={{ fontSize:9, padding:"2px 7px", borderRadius:1, fontFamily:"'Oswald',sans-serif", background: r.type==="deposit" ? `${GOLD}18`:"rgba(33,150,243,0.1)", color: r.type==="deposit" ? GOLD:"#2196f3", border:`1px solid ${r.type==="deposit" ? GOLD+"44":"#2196f344"}` }}>{r.type.toUpperCase()}</span>
                   </div>
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:GOLD, marginBottom:6 }}>{r.product?.name || "Unknown product"}</div>
-                  <div style={{ fontSize:12, color:"#777", lineHeight:1.8 }}>
-                    <a href={`mailto:${r.customerEmail}`} style={{ color:"#888", textDecoration:"none" }}>{r.customerEmail}</a>
+                  <div style={{ fontSize:12, color:"var(--text-dim)", lineHeight:1.8 }}>
+                    <a href={`mailto:${r.customerEmail}`} style={{ color:"var(--text-muted)", textDecoration:"none" }}>{r.customerEmail}</a>
                     &nbsp;·&nbsp;
-                    <a href={`tel:${r.customerPhone}`} style={{ color:"#888", textDecoration:"none" }}>{r.customerPhone}</a>
+                    <a href={`tel:${r.customerPhone}`} style={{ color:"var(--text-muted)", textDecoration:"none" }}>{r.customerPhone}</a>
                   </div>
-                  <div style={{ fontSize:11, color:"#a0a0a0", marginTop:4, fontFamily:"'Oswald',sans-serif", display:"flex", gap:12, flexWrap:"wrap" }}>
+                  <div style={{ fontSize:11, color:"var(--text-dim)", marginTop:4, fontFamily:"'Oswald',sans-serif", display:"flex", gap:12, flexWrap:"wrap" }}>
                     <span>Paid: <span style={{ color:GOLD }}>${r.amountPaid?.toLocaleString()}</span></span>
                     <span>{new Date(r.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"})}</span>
                     {expires && <span style={{ color: isExpired ? "#c0392b":"#a0a0a0" }}>{isExpired ? "⚠ EXPIRED" : `Holds until ${expires.toLocaleDateString("en-US",{month:"short",day:"numeric"})}`}</span>}
                   </div>
                   {(r.product?.serialNumber || r.product?.sku) && (
-                    <div style={{ fontSize:10, color:"#9e9e9e", marginTop:4, fontFamily:"'Courier New',monospace" }}>
+                    <div style={{ fontSize:10, color:"var(--text-dim)", marginTop:4, fontFamily:"'Courier New',monospace" }}>
                       {r.product.sku && <>SKU: {r.product.sku}</>}
                       {r.product.sku && r.product.serialNumber && " · "}
                       {r.product.serialNumber && <>S/N: {r.product.serialNumber}</>}
