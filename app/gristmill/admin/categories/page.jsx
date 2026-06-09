@@ -59,7 +59,7 @@ export default function CategoriesPage() {
         <AdminButton onClick={add} disabled={!newName.trim()}>ADD</AdminButton>
       </div>
 
-      {loading && <div style={{ color:"#444", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"2rem 0", textAlign:"center" }}>LOADING...</div>}
+      {loading && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"2rem 0", textAlign:"center" }}>LOADING...</div>}
 
       <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
         {categories.map(c => (
@@ -75,7 +75,7 @@ export default function CategoriesPage() {
               <>
                 <div style={{ flex:1 }}>
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#e8e0d0" }}>{c.name}</div>
-                  <div style={{ fontSize:10, color:"#444", marginTop:2 }}>{c._count?.products || 0} product{c._count?.products !== 1 ? "s":""}</div>
+                  <div style={{ fontSize:10, color:"#9e9e9e", marginTop:2 }}>{c._count?.products || 0} product{c._count?.products !== 1 ? "s":""}</div>
                 </div>
                 <AdminButton variant="outline" onClick={() => { setEditingId(c.id); setEditName(c.name); }} style={{ fontSize:10, padding:"4px 10px" }}>EDIT</AdminButton>
                 <AdminButton variant="danger" onClick={() => del(c.id)} style={{ fontSize:10, padding:"4px 10px" }}>DEL</AdminButton>
@@ -86,7 +86,7 @@ export default function CategoriesPage() {
       </div>
 
       {!loading && categories.length === 0 && (
-        <div style={{ color:"#333", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"2rem 0", textAlign:"center" }}>NO CATEGORIES YET</div>
+        <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"2rem 0", textAlign:"center" }}>NO CATEGORIES YET</div>
       )}
     </div>
   );

@@ -42,7 +42,7 @@ export default function ReservationsPage() {
             <button key={s} onClick={() => setFilter(s)} style={{
               background: filter===s ? `${GOLD}18`:"transparent",
               border: `1px solid ${filter===s ? GOLD:"#2a2a2a"}`,
-              color: filter===s ? GOLD:"#555",
+              color: filter===s ? GOLD:"#a0a0a0",
               fontFamily:"'Oswald',sans-serif", fontSize:10,
               padding:"5px 14px", borderRadius:2, cursor:"pointer", letterSpacing:"0.1em"
             }}>
@@ -52,8 +52,8 @@ export default function ReservationsPage() {
         })}
       </div>
 
-      {loading && <div style={{ color:"#444", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
-      {!loading && shown.length === 0 && <div style={{ color:"#333", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>NO RESERVATIONS</div>}
+      {loading && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
+      {!loading && shown.length === 0 && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>NO RESERVATIONS</div>}
 
       <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
         {shown.map(r => {
@@ -74,13 +74,13 @@ export default function ReservationsPage() {
                     &nbsp;·&nbsp;
                     <a href={`tel:${r.customerPhone}`} style={{ color:"#888", textDecoration:"none" }}>{r.customerPhone}</a>
                   </div>
-                  <div style={{ fontSize:11, color:"#555", marginTop:4, fontFamily:"'Oswald',sans-serif", display:"flex", gap:12, flexWrap:"wrap" }}>
+                  <div style={{ fontSize:11, color:"#a0a0a0", marginTop:4, fontFamily:"'Oswald',sans-serif", display:"flex", gap:12, flexWrap:"wrap" }}>
                     <span>Paid: <span style={{ color:GOLD }}>${r.amountPaid?.toLocaleString()}</span></span>
                     <span>{new Date(r.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"})}</span>
-                    {expires && <span style={{ color: isExpired ? "#c0392b":"#555" }}>{isExpired ? "⚠ EXPIRED" : `Holds until ${expires.toLocaleDateString("en-US",{month:"short",day:"numeric"})}`}</span>}
+                    {expires && <span style={{ color: isExpired ? "#c0392b":"#a0a0a0" }}>{isExpired ? "⚠ EXPIRED" : `Holds until ${expires.toLocaleDateString("en-US",{month:"short",day:"numeric"})}`}</span>}
                   </div>
                   {(r.product?.serialNumber || r.product?.sku) && (
-                    <div style={{ fontSize:10, color:"#444", marginTop:4, fontFamily:"'Courier New',monospace" }}>
+                    <div style={{ fontSize:10, color:"#9e9e9e", marginTop:4, fontFamily:"'Courier New',monospace" }}>
                       {r.product.sku && <>SKU: {r.product.sku}</>}
                       {r.product.sku && r.product.serialNumber && " · "}
                       {r.product.serialNumber && <>S/N: {r.product.serialNumber}</>}

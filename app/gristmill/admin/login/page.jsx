@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap'); * { box-sizing:border-box; }`}</style>
       <div style={{ background:"#111", border:`1px solid ${GOLD}`, borderRadius:3, padding:"2.5rem", width:320, textAlign:"center" }}>
         <Logo size={52}/>
-        <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#555", letterSpacing:"0.28em", margin:"1rem 0 0.25rem" }}>GRISTMILL GUNS & OPTICS</div>
+        <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#a0a0a0", letterSpacing:"0.28em", margin:"1rem 0 0.25rem" }}>GRISTMILL GUNS & OPTICS</div>
         <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, letterSpacing:"0.2em", marginBottom:"1.75rem" }}>ADMIN ACCESS</div>
 
         <input
@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
           {loading ? "CHECKING..." : "ENTER"}
         </button>
 
-        <a href="/gristmill" style={{ display:"block", marginTop:16, fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#333", letterSpacing:"0.1em", textDecoration:"none" }}>← BACK TO SITE</a>
+        <a href="/gristmill" style={{ display:"block", marginTop:16, fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#9e9e9e", letterSpacing:"0.1em", textDecoration:"none" }}>← BACK TO SITE</a>
       </div>
     </div>
   );

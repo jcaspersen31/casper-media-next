@@ -39,13 +39,13 @@ function Modal({ product, price, type, onClose }) {
   return (
     <div onClick={e => e.target===e.currentTarget && onClose()} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.9)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:9999, padding:16 }}>
       <div style={{ background:"#111", border:`1px solid ${GOLD}`, borderRadius:3, padding:"2rem", width:"100%", maxWidth:400, position:"relative" }}>
-        <button onClick={onClose} style={{ position:"absolute", top:10, right:14, background:"none", border:"none", color:"#555", fontSize:22, cursor:"pointer" }}>×</button>
+        <button onClick={onClose} style={{ position:"absolute", top:10, right:14, background:"none", border:"none", color:"#a0a0a0", fontSize:22, cursor:"pointer" }}>×</button>
         {!done ? <>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:18, color:GOLD, letterSpacing:"0.1em", marginBottom:3 }}>{type==="deposit"?"RESERVE THIS ITEM":"PAY IN FULL"}</div>
           <div style={{ fontStyle:"italic", color:"#666", fontSize:12, marginBottom:18 }}>{product.name} · ${price?.toLocaleString()}</div>
           {[["Full Name","name","text"],["Email Address","email","email"],["Phone Number","phone","tel"]].map(([label,key,t]) => (
             <div key={key} style={{ marginBottom:12 }}>
-              <label style={{ display:"block", fontSize:10, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.12em", marginBottom:4 }}>{label.toUpperCase()}</label>
+              <label style={{ display:"block", fontSize:10, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.12em", marginBottom:4 }}>{label.toUpperCase()}</label>
               <input type={t} value={form[key]} onChange={e => set(key,e.target.value)} style={{ width:"100%", background:"#0a0a0a", border:"1px solid #2a2a2a", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
             </div>
           ))}
@@ -54,9 +54,9 @@ function Modal({ product, price, type, onClose }) {
               <span style={{ fontSize:12, color:"#666", fontFamily:"'Oswald',sans-serif" }}>{type==="deposit"?"DEPOSIT":"TOTAL"} DUE NOW</span>
               <span style={{ fontSize:16, color:GOLD, fontFamily:"'Oswald',sans-serif", fontWeight:700 }}>${(type==="deposit"?product.deposit:price)?.toLocaleString()}</span>
             </div>
-            {type==="deposit" && <div style={{ fontSize:10, color:"#444", marginTop:4, fontStyle:"italic" }}>Balance of ${(price-product.deposit)?.toLocaleString()} due in-store</div>}
+            {type==="deposit" && <div style={{ fontSize:10, color:"#9e9e9e", marginTop:4, fontStyle:"italic" }}>Balance of ${(price-product.deposit)?.toLocaleString()} due in-store</div>}
           </div>
-          <button onClick={submit} disabled={!valid||submitting} style={{ width:"100%", background:valid&&!submitting?GOLD:"#333", color:valid&&!submitting?"#000":"#666", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:15, letterSpacing:"0.1em", padding:"12px 0", border:"none", borderRadius:2, cursor:valid&&!submitting?"pointer":"not-allowed" }}>
+          <button onClick={submit} disabled={!valid||submitting} style={{ width:"100%", background:valid&&!submitting?GOLD:"#9e9e9e", color:valid&&!submitting?"#000":"#666", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:15, letterSpacing:"0.1em", padding:"12px 0", border:"none", borderRadius:2, cursor:valid&&!submitting?"pointer":"not-allowed" }}>
             {submitting?"SAVING...":"PROCEED TO PAYMENT →"}
           </button>
         </> : (
@@ -67,9 +67,9 @@ function Modal({ product, price, type, onClose }) {
               Confirmation sent to <strong style={{ color:"#e8e0d0" }}>{form.email}</strong>. Come in within 48 hours with valid ID.
               {(product.sku || product.serialNumber) && (
                 <div style={{ marginTop:14, padding:"10px 14px", background:"#0d0d0d", border:"1px solid #2a2a2a", borderRadius:2, textAlign:"left" }}>
-                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#555", letterSpacing:"0.15em", marginBottom:6 }}>YOUR ITEM REFERENCE</div>
-                  {product.sku && <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}><span style={{ color:"#555", fontSize:12 }}>SKU</span><span style={{ color:"#e8e0d0", fontSize:12, fontFamily:"'Courier New',monospace" }}>{product.sku}</span></div>}
-                  {product.serialNumber && <div style={{ display:"flex", justifyContent:"space-between" }}><span style={{ color:"#555", fontSize:12 }}>Serial</span><span style={{ color:GOLD, fontSize:12, fontFamily:"'Courier New',monospace" }}>{maskSerial(product.serialNumber)}</span></div>}
+                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#a0a0a0", letterSpacing:"0.15em", marginBottom:6 }}>YOUR ITEM REFERENCE</div>
+                  {product.sku && <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}><span style={{ color:"#a0a0a0", fontSize:12 }}>SKU</span><span style={{ color:"#e8e0d0", fontSize:12, fontFamily:"'Courier New',monospace" }}>{product.sku}</span></div>}
+                  {product.serialNumber && <div style={{ display:"flex", justifyContent:"space-between" }}><span style={{ color:"#a0a0a0", fontSize:12 }}>Serial</span><span style={{ color:GOLD, fontSize:12, fontFamily:"'Courier New',monospace" }}>{maskSerial(product.serialNumber)}</span></div>}
                 </div>
               )}
               <br/><em>Questions? Call (570) 713-7339</em>
@@ -111,13 +111,13 @@ export default function ItemPage() {
 
   if (loading) return (
     <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center" }}>
-      <div style={{ fontFamily:"'Oswald',sans-serif", color:"#333", fontSize:13, letterSpacing:"0.2em" }}>LOADING...</div>
+      <div style={{ fontFamily:"'Oswald',sans-serif", color:"#9e9e9e", fontSize:13, letterSpacing:"0.2em" }}>LOADING...</div>
     </div>
   );
 
   if (!product || product.error) return (
     <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:16 }}>
-      <div style={{ fontFamily:"'Oswald',sans-serif", color:"#444", fontSize:13, letterSpacing:"0.2em" }}>PRODUCT NOT FOUND</div>
+      <div style={{ fontFamily:"'Oswald',sans-serif", color:"#9e9e9e", fontSize:13, letterSpacing:"0.2em" }}>PRODUCT NOT FOUND</div>
       <a href="/gristmill" style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:GOLD, letterSpacing:"0.1em", textDecoration:"none" }}>← BACK TO CATALOG</a>
     </div>
   );
@@ -138,7 +138,7 @@ export default function ItemPage() {
               <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:GOLD, letterSpacing:"0.24em" }}>GUNS & OPTICS</div>
             </div>
           </a>
-          <a href="/gristmill" style={{ marginLeft:"auto", fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#555", letterSpacing:"0.1em", textDecoration:"none" }}>← BACK TO CATALOG</a>
+          <a href="/gristmill" style={{ marginLeft:"auto", fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#a0a0a0", letterSpacing:"0.1em", textDecoration:"none" }}>← BACK TO CATALOG</a>
         </div>
       </header>
 
@@ -150,28 +150,28 @@ export default function ItemPage() {
             {product.imageUrl
               ? <img src={product.imageUrl} alt={product.name} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
               : <svg width="100" height="62" viewBox="0 0 100 62" fill="none">
-                  <rect x="2" y="24" width="66" height="14" rx="2" fill="#2a2a2a" stroke="#3a3a3a" strokeWidth="1.5"/>
-                  <rect x="20" y="14" width="46" height="10" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1.5"/>
-                  <rect x="12" y="36" width="14" height="18" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1.5"/>
-                  <circle cx="72" cy="31" r="12" fill="none" stroke="#3a3a3a" strokeWidth="2"/>
+                  <rect x="2" y="24" width="66" height="14" rx="2" fill="#2a2a2a" stroke="#9e9e9e" strokeWidth="1.5"/>
+                  <rect x="20" y="14" width="46" height="10" rx="1" fill="#222" stroke="#9e9e9e" strokeWidth="1.5"/>
+                  <rect x="12" y="36" width="14" height="18" rx="1" fill="#222" stroke="#9e9e9e" strokeWidth="1.5"/>
+                  <circle cx="72" cy="31" r="12" fill="none" stroke="#9e9e9e" strokeWidth="2"/>
                   <circle cx="72" cy="31" r="4" fill="#2a2a2a"/>
                 </svg>}
           </div>
 
           {/* Details */}
           <div>
-            <div style={{ fontSize:10, color:"#555", letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:6, fontFamily:"'Oswald',sans-serif" }}>{product.category}</div>
+            <div style={{ fontSize:10, color:"#a0a0a0", letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:6, fontFamily:"'Oswald',sans-serif" }}>{product.category}</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:32, fontWeight:700, color:"#e8e0d0", lineHeight:1.1, marginBottom:12 }}>{product.name}</div>
             <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#777", fontSize:15, lineHeight:1.7, marginBottom:20 }}>{product.description}</div>
 
             {/* Dynamic fields from display settings */}
             {visibleFields.length > 0 && (
               <div style={{ marginBottom:24 }}>
-                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#555", letterSpacing:"0.16em", marginBottom:10 }}>SPECIFICATIONS</div>
+                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#a0a0a0", letterSpacing:"0.16em", marginBottom:10 }}>SPECIFICATIONS</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"6px 16px" }}>
                   {visibleFields.filter(f => product[f] !== null && product[f] !== undefined && product[f] !== '').map(f => (
                     <div key={f} style={{ padding:"6px 0", borderBottom:"1px solid #1a1a1a" }}>
-                      <div style={{ fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.12em" }}>{FIELD_LABELS[f]?.toUpperCase() || f.toUpperCase()}</div>
+                      <div style={{ fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.12em" }}>{FIELD_LABELS[f]?.toUpperCase() || f.toUpperCase()}</div>
                       <div style={{ fontSize:13, color:"#e8e0d0", marginTop:2 }}>
                         {f === 'msrp' ? `$${product[f]?.toLocaleString()}` : f === 'quantityOnHand' ? `${product[f]} in stock` : product[f]}
                       </div>
@@ -183,13 +183,13 @@ export default function ItemPage() {
             {/* Legacy specs field fallback */}
             {visibleFields.length === 0 && product.specs && (
               <div style={{ marginBottom:24 }}>
-                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#555", letterSpacing:"0.16em", marginBottom:10 }}>SPECIFICATIONS</div>
+                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#a0a0a0", letterSpacing:"0.16em", marginBottom:10 }}>SPECIFICATIONS</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"6px 16px" }}>
                   {product.specs.split(" | ").map((s,i) => {
                     const [key, val] = s.split(": ");
                     return (
                       <div key={i} style={{ padding:"6px 0", borderBottom:"1px solid #1a1a1a" }}>
-                        <div style={{ fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.12em" }}>{key?.toUpperCase()}</div>
+                        <div style={{ fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.12em" }}>{key?.toUpperCase()}</div>
                         <div style={{ fontSize:13, color:"#e8e0d0", marginTop:2 }}>{val || key}</div>
                       </div>
                     );
@@ -201,13 +201,13 @@ export default function ItemPage() {
             {/* Price */}
             <div style={{ display:"flex", alignItems:"baseline", gap:12, marginBottom:6 }}>
               <span style={{ fontFamily:"'Oswald',sans-serif", fontSize:36, color:GOLD, fontWeight:700 }}>${displayPrice?.toLocaleString()}</span>
-              {product.salePrice && <span style={{ fontSize:18, color:"#444", textDecoration:"line-through" }}>${product.price?.toLocaleString()}</span>}
+              {product.salePrice && <span style={{ fontSize:18, color:"#9e9e9e", textDecoration:"line-through" }}>${product.price?.toLocaleString()}</span>}
             </div>
             {product.salePrice && <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#4caf50", letterSpacing:"0.1em", marginBottom:20 }}>ON SALE — SAVE ${(product.price-product.salePrice)?.toLocaleString()}</div>}
 
             {/* SKU visible, serial masked */}
             {(product.sku || product.serialNumber) && (
-              <div style={{ fontSize:11, color:"#444", fontFamily:"'Courier New',monospace", marginBottom:20, lineHeight:1.8 }}>
+              <div style={{ fontSize:11, color:"#9e9e9e", fontFamily:"'Courier New',monospace", marginBottom:20, lineHeight:1.8 }}>
                 {product.sku && <div>SKU: {product.sku}</div>}
                 {product.serialNumber && <div>Serial: {maskSerial(product.serialNumber)}</div>}
               </div>
@@ -223,7 +223,7 @@ export default function ItemPage() {
                   style={{ background:"transparent", color:"#e8e0d0", fontFamily:"'Oswald',sans-serif", fontSize:13, letterSpacing:"0.08em", padding:"12px 0", border:"1px solid #333", borderRadius:2, cursor:"pointer" }}>
                   PAY IN FULL · ${displayPrice?.toLocaleString()}
                 </button>
-                <div style={{ fontSize:10, color:"#444", textAlign:"center", fontStyle:"italic" }}>FFL paperwork completed in-store. Valid ID required.</div>
+                <div style={{ fontSize:10, color:"#9e9e9e", textAlign:"center", fontStyle:"italic" }}>FFL paperwork completed in-store. Valid ID required.</div>
               </div>
             )}
           </div>

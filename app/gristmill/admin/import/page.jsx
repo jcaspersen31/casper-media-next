@@ -98,7 +98,7 @@ export default function ImportPage() {
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:"#666", letterSpacing:"0.1em" }}>
             {file ? file.name : "CLICK OR DRAG ORCHID FILE HERE"}
           </div>
-          <div style={{ fontSize:11, color:"#333", marginTop:6, fontStyle:"italic" }}>
+          <div style={{ fontSize:11, color:"#9e9e9e", marginTop:6, fontStyle:"italic" }}>
             Accepts .xlsx (Excel) or .csv · Export from Orchid: Inventory → Reports → Inventory List
           </div>
         </div>
@@ -115,7 +115,7 @@ export default function ImportPage() {
           <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:16, flexWrap:"wrap" }}>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#888", letterSpacing:"0.1em" }}>
               PREVIEW — {total} PRODUCTS FOUND
-              {total > 10 && <span style={{ color:"#555", fontSize:11, marginLeft:8 }}>(showing first 10)</span>}
+              {total > 10 && <span style={{ color:"#a0a0a0", fontSize:11, marginLeft:8 }}>(showing first 10)</span>}
             </div>
             <div style={{ marginLeft:"auto", display:"flex", gap:8 }}>
               <AdminButton onClick={reset} variant="ghost">CANCEL</AdminButton>
@@ -130,7 +130,7 @@ export default function ImportPage() {
               <thead>
                 <tr style={{ background:"#111", borderBottom:"1px solid #2a2a2a" }}>
                   {PREVIEW_COLS.map(c => (
-                    <th key={c.key} style={{ padding:"8px 12px", textAlign:"left", fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#555", letterSpacing:"0.14em", whiteSpace:"nowrap" }}>{c.label.toUpperCase()}</th>
+                    <th key={c.key} style={{ padding:"8px 12px", textAlign:"left", fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#a0a0a0", letterSpacing:"0.14em", whiteSpace:"nowrap" }}>{c.label.toUpperCase()}</th>
                   ))}
                 </tr>
               </thead>
@@ -148,7 +148,7 @@ export default function ImportPage() {
             </table>
           </div>
 
-          <div style={{ marginTop:16, padding:"12px 16px", background:"#0a0a0a", border:"1px solid #1a1a1a", borderRadius:3, fontSize:11, color:"#555", fontStyle:"italic" }}>
+          <div style={{ marginTop:16, padding:"12px 16px", background:"#0a0a0a", border:"1px solid #1a1a1a", borderRadius:3, fontSize:11, color:"#a0a0a0", fontStyle:"italic" }}>
             ⚠ Existing products matched by UPC or Part Number will be updated. New products will be created. Make sure the preview looks correct before importing.
           </div>
         </div>
@@ -167,7 +167,7 @@ export default function ImportPage() {
               ].map(({ label, value, color }) => (
                 <div key={label} style={{ background:"#111", border:"1px solid #1a1a1a", borderRadius:2, padding:"12px 16px", textAlign:"center" }}>
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:28, color, fontWeight:700 }}>{value}</div>
-                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#555", letterSpacing:"0.14em", marginTop:4 }}>{label}</div>
+                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#a0a0a0", letterSpacing:"0.14em", marginTop:4 }}>{label}</div>
                 </div>
               ))}
             </div>

@@ -56,7 +56,7 @@ export default function DisplayPage() {
         Choose which product fields are visible to customers on the public catalog and detail pages. All fields are always visible in the admin.
       </div>
 
-      {loading ? <div style={{ color:"#444", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em" }}>LOADING...</div> : (
+      {loading ? <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em" }}>LOADING...</div> : (
         <>
           <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:24 }}>
             {ALL_FIELDS.map(({ key, label, hint }) => {
@@ -65,13 +65,13 @@ export default function DisplayPage() {
                 <div key={key} onClick={() => toggle(key)} style={{ display:"flex", alignItems:"center", gap:14, background:"#111", border:`1px solid ${on ? GOLD+"44":"#1a1a1a"}`, borderRadius:2, padding:"12px 16px", cursor:"pointer", transition:"border-color 0.15s" }}>
                   {/* Toggle */}
                   <div style={{ width:36, height:20, borderRadius:10, background: on ? GOLD:"#2a2a2a", position:"relative", transition:"background 0.2s", flexShrink:0 }}>
-                    <div style={{ position:"absolute", top:3, left: on ? 19:3, width:14, height:14, borderRadius:"50%", background: on ? "#000":"#555", transition:"left 0.2s" }}/>
+                    <div style={{ position:"absolute", top:3, left: on ? 19:3, width:14, height:14, borderRadius:"50%", background: on ? "#000":"#a0a0a0", transition:"left 0.2s" }}/>
                   </div>
                   <div style={{ flex:1 }}>
                     <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color: on ? "#e8e0d0":"#666", letterSpacing:"0.06em" }}>{label}</div>
-                    <div style={{ fontSize:11, color:"#444", marginTop:2, fontStyle:"italic" }}>{hint}</div>
+                    <div style={{ fontSize:11, color:"#9e9e9e", marginTop:2, fontStyle:"italic" }}>{hint}</div>
                   </div>
-                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color: on ? GOLD:"#333", letterSpacing:"0.15em" }}>{on ? "VISIBLE":"HIDDEN"}</div>
+                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color: on ? GOLD:"#9e9e9e", letterSpacing:"0.15em" }}>{on ? "VISIBLE":"HIDDEN"}</div>
                 </div>
               );
             })}

@@ -17,7 +17,7 @@ const BLANK = {
 
 function SectionHead({ title }) {
   return (
-    <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#555", letterSpacing:"0.18em", marginBottom:12, paddingBottom:6, borderBottom:"1px solid #1a1a1a", marginTop:8 }}>
+    <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#a0a0a0", letterSpacing:"0.18em", marginBottom:12, paddingBottom:6, borderBottom:"1px solid #1a1a1a", marginTop:8 }}>
       {title}
     </div>
   );
@@ -148,7 +148,7 @@ export default function ProductsPage() {
   });
 
   const iStyle = { width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" };
-  const lStyle = { display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 };
+  const lStyle = { display:"block", fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 };
 
   // ── EDIT / ADD FORM ──
   if (editing) return (
@@ -238,7 +238,7 @@ export default function ProductsPage() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
             <div>
               <InputField label="Serial Number" value={form.serialNumber} onChange={v => set("serialNumber",v)} placeholder="e.g. G2274519"/>
-              {form.serialNumber && <div style={{ fontSize:9, color:"#444", marginTop:-10, marginBottom:14, fontStyle:"italic" }}>Customer sees: ···{form.serialNumber.slice(-4)}</div>}
+              {form.serialNumber && <div style={{ fontSize:9, color:"#9e9e9e", marginTop:-10, marginBottom:14, fontStyle:"italic" }}>Customer sees: ···{form.serialNumber.slice(-4)}</div>}
             </div>
             <InputField label="Reorder Level" value={form.reorderLevel} onChange={v => set("reorderLevel",v)} type="number"/>
           </div>
@@ -259,7 +259,7 @@ export default function ProductsPage() {
           >
             {imgPreview
               ? <img src={imgPreview} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
-              : <div style={{ textAlign:"center", color:"#333" }}>
+              : <div style={{ textAlign:"center", color:"#9e9e9e" }}>
                   <div style={{ fontSize:32, marginBottom:8 }}>↑</div>
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.1em" }}>CLICK TO UPLOAD</div>
                   <div style={{ fontSize:10, marginTop:4, fontStyle:"italic", color:"#2a2a2a" }}>JPG / PNG → Cloudinary</div>
@@ -314,12 +314,12 @@ export default function ProductsPage() {
         </div>
       )}
 
-      <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#444", letterSpacing:"0.12em", marginBottom:10 }}>
+      <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#9e9e9e", letterSpacing:"0.12em", marginBottom:10 }}>
         {!loading && `${filtered.length} of ${products.length} ITEMS`}
       </div>
 
-      {loading && <div style={{ color:"#444", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
-      {!loading && filtered.length === 0 && <div style={{ color:"#333", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>NO PRODUCTS MATCH</div>}
+      {loading && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
+      {!loading && filtered.length === 0 && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>NO PRODUCTS MATCH</div>}
 
       <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
         {filtered.map(p => (
@@ -331,9 +331,9 @@ export default function ProductsPage() {
               <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#e8e0d0", display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}>
                 {p.name}
                 {p.salePrice && <span style={{ background:"#7a1515", color:"#fff", fontSize:8, padding:"2px 5px", borderRadius:1 }}>SALE</span>}
-                {p.quantityOnHand != null && <span style={{ fontFamily:"'Courier New',monospace", fontSize:9, color:"#444" }}>QTY: {p.quantityOnHand}</span>}
+                {p.quantityOnHand != null && <span style={{ fontFamily:"'Courier New',monospace", fontSize:9, color:"#9e9e9e" }}>QTY: {p.quantityOnHand}</span>}
               </div>
-              <div style={{ fontSize:10, color:"#444", fontFamily:"'Oswald',sans-serif", marginTop:2, display:"flex", gap:10, flexWrap:"wrap" }}>
+              <div style={{ fontSize:10, color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", marginTop:2, display:"flex", gap:10, flexWrap:"wrap" }}>
                 <span>{p.category}</span>
                 <span>${p.price?.toLocaleString()}{p.salePrice ? ` → $${p.salePrice.toLocaleString()}` : ""}</span>
                 {p.caliber && <span>{p.caliber}</span>}

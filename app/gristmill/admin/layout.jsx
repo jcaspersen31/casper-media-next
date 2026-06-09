@@ -58,7 +58,7 @@ export default function AdminLayout({ children }) {
 
   if (checking) return (
     <div style={{ minHeight:"100vh", background:"#080808", display:"flex", alignItems:"center", justifyContent:"center" }}>
-      <div style={{ fontFamily:"'Oswald',sans-serif", color:"#333", fontSize:13, letterSpacing:"0.2em" }}>LOADING...</div>
+      <div style={{ fontFamily:"'Oswald',sans-serif", color:"#9e9e9e", fontSize:13, letterSpacing:"0.2em" }}>LOADING...</div>
     </div>
   );
 
@@ -109,8 +109,8 @@ export default function AdminLayout({ children }) {
 
         {/* Footer */}
         <div style={{ padding:"1rem", borderTop:"1px solid #1a1a1a" }}>
-          <a href="/gristmill" style={{ display:"block", fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#444", letterSpacing:"0.1em", textDecoration:"none", marginBottom:8 }}>← VIEW SITE</a>
-          <button onClick={logout} style={{ background:"transparent", border:"1px solid #2a2a2a", color:"#555", fontFamily:"'Oswald',sans-serif", fontSize:10, letterSpacing:"0.1em", padding:"6px 12px", borderRadius:2, cursor:"pointer", width:"100%" }}>SIGN OUT</button>
+          <a href="/gristmill" style={{ display:"block", fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#9e9e9e", letterSpacing:"0.1em", textDecoration:"none", marginBottom:8 }}>← VIEW SITE</a>
+          <button onClick={logout} style={{ background:"transparent", border:"1px solid #2a2a2a", color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", fontSize:10, letterSpacing:"0.1em", padding:"6px 12px", borderRadius:2, cursor:"pointer", width:"100%" }}>SIGN OUT</button>
         </div>
       </aside>
 

@@ -50,7 +50,7 @@ export default function AgeGate({ children }) {
         <div style={{ position:"relative", textAlign:"center", maxWidth:460, width:"100%" }}>
           <Logo size={64}/>
 
-          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#444", letterSpacing:"0.28em", margin:"1.25rem 0 0.25rem" }}>
+          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#9e9e9e", letterSpacing:"0.28em", margin:"1.25rem 0 0.25rem" }}>
             GRISTMILL GUNS & OPTICS
           </div>
 
@@ -59,7 +59,7 @@ export default function AgeGate({ children }) {
               <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:22, color:"#e8e0d0", letterSpacing:"0.06em", marginBottom:12 }}>
                 SORRY, YOU MUST BE 18 OR OLDER
               </div>
-              <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#555", fontSize:13, lineHeight:1.7 }}>
+              <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#a0a0a0", fontSize:13, lineHeight:1.7 }}>
                 This site contains content related to the purchase of firearms and is restricted to adults 18 years of age or older.
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function AgeGate({ children }) {
                 </button>
               </div>
 
-              <div style={{ marginTop:"2rem", fontFamily:"Georgia,serif", fontStyle:"italic", color:"#333", fontSize:11, lineHeight:1.6 }}>
+              <div style={{ marginTop:"2rem", fontFamily:"Georgia,serif", fontStyle:"italic", color:"#9e9e9e", fontSize:11, lineHeight:1.6 }}>
                 By entering this site you agree that you are 18 years of age or older and consent to viewing firearm-related content. This site uses session storage to remember your response.
               </div>
             </>

@@ -223,7 +223,7 @@ function SpinnerWheel({ onResult, todaysDeal }) {
       <canvas ref={canvasRef} width={520} height={520} style={{ display:"block", maxWidth:"min(520px, 90vw)", borderRadius:"50%", border:`4px solid #111` }}/>
       {!done && (
         <button onClick={spin} disabled={spinning || !todaysDeal}
-          style={{ marginTop:28, background: spinning ? "#111" : `linear-gradient(180deg, ${GOLD2} 0%, ${GOLD} 100%)`, color: spinning ? "#444" : "#000", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:20, letterSpacing:"0.14em", padding:"16px 64px", border:`2px solid ${GOLD}`, borderRadius:3, cursor: spinning||!todaysDeal ? "not-allowed":"pointer", boxShadow: spinning ? "none" : `0 0 28px rgba(201,168,76,0.35)`, transition:"all 0.2s" }}>
+          style={{ marginTop:28, background: spinning ? "#111" : `linear-gradient(180deg, ${GOLD2} 0%, ${GOLD} 100%)`, color: spinning ? "#9e9e9e" : "#000", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:20, letterSpacing:"0.14em", padding:"16px 64px", border:`2px solid ${GOLD}`, borderRadius:3, cursor: spinning||!todaysDeal ? "not-allowed":"pointer", boxShadow: spinning ? "none" : `0 0 28px rgba(201,168,76,0.35)`, transition:"all 0.2s" }}>
           {spinning ? "SPINNING..." : todaysDeal ? "SPIN FOR TODAY'S DEAL" : "NO DEAL TODAY"}
         </button>
       )}
@@ -242,14 +242,14 @@ function DealResult({ product, pct, onReserve, onPayFull }) {
   return (
     <div style={{ maxWidth:700, margin:"0 auto", animation:"fadeUp 0.5s ease" }}>
       <div style={{ textAlign:"center", marginBottom:28 }}>
-        <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#555", letterSpacing:"0.2em", marginBottom:6 }}>TODAY'S DEAL</div>
+        <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#a0a0a0", letterSpacing:"0.2em", marginBottom:6 }}>TODAY'S DEAL</div>
         <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:58, fontWeight:700, color:GOLD, letterSpacing:"0.04em", lineHeight:1, textShadow:`0 0 40px rgba(201,168,76,0.5)` }}>{pct}% OFF</div>
         <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:20, color:"#e8e0d0", letterSpacing:"0.1em", marginTop:4 }}>{product.name}</div>
       </div>
 
       {!claimed && !expired && (
         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:16, marginBottom:24, padding:"14px", background:"#0d0d0d", border:`1px solid ${rem < 60000 ? "#c0392b" : "#2a2a2a"}`, borderRadius:3, transition:"border-color 0.5s" }}>
-          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#555", letterSpacing:"0.2em" }}>OFFER EXPIRES IN</div>
+          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#a0a0a0", letterSpacing:"0.2em" }}>OFFER EXPIRES IN</div>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:48, fontWeight:700, color: rem < 60000 ? "#c0392b" : GOLD, letterSpacing:"0.06em", lineHeight:1, minWidth:130, textAlign:"center", transition:"color 0.5s" }}>
             {String(mins).padStart(2,"0")}:{String(secs).padStart(2,"0")}
           </div>
@@ -265,22 +265,22 @@ function DealResult({ product, pct, onReserve, onPayFull }) {
         <div style={{ aspectRatio:"4/3", background:"#161616", border:"1px solid #1e1e1e", borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
           {product.img ? <img src={product.img} alt={product.name} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
             <svg width="80" height="50" viewBox="0 0 80 50" fill="none">
-              <rect x="2" y="20" width="52" height="10" rx="2" fill="#2a2a2a" stroke="#3a3a3a" strokeWidth="1"/>
-              <rect x="16" y="12" width="36" height="8" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1"/>
-              <rect x="10" y="28" width="10" height="14" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1"/>
-              <circle cx="56" cy="25" r="8" fill="none" stroke="#3a3a3a" strokeWidth="1.5"/>
+              <rect x="2" y="20" width="52" height="10" rx="2" fill="#2a2a2a" stroke="#9e9e9e" strokeWidth="1"/>
+              <rect x="16" y="12" width="36" height="8" rx="1" fill="#222" stroke="#9e9e9e" strokeWidth="1"/>
+              <rect x="10" y="28" width="10" height="14" rx="1" fill="#222" stroke="#9e9e9e" strokeWidth="1"/>
+              <circle cx="56" cy="25" r="8" fill="none" stroke="#9e9e9e" strokeWidth="1.5"/>
             </svg>}
         </div>
         <div>
-          <div style={{ fontSize:9, color:"#555", letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:5, fontFamily:"'Oswald',sans-serif" }}>{product.cat}</div>
+          <div style={{ fontSize:9, color:"#a0a0a0", letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:5, fontFamily:"'Oswald',sans-serif" }}>{product.cat}</div>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:22, color:"#e8e0d0", fontWeight:700, lineHeight:1.2, marginBottom:8 }}>{product.name}</div>
           <div style={{ fontStyle:"italic", color:"#666", fontSize:13, lineHeight:1.6, marginBottom:10 }}>{product.desc}</div>
-          {product.specs && <div style={{ fontSize:10, color:"#444", fontFamily:"'Courier New',monospace", lineHeight:1.8, marginBottom:14 }}>
+          {product.specs && <div style={{ fontSize:10, color:"#9e9e9e", fontFamily:"'Courier New',monospace", lineHeight:1.8, marginBottom:14 }}>
             {product.specs.split(" | ").map((s,i) => <div key={i}>· {s}</div>)}
           </div>}
           <div style={{ display:"flex", alignItems:"baseline", gap:10, marginBottom:4 }}>
             <span style={{ fontFamily:"'Oswald',sans-serif", fontSize:32, color:GOLD, fontWeight:700 }}>${salePrice.toLocaleString()}</span>
-            <span style={{ fontSize:15, color:"#444", textDecoration:"line-through" }}>${product.price.toLocaleString()}</span>
+            <span style={{ fontSize:15, color:"#9e9e9e", textDecoration:"line-through" }}>${product.price.toLocaleString()}</span>
           </div>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#4caf50", letterSpacing:"0.1em", marginBottom:16 }}>TODAY ONLY — SAVE ${savings.toLocaleString()}</div>
           {!claimed && !expired && (
@@ -293,7 +293,7 @@ function DealResult({ product, pct, onReserve, onPayFull }) {
                 style={{ width:"100%", background:"transparent", color:"#e8e0d0", fontFamily:"'Oswald',sans-serif", fontSize:13, letterSpacing:"0.08em", padding:"10px 0", border:"1px solid #333", borderRadius:2, cursor:"pointer" }}>
                 PAY IN FULL · ${salePrice.toLocaleString()}
               </button>
-              <div style={{ fontSize:10, color:"#444", textAlign:"center", fontStyle:"italic" }}>FFL paperwork completed in-store. Valid ID required.</div>
+              <div style={{ fontSize:10, color:"#9e9e9e", textAlign:"center", fontStyle:"italic" }}>FFL paperwork completed in-store. Valid ID required.</div>
             </div>
           )}
         </div>
@@ -358,13 +358,13 @@ function Modal({ product, price, type, dealId, onClose }) {
   return (
     <div onClick={e => e.target === e.currentTarget && onClose()} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.9)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:9999, padding:16 }}>
       <div style={{ background:"#111", border:`1px solid ${GOLD}`, borderRadius:3, padding:"2rem", width:"100%", maxWidth:400, position:"relative" }}>
-        <button onClick={onClose} style={{ position:"absolute", top:10, right:14, background:"none", border:"none", color:"#555", fontSize:22, cursor:"pointer" }}>×</button>
+        <button onClick={onClose} style={{ position:"absolute", top:10, right:14, background:"none", border:"none", color:"#a0a0a0", fontSize:22, cursor:"pointer" }}>×</button>
         {!done ? <>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:18, color:GOLD, letterSpacing:"0.1em", marginBottom:3 }}>{type==="deposit" ? "RESERVE THIS ITEM" : "PAY IN FULL"}</div>
           <div style={{ fontStyle:"italic", color:"#666", fontSize:12, marginBottom:18 }}>{product.name} · ${price.toLocaleString()}</div>
           {[["Full Name","name","text"],["Email Address","email","email"],["Phone Number","phone","tel"]].map(([label,key,t]) => (
             <div key={key} style={{ marginBottom:12 }}>
-              <label style={{ display:"block", fontSize:10, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.12em", marginBottom:4 }}>{label.toUpperCase()}</label>
+              <label style={{ display:"block", fontSize:10, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.12em", marginBottom:4 }}>{label.toUpperCase()}</label>
               <input type={t} value={form[key]} onChange={e => set(key, e.target.value)} style={{ width:"100%", background:"#0a0a0a", border:"1px solid #2a2a2a", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
             </div>
           ))}
@@ -373,9 +373,9 @@ function Modal({ product, price, type, dealId, onClose }) {
               <span style={{ fontSize:12, color:"#666", fontFamily:"'Oswald',sans-serif" }}>{type==="deposit" ? "DEPOSIT" : "TOTAL"} DUE NOW</span>
               <span style={{ fontSize:16, color:GOLD, fontFamily:"'Oswald',sans-serif", fontWeight:700 }}>${(type==="deposit" ? product.deposit : price).toLocaleString()}</span>
             </div>
-            {type==="deposit" && <div style={{ fontSize:10, color:"#444", marginTop:4, fontStyle:"italic" }}>Balance of ${(price - product.deposit).toLocaleString()} due in-store</div>}
+            {type==="deposit" && <div style={{ fontSize:10, color:"#9e9e9e", marginTop:4, fontStyle:"italic" }}>Balance of ${(price - product.deposit).toLocaleString()} due in-store</div>}
           </div>
-          <button onClick={submit} disabled={!valid || submitting} style={{ width:"100%", background: valid && !submitting ? GOLD : "#333", color: valid && !submitting ? "#000" : "#666", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:15, letterSpacing:"0.1em", padding:"12px 0", border:"none", borderRadius:2, cursor: valid && !submitting ? "pointer":"not-allowed" }}>
+          <button onClick={submit} disabled={!valid || submitting} style={{ width:"100%", background: valid && !submitting ? GOLD : "#9e9e9e", color: valid && !submitting ? "#000" : "#666", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:15, letterSpacing:"0.1em", padding:"12px 0", border:"none", borderRadius:2, cursor: valid && !submitting ? "pointer":"not-allowed" }}>
             {submitting ? "SAVING..." : "PROCEED TO PAYMENT →"}
           </button>
         </> : (
@@ -386,13 +386,13 @@ function Modal({ product, price, type, dealId, onClose }) {
               Confirmation sent to <strong style={{ color:"#e8e0d0" }}>{form.email}</strong>. Come in within 48 hours with valid ID.
               {(product.sku || product.serial) && (
                 <div style={{ marginTop:14, padding:"10px 14px", background:"#0d0d0d", border:"1px solid #2a2a2a", borderRadius:2, textAlign:"left" }}>
-                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#555", letterSpacing:"0.15em", marginBottom:6 }}>YOUR ITEM REFERENCE</div>
+                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#a0a0a0", letterSpacing:"0.15em", marginBottom:6 }}>YOUR ITEM REFERENCE</div>
                   {product.sku && <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-                    <span style={{ color:"#555", fontSize:12 }}>SKU</span>
+                    <span style={{ color:"#a0a0a0", fontSize:12 }}>SKU</span>
                     <span style={{ color:"#e8e0d0", fontSize:12, fontFamily:"'Courier New',monospace" }}>{product.sku}</span>
                   </div>}
                   {product.serial && <div style={{ display:"flex", justifyContent:"space-between" }}>
-                    <span style={{ color:"#555", fontSize:12 }}>Serial</span>
+                    <span style={{ color:"#a0a0a0", fontSize:12 }}>Serial</span>
                     <span style={{ color:GOLD, fontSize:12, fontFamily:"'Courier New',monospace" }}>{maskSerial(product.serial)}</span>
                   </div>}
                 </div>
@@ -418,20 +418,20 @@ function ProductCard({ p }) {
         <div style={{ aspectRatio:"4/3", background:"#161616", display:"flex", alignItems:"center", justifyContent:"center", position:"relative", borderBottom:"1px solid #1e1e1e", overflow:"hidden" }}>
           {(p.img||p.imageUrl) ? <img src={p.img||p.imageUrl} alt={p.name} loading="lazy" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
             <svg width="64" height="40" viewBox="0 0 64 40" fill="none">
-              <rect x="2" y="16" width="42" height="8" rx="2" fill="#2a2a2a" stroke="#3a3a3a" strokeWidth="1"/>
-              <rect x="12" y="10" width="30" height="6" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1"/>
-              <rect x="8" y="22" width="8" height="12" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1"/>
-              <circle cx="46" cy="20" r="7" fill="none" stroke="#3a3a3a" strokeWidth="1.5"/>
+              <rect x="2" y="16" width="42" height="8" rx="2" fill="#2a2a2a" stroke="#9e9e9e" strokeWidth="1"/>
+              <rect x="12" y="10" width="30" height="6" rx="1" fill="#222" stroke="#9e9e9e" strokeWidth="1"/>
+              <rect x="8" y="22" width="8" height="12" rx="1" fill="#222" stroke="#9e9e9e" strokeWidth="1"/>
+              <circle cx="46" cy="20" r="7" fill="none" stroke="#9e9e9e" strokeWidth="1.5"/>
             </svg>}
           {(p.sale||p.salePrice) && <span style={{ position:"absolute", top:7, right:7, background:"#7a1515", color:"#fff", fontSize:10, padding:"2px 7px", borderRadius:1, fontFamily:"'Oswald',sans-serif" }}>SALE</span>}
         </div>
         <div style={{ padding:"11px 13px 13px" }}>
-          <div style={{ fontSize:9, color:"#555", letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:3, fontFamily:"'Oswald',sans-serif" }}>{p.cat||p.category}</div>
+          <div style={{ fontSize:9, color:"#a0a0a0", letterSpacing:"0.18em", textTransform:"uppercase", marginBottom:3, fontFamily:"'Oswald',sans-serif" }}>{p.cat||p.category}</div>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:"#e8e0d0", fontWeight:600, lineHeight:1.2, marginBottom:4 }}>{p.name}</div>
-          <div style={{ fontSize:11, color:"#555", lineHeight:1.5, marginBottom:6, fontStyle:"italic" }}>{p.desc||p.description}</div>
+          <div style={{ fontSize:11, color:"#a0a0a0", lineHeight:1.5, marginBottom:6, fontStyle:"italic" }}>{p.desc||p.description}</div>
           <div style={{ display:"flex", alignItems:"baseline", gap:6, marginBottom:8 }}>
             <span style={{ fontFamily:"'Oswald',sans-serif", fontSize:18, color:GOLD, fontWeight:700 }}>${dp?.toLocaleString()}</span>
-            {(p.sale||p.salePrice) && <span style={{ fontSize:11, color:"#444", textDecoration:"line-through" }}>${p.price?.toLocaleString()}</span>}
+            {(p.sale||p.salePrice) && <span style={{ fontSize:11, color:"#9e9e9e", textDecoration:"line-through" }}>${p.price?.toLocaleString()}</span>}
           </div>
           <div style={{ width:"100%", background:"transparent", border:`1px solid ${GOLD}`, color:GOLD, fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"6px 0", borderRadius:2, textAlign:"center", letterSpacing:"0.08em" }}>
             VIEW DETAILS →
@@ -455,7 +455,7 @@ function ReservationsList({ reservations, onUpdate }) {
         {statuses.map(s => {
           const count = s === "all" ? reservations.length : reservations.filter(r => r.status === s).length;
           return (
-            <button key={s} onClick={() => setFilter(s)} style={{ background: filter===s ? `${GOLD}18`:"transparent", border:`1px solid ${filter===s ? GOLD:"#2a2a2a"}`, color: filter===s ? GOLD:"#555", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.1em" }}>
+            <button key={s} onClick={() => setFilter(s)} style={{ background: filter===s ? `${GOLD}18`:"transparent", border:`1px solid ${filter===s ? GOLD:"#2a2a2a"}`, color: filter===s ? GOLD:"#a0a0a0", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.1em" }}>
               {s.toUpperCase()} ({count})
             </button>
           );
@@ -475,19 +475,19 @@ function ReservationsList({ reservations, onUpdate }) {
                     <span style={{ fontSize:9, padding:"2px 7px", borderRadius:1, fontFamily:"'Oswald',sans-serif", background: r.type==="deposit" ? "rgba(201,168,76,0.1)":"rgba(33,150,243,0.1)", color: r.type==="deposit" ? GOLD:"#2196f3", border:`1px solid ${r.type==="deposit" ? GOLD+"44":"#2196f344"}` }}>{r.type.toUpperCase()}</span>
                   </div>
                   <div style={{ fontSize:12, color:GOLD, fontFamily:"'Oswald',sans-serif", marginBottom:4 }}>{r.product?.name || "Unknown product"}</div>
-                  <div style={{ fontSize:11, color:"#555", lineHeight:1.7 }}>
+                  <div style={{ fontSize:11, color:"#a0a0a0", lineHeight:1.7 }}>
                     <a href={`mailto:${r.customerEmail}`} style={{ color:"#666", textDecoration:"none" }}>{r.customerEmail}</a>
                     &nbsp;·&nbsp;
                     <a href={`tel:${r.customerPhone}`} style={{ color:"#666", textDecoration:"none" }}>{r.customerPhone}</a>
                   </div>
-                  <div style={{ fontSize:10, color:"#444", marginTop:4, fontFamily:"'Oswald',sans-serif" }}>
+                  <div style={{ fontSize:10, color:"#9e9e9e", marginTop:4, fontFamily:"'Oswald',sans-serif" }}>
                     Paid: <span style={{ color:GOLD }}>${r.amountPaid.toLocaleString()}</span>
                     &nbsp;·&nbsp;
                     {new Date(r.createdAt).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' })}
-                    {expires && <span style={{ color: isExpired ? "#c0392b":"#555", marginLeft:8 }}>{isExpired ? "⚠ EXPIRED" : `Holds until ${expires.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`}</span>}
+                    {expires && <span style={{ color: isExpired ? "#c0392b":"#a0a0a0", marginLeft:8 }}>{isExpired ? "⚠ EXPIRED" : `Holds until ${expires.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`}</span>}
                   </div>
                   {r.product?.serialNumber && (
-                    <div style={{ fontSize:10, color:"#444", marginTop:3, fontFamily:"'Courier New',monospace" }}>S/N: {r.product.serialNumber} &nbsp;·&nbsp; SKU: {r.product.sku}</div>
+                    <div style={{ fontSize:10, color:"#9e9e9e", marginTop:3, fontFamily:"'Courier New',monospace" }}>S/N: {r.product.serialNumber} &nbsp;·&nbsp; SKU: {r.product.sku}</div>
                   )}
                 </div>
                 {r.status === "pending" && (
@@ -550,7 +550,7 @@ function AdminLogin({ onLogin, onBack }) {
           style={{ width:"100%", background:"#0a0a0a", border:`1px solid ${err ? "#c0392b":"#1e1e1e"}`, color:"#e8e0d0", padding:"9px 14px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:14, outline:"none", boxSizing:"border-box", marginBottom: err ? 8:14 }}/>
         {err && <div style={{ color:"#c0392b", fontSize:12, fontStyle:"italic", marginBottom:10 }}>Incorrect password</div>}
         <button onClick={submit} disabled={checking} style={{ width:"100%", background:GOLD, color:"#000", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:14, letterSpacing:"0.1em", padding:"11px 0", border:"none", borderRadius:2, cursor:"pointer", opacity: checking ? 0.6:1 }}>{checking ? "CHECKING...":"ENTER"}</button>
-        <button onClick={onBack} style={{ marginTop:12, background:"transparent", border:"none", color:"#444", fontFamily:"'Oswald',sans-serif", fontSize:11, cursor:"pointer", letterSpacing:"0.1em" }}>← BACK TO SITE</button>
+        <button onClick={onBack} style={{ marginTop:12, background:"transparent", border:"none", color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", fontSize:11, cursor:"pointer", letterSpacing:"0.1em" }}>← BACK TO SITE</button>
       </div>
     </div>
   );
@@ -659,7 +659,7 @@ function AdminPanel({ onClose }) {
   const moveUp = id => setDealsQueue(q => { const i=q.findIndex(d=>d.id===id); if(i<=0)return q; const n=[...q]; [n[i-1],n[i]]=[n[i],n[i-1]]; return n; });
 
   const iStyle = { width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" };
-  const lStyle = { display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 };
+  const lStyle = { display:"block", fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 };
   const tabBtn = (id, label, count) => (
     <button onClick={() => setTab(id)} style={{ background: tab===id ? `${GOLD}18`:"transparent", border:`1px solid ${tab===id ? GOLD:"#2a2a2a"}`, color: tab===id ? GOLD:"#666", fontFamily:"'Oswald',sans-serif", fontSize:12, padding:"7px 18px", borderRadius:2, cursor:"pointer", letterSpacing:"0.1em", position:"relative" }}>
       {label}
@@ -674,7 +674,7 @@ function AdminPanel({ onClose }) {
         <Logo size={36}/>
         <div>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, letterSpacing:"0.18em" }}>ADMIN PANEL</div>
-          <div style={{ fontSize:10, color:"#444", fontStyle:"italic" }}>Gristmill Guns & Optics</div>
+          <div style={{ fontSize:10, color:"#9e9e9e", fontStyle:"italic" }}>Gristmill Guns & Optics</div>
         </div>
         <button onClick={onClose} style={{ marginLeft:"auto", background:"transparent", border:"1px solid #2a2a2a", color:"#777", fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"6px 14px", borderRadius:2, cursor:"pointer", letterSpacing:"0.08em" }}>← BACK TO SITE</button>
       </div>
@@ -692,7 +692,7 @@ function AdminPanel({ onClose }) {
           <div>
             <div style={{ marginBottom:16 }}>
               <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, letterSpacing:"0.1em", marginBottom:6 }}>DAILY DEALS QUEUE</div>
-              <div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:16 }}>Guns rotate randomly, never repeating until the full list cycles. The discount is set per gun.</div>
+              <div style={{ fontSize:12, color:"#a0a0a0", fontStyle:"italic", marginBottom:16 }}>Guns rotate randomly, never repeating until the full list cycles. The discount is set per gun.</div>
             </div>
 
             {/* today's deal preview */}
@@ -704,7 +704,7 @@ function AdminPanel({ onClose }) {
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#4caf50", letterSpacing:"0.18em" }}>TODAY'S DEAL</div>
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:"#e8e0d0" }}>{prod.name}</div>
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:GOLD }}>{td.pct}% OFF</div>
-                  <div style={{ fontSize:11, color:"#444", marginLeft:"auto", fontStyle:"italic" }}>Sale price: ${Math.round(prod.price * (1-td.pct/100)).toLocaleString()}</div>
+                  <div style={{ fontSize:11, color:"#9e9e9e", marginLeft:"auto", fontStyle:"italic" }}>Sale price: ${Math.round(prod.price * (1-td.pct/100)).toLocaleString()}</div>
                 </div>
               );
             })()}
@@ -715,10 +715,10 @@ function AdminPanel({ onClose }) {
                 if (!prod) return null;
                 return (
                   <div key={d.id} style={{ display:"flex", alignItems:"center", gap:12, background:"#111", border:"1px solid #1a1a1a", borderRadius:2, padding:"10px 14px" }}>
-                    <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#333", minWidth:24, textAlign:"center" }}>#{i+1}</div>
+                    <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#9e9e9e", minWidth:24, textAlign:"center" }}>#{i+1}</div>
                     <div style={{ flex:1 }}>
                       <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#e8e0d0" }}>{prod.name}</div>
-                      <div style={{ fontSize:10, color:"#555", marginTop:2 }}>{prod.cat} · Regular: ${prod.price.toLocaleString()} · Deal: ${Math.round(prod.price*(1-d.pct/100)).toLocaleString()} ({d.pct}% off)</div>
+                      <div style={{ fontSize:10, color:"#a0a0a0", marginTop:2 }}>{prod.cat} · Regular: ${prod.price.toLocaleString()} · Deal: ${Math.round(prod.price*(1-d.pct/100)).toLocaleString()} ({d.pct}% off)</div>
                     </div>
                     <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, fontWeight:700, minWidth:60, textAlign:"right" }}>{d.pct}% OFF</div>
                     <div style={{ display:"flex", gap:6 }}>
@@ -783,10 +783,10 @@ function AdminPanel({ onClose }) {
                       {dealsQueue.some(d => d.productId===p.id) && <span style={{ background:`${GOLD}22`, border:`1px solid ${GOLD}44`, color:GOLD, fontSize:8, padding:"2px 5px", borderRadius:1, letterSpacing:"0.1em" }}>IN QUEUE</span>}
                       {p.sale && <span style={{ background:"#7a1515", color:"#fff", fontSize:8, padding:"2px 5px", borderRadius:1 }}>SALE</span>}
                     </div>
-                    <div style={{ fontSize:10, color:"#444", fontFamily:"'Oswald',sans-serif", marginTop:2 }}>
+                    <div style={{ fontSize:10, color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", marginTop:2 }}>
                       {p.cat} · ${p.price}{p.sale?` → $${p.sale}`:""} · Deposit: ${p.deposit}
-                      {p.sku && <span style={{ color:"#333", fontFamily:"'Courier New',monospace", marginLeft:8 }}>SKU: {p.sku}</span>}
-                      {p.serial && <span style={{ color:"#333", fontFamily:"'Courier New',monospace", marginLeft:8 }}>S/N: {p.serial}</span>}
+                      {p.sku && <span style={{ color:"#9e9e9e", fontFamily:"'Courier New',monospace", marginLeft:8 }}>SKU: {p.sku}</span>}
+                      {p.serial && <span style={{ color:"#9e9e9e", fontFamily:"'Courier New',monospace", marginLeft:8 }}>S/N: {p.serial}</span>}
                     </div>
                   </div>
                   <div style={{ display:"flex", gap:6, flexShrink:0 }}>
@@ -803,37 +803,37 @@ function AdminPanel({ onClose }) {
         {tab==="settings" && (
           <div style={{ maxWidth:500 }}>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, letterSpacing:"0.1em", marginBottom:6 }}>PAYMENT SETTINGS</div>
-            <div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:24 }}>Enter your FirstPay credentials. These are stored securely in your database and never shared.</div>
+            <div style={{ fontSize:12, color:"#a0a0a0", fontStyle:"italic", marginBottom:24 }}>Enter your FirstPay credentials. These are stored securely in your database and never shared.</div>
 
             <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
               <div>
-                <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>FIRSTPAY MERCHANT ID</label>
+                <label style={{ display:"block", fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>FIRSTPAY MERCHANT ID</label>
                 <input type="password" value={settings.firstpay_merchant_id || ''} onChange={e => setSettings(s => ({...s, firstpay_merchant_id: e.target.value}))}
                   placeholder="Your FirstPay merchant ID"
                   style={{ width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"'Courier New',monospace", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
-                <div style={{ fontSize:10, color:"#333", marginTop:3, fontStyle:"italic" }}>Stored encrypted. Never visible in code or git.</div>
+                <div style={{ fontSize:10, color:"#9e9e9e", marginTop:3, fontStyle:"italic" }}>Stored encrypted. Never visible in code or git.</div>
               </div>
               <div>
-                <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>FIRSTPAY CHECKOUT URL</label>
+                <label style={{ display:"block", fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>FIRSTPAY CHECKOUT URL</label>
                 <input type="text" value={settings.firstpay_checkout_url || ''} onChange={e => setSettings(s => ({...s, firstpay_checkout_url: e.target.value}))}
                   placeholder="e.g. https://checkout.firstpay.com/pay/..."
                   style={{ width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"'Courier New',monospace", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
-                <div style={{ fontSize:10, color:"#333", marginTop:3, fontStyle:"italic" }}>Find this in your FirstPay dashboard under Payment Links or Hosted Checkout.</div>
+                <div style={{ fontSize:10, color:"#9e9e9e", marginTop:3, fontStyle:"italic" }}>Find this in your FirstPay dashboard under Payment Links or Hosted Checkout.</div>
               </div>
             </div>
 
             <div style={{ borderTop:"1px solid #1a1a1a", paddingTop:20, marginTop:8 }}>
               <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, letterSpacing:"0.1em", marginBottom:6 }}>CHANGE ADMIN PASSWORD</div>
-              <div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:14 }}>Leave blank to keep your current password.</div>
+              <div style={{ fontSize:12, color:"#a0a0a0", fontStyle:"italic", marginBottom:14 }}>Leave blank to keep your current password.</div>
               <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
                 <div>
-                  <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>NEW PASSWORD</label>
+                  <label style={{ display:"block", fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>NEW PASSWORD</label>
                   <input type="password" value={settings.new_password || ''} onChange={e => setSettings(s => ({...s, new_password: e.target.value}))}
                     placeholder="Enter new password"
                     style={{ width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
                 </div>
                 <div>
-                  <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>CONFIRM NEW PASSWORD</label>
+                  <label style={{ display:"block", fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>CONFIRM NEW PASSWORD</label>
                   <input type="password" value={settings.confirm_password || ''} onChange={e => setSettings(s => ({...s, confirm_password: e.target.value}))}
                     placeholder="Confirm new password"
                     style={{ width:"100%", background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" }}/>
@@ -855,10 +855,10 @@ function AdminPanel({ onClose }) {
         {tab==="reservations" && (
           <div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:16, color:GOLD, letterSpacing:"0.1em", marginBottom:6 }}>RESERVATIONS</div>
-            <div style={{ fontSize:12, color:"#555", fontStyle:"italic", marginBottom:20 }}>Customer holds and purchases. Update status as each is handled.</div>
+            <div style={{ fontSize:12, color:"#a0a0a0", fontStyle:"italic", marginBottom:20 }}>Customer holds and purchases. Update status as each is handled.</div>
 
             {reservations.length === 0 && (
-              <div style={{ textAlign:"center", padding:"3rem", color:"#333", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em" }}>NO RESERVATIONS YET</div>
+              <div style={{ textAlign:"center", padding:"3rem", color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em" }}>NO RESERVATIONS YET</div>
             )}
 
             {/* Status filter tabs */}
@@ -887,12 +887,12 @@ function AdminPanel({ onClose }) {
                 <div><label style={lStyle}>DESCRIPTION</label><textarea value={form.desc} onChange={e => set("desc", e.target.value)} rows={3} style={{ ...iStyle, resize:"vertical" }}/></div>
                 <div><label style={lStyle}>SPECS (separate with " | ")</label><input type="text" value={form.specs} onChange={e => set("specs", e.target.value)} placeholder='Caliber: 9mm | Barrel: 4" | Capacity: 17+1' style={{ ...iStyle, fontFamily:"'Courier New',monospace", fontSize:11 }}/></div>
                 <div style={{ borderTop:"1px solid #1a1a1a", paddingTop:12 }}>
-                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#444", letterSpacing:"0.16em", marginBottom:10 }}>UNIT TRACKING — ADMIN ONLY</div>
+                  <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#9e9e9e", letterSpacing:"0.16em", marginBottom:10 }}>UNIT TRACKING — ADMIN ONLY</div>
                   <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
                     <div>
                       <label style={lStyle}>SERIAL NUMBER</label>
                       <input type="text" value={form.serial} onChange={e => set("serial", e.target.value)} placeholder="e.g. G2274519" style={{ ...iStyle, fontFamily:"'Courier New',monospace", fontSize:12 }}/>
-                      <div style={{ fontSize:9, color:"#333", marginTop:3, fontStyle:"italic" }}>Customer sees: {form.serial ? maskSerial(form.serial) : "—"}</div>
+                      <div style={{ fontSize:9, color:"#9e9e9e", marginTop:3, fontStyle:"italic" }}>Customer sees: {form.serial ? maskSerial(form.serial) : "—"}</div>
                     </div>
                     <div>
                       <label style={lStyle}>SKU / ITEM NUMBER</label>
@@ -906,14 +906,14 @@ function AdminPanel({ onClose }) {
                 <div onClick={() => fileRef.current.click()} onMouseEnter={e => e.currentTarget.style.borderColor=GOLD} onMouseLeave={e => e.currentTarget.style.borderColor="#1e1e1e"}
                   style={{ aspectRatio:"4/3", background:"#0d0d0d", border:"2px dashed #1e1e1e", borderRadius:3, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", cursor:"pointer", overflow:"hidden", transition:"border-color 0.2s" }}>
                   {imgPreview ? <img src={imgPreview} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
-                    <div style={{ textAlign:"center", color:"#333" }}>
+                    <div style={{ textAlign:"center", color:"#9e9e9e" }}>
                       <div style={{ fontSize:28, marginBottom:6 }}>↑</div>
                       <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.1em" }}>CLICK TO UPLOAD</div>
                       <div style={{ fontSize:10, marginTop:3, fontStyle:"italic", color:"#2a2a2a" }}>JPG / PNG → Cloudinary</div>
                     </div>}
                 </div>
                 <input ref={fileRef} type="file" accept="image/*" onChange={handleImg} style={{ display:"none" }}/>
-                {imgPreview && <button onClick={() => { setImgPreview(""); set("img",""); }} style={{ marginTop:6, background:"transparent", border:"1px solid #222", color:"#555", fontSize:10, padding:"3px 10px", borderRadius:2, cursor:"pointer", fontFamily:"'Oswald',sans-serif" }}>REMOVE</button>}
+                {imgPreview && <button onClick={() => { setImgPreview(""); set("img",""); }} style={{ marginTop:6, background:"transparent", border:"1px solid #222", color:"#a0a0a0", fontSize:10, padding:"3px 10px", borderRadius:2, cursor:"pointer", fontFamily:"'Oswald',sans-serif" }}>REMOVE</button>}
               </div>
             </div>
             <button onClick={saveProduct} style={{ marginTop:24, background:GOLD, color:"#000", fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:15, letterSpacing:"0.1em", padding:"12px 36px", border:"none", borderRadius:2, cursor:"pointer" }}>SAVE PRODUCT</button>
@@ -1001,21 +1001,21 @@ export default function GristmillClient() {
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:22, fontWeight:700, color:"white", letterSpacing:"0.1em", lineHeight:1 }}>GRISTMILL</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:GOLD, letterSpacing:"0.24em" }}>GUNS & OPTICS</div>
           </div>
-          <div style={{ marginLeft:"auto", fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#555", letterSpacing:"0.1em" }}>(570) 713-7339 &nbsp;·&nbsp; 1549 PA-487, Orangeville PA</div>
+          <div style={{ marginLeft:"auto", fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#a0a0a0", letterSpacing:"0.1em" }}>(570) 713-7339 &nbsp;·&nbsp; 1549 PA-487, Orangeville PA</div>
         </div>
       </header>
 
       {/* HERO — SPINNER */}
       <section style={{ background:"linear-gradient(180deg,#050505 0%,#0a0a0a 100%)", borderBottom:"1px solid #1a1a1a", padding:"3rem 2rem 4rem", textAlign:"center" }}>
         <div style={{ maxWidth:640, margin:"0 auto" }}>
-          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#555", letterSpacing:"0.28em", marginBottom:10 }}>EVERY DAY · ONE DEAL · LIMITED TIME</div>
+          <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#a0a0a0", letterSpacing:"0.28em", marginBottom:10 }}>EVERY DAY · ONE DEAL · LIMITED TIME</div>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:38, fontWeight:700, color:"white", letterSpacing:"0.05em", lineHeight:1, marginBottom:6 }}>DAILY DEAL SPINNER</div>
           <div style={{ width:48, height:2, background:GOLD, margin:"0 auto 12px" }}/>
-          <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#555", fontSize:14, marginBottom:32 }}>
+          <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#a0a0a0", fontSize:14, marginBottom:32 }}>
             Spin once a day for an exclusive in-store discount. Claim it before the clock runs out.
           </div>
           {loading ? (
-            <div style={{ padding:"4rem 0", fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#444", letterSpacing:"0.2em" }}>LOADING TODAY'S DEAL...</div>
+            <div style={{ padding:"4rem 0", fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#9e9e9e", letterSpacing:"0.2em" }}>LOADING TODAY'S DEAL...</div>
           ) : !spinDone ? (
             <SpinnerWheel onResult={handleSpinResult} todaysDeal={todaysDeal}/>
           ) : dealProduct ? (
@@ -1036,7 +1036,7 @@ export default function GristmillClient() {
 
           {/* Header */}
           <div style={{ textAlign:"center", marginBottom:"3rem" }}>
-            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#444", letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:8 }}>COME SEE US</div>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#9e9e9e", letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:8 }}>COME SEE US</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:32, fontWeight:700, color:"white", letterSpacing:"0.04em", marginBottom:10 }}>THE OLD GRISTMILL</div>
             <div style={{ width:48, height:2, background:GOLD, margin:"0 auto 16px" }}/>
             <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#666", fontSize:15, maxWidth:580, margin:"0 auto", lineHeight:1.8 }}>
@@ -1110,7 +1110,7 @@ export default function GristmillClient() {
       <section style={{ maxWidth:1100, margin:"0 auto", padding:"3rem 2rem 5rem" }}>
         <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", marginBottom:"1.25rem", flexWrap:"wrap", gap:12 }}>
           <div>
-            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#444", letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:4 }}>BROWSE OUR INVENTORY</div>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#9e9e9e", letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:4 }}>BROWSE OUR INVENTORY</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:26, fontWeight:700, color:"white", letterSpacing:"0.04em" }}>IN-STORE CATALOG</div>
           </div>
           {/* Search */}
@@ -1127,20 +1127,20 @@ export default function GristmillClient() {
         <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"1.5rem" }}>
           {CATS.map(c => (
             <button key={c} onClick={() => handleCatFilter(c)}
-              style={{ background: catFilter===c ? `${GOLD}18`:"transparent", border:`1px solid ${catFilter===c ? GOLD:"#1e1e1e"}`, color: catFilter===c ? GOLD:"#555", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.12em", transition:"all 0.2s" }}>
+              style={{ background: catFilter===c ? `${GOLD}18`:"transparent", border:`1px solid ${catFilter===c ? GOLD:"#1e1e1e"}`, color: catFilter===c ? GOLD:"#a0a0a0", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.12em", transition:"all 0.2s" }}>
               {c}
             </button>
           ))}
         </div>
 
         {/* Count */}
-        {!loading && <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#444", letterSpacing:"0.12em", marginBottom:16 }}>{total} ITEMS{catFilter!=="All"?` IN ${catFilter.toUpperCase()}`:""}</div>}
+        {!loading && <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#9e9e9e", letterSpacing:"0.12em", marginBottom:16 }}>{total} ITEMS{catFilter!=="All"?` IN ${catFilter.toUpperCase()}`:""}</div>}
 
         {/* Grid */}
         {loading ? (
-          <div style={{ padding:"4rem 0", textAlign:"center", fontFamily:"'Oswald',sans-serif", fontSize:12, color:"#333", letterSpacing:"0.2em" }}>LOADING...</div>
+          <div style={{ padding:"4rem 0", textAlign:"center", fontFamily:"'Oswald',sans-serif", fontSize:12, color:"#9e9e9e", letterSpacing:"0.2em" }}>LOADING...</div>
         ) : normalized.length === 0 ? (
-          <div style={{ padding:"4rem 0", textAlign:"center", fontFamily:"'Oswald',sans-serif", fontSize:12, color:"#333", letterSpacing:"0.2em" }}>NO ITEMS FOUND</div>
+          <div style={{ padding:"4rem 0", textAlign:"center", fontFamily:"'Oswald',sans-serif", fontSize:12, color:"#9e9e9e", letterSpacing:"0.2em" }}>NO ITEMS FOUND</div>
         ) : (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"1rem" }}>
             {normalized.map(p => <ProductCard key={p.id} p={p}/>)}
@@ -1153,16 +1153,16 @@ export default function GristmillClient() {
             <button
               onClick={() => setPage(p => Math.max(1, p-1))}
               disabled={page === 1}
-              style={{ background:"transparent", border:`1px solid ${page===1?"#1e1e1e":GOLD}`, color:page===1?"#333":GOLD, fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"8px 20px", borderRadius:2, cursor:page===1?"not-allowed":"pointer", letterSpacing:"0.1em", transition:"all 0.2s" }}>
+              style={{ background:"transparent", border:`1px solid ${page===1?"#1e1e1e":GOLD}`, color:page===1?"#9e9e9e":GOLD, fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"8px 20px", borderRadius:2, cursor:page===1?"not-allowed":"pointer", letterSpacing:"0.1em", transition:"all 0.2s" }}>
               ← PREV
             </button>
-            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#555", letterSpacing:"0.12em" }}>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#a0a0a0", letterSpacing:"0.12em" }}>
               PAGE {page} OF {totalPages}
             </div>
             <button
               onClick={() => setPage(p => Math.min(totalPages, p+1))}
               disabled={page === totalPages}
-              style={{ background:"transparent", border:`1px solid ${page===totalPages?"#1e1e1e":GOLD}`, color:page===totalPages?"#333":GOLD, fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"8px 20px", borderRadius:2, cursor:page===totalPages?"not-allowed":"pointer", letterSpacing:"0.1em", transition:"all 0.2s" }}>
+              style={{ background:"transparent", border:`1px solid ${page===totalPages?"#1e1e1e":GOLD}`, color:page===totalPages?"#9e9e9e":GOLD, fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"8px 20px", borderRadius:2, cursor:page===totalPages?"not-allowed":"pointer", letterSpacing:"0.1em", transition:"all 0.2s" }}>
               NEXT →
             </button>
           </div>

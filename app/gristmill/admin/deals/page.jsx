@@ -41,7 +41,7 @@ function ProductSearch({ products, value, onChange }) {
 
   return (
     <div ref={ref} style={{ position:"relative" }}>
-      <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>SELECT GUN</label>
+      <label style={{ display:"block", fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>SELECT GUN</label>
       <div style={{ position:"relative" }}>
         <input
           type="text"
@@ -52,7 +52,7 @@ function ProductSearch({ products, value, onChange }) {
           style={{ width:"100%", background:"#0a0a0a", border:`1px solid ${value ? GOLD+"66" : "#222"}`, color:"#e8e0d0", padding:"8px 32px 8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" }}
         />
         {query && (
-          <button onClick={clear} style={{ position:"absolute", right:8, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"#555", cursor:"pointer", fontSize:16, lineHeight:1 }}>×</button>
+          <button onClick={clear} style={{ position:"absolute", right:8, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"#a0a0a0", cursor:"pointer", fontSize:16, lineHeight:1 }}>×</button>
         )}
       </div>
       {open && filtered.length > 0 && (
@@ -64,7 +64,7 @@ function ProductSearch({ products, value, onChange }) {
               onMouseLeave={e=>e.currentTarget.style.background="transparent"}
             >
               <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#e8e0d0" }}>{p.name}</div>
-              <div style={{ fontSize:10, color:"#555", marginTop:2, fontFamily:"'Oswald',sans-serif" }}>
+              <div style={{ fontSize:10, color:"#a0a0a0", marginTop:2, fontFamily:"'Oswald',sans-serif" }}>
                 {[p.category, p.caliber, `$${p.price?.toLocaleString()}`].filter(Boolean).join(" · ")}
               </div>
             </div>
@@ -72,7 +72,7 @@ function ProductSearch({ products, value, onChange }) {
         </div>
       )}
       {open && query && filtered.length === 0 && (
-        <div style={{ position:"absolute", top:"100%", left:0, right:0, background:"#111", border:"1px solid #2a2a2a", borderRadius:2, zIndex:100, padding:"12px", fontSize:12, color:"#444", fontStyle:"italic", marginTop:2 }}>
+        <div style={{ position:"absolute", top:"100%", left:0, right:0, background:"#111", border:"1px solid #2a2a2a", borderRadius:2, zIndex:100, padding:"12px", fontSize:12, color:"#9e9e9e", fontStyle:"italic", marginTop:2 }}>
           No products match
         </div>
       )}
@@ -136,7 +136,7 @@ export default function DealsPage() {
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#4caf50", letterSpacing:"0.18em" }}>TODAY'S DEAL</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:"#e8e0d0" }}>{prod.name}</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:14, color:GOLD }}>{todaysDeal.discountPct}% OFF</div>
-            <div style={{ fontSize:11, color:"#444", marginLeft:"auto", fontStyle:"italic" }}>
+            <div style={{ fontSize:11, color:"#9e9e9e", marginLeft:"auto", fontStyle:"italic" }}>
               Sale price: ${Math.round((prod.price || 0) * (1 - todaysDeal.discountPct / 100)).toLocaleString()}
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function DealsPage() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr auto", gap:12, alignItems:"end", marginBottom:12 }}>
             <ProductSearch products={products} value={newDeal.productId} onChange={v => setNewDeal(d => ({...d, productId:v}))}/>
             <div>
-              <label style={{ display:"block", fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>DISCOUNT %</label>
+              <label style={{ display:"block", fontSize:9, color:"#a0a0a0", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.14em", marginBottom:4 }}>DISCOUNT %</label>
               <input type="number" min="1" max="99" value={newDeal.pct} onChange={e => setNewDeal(d => ({...d, pct:e.target.value}))}
                 placeholder="e.g. 15"
                 style={{ width:100, background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none" }}/>
@@ -168,9 +168,9 @@ export default function DealsPage() {
         </div>
       )}
 
-      {loading && <div style={{ color:"#444", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
+      {loading && <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
       {!loading && queue.length === 0 && (
-        <div style={{ color:"#333", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>
+        <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>
           NO DEALS YET — ADD ONE ABOVE
         </div>
       )}
@@ -181,13 +181,13 @@ export default function DealsPage() {
           const salePrice = prod ? Math.round(prod.price * (1 - d.discountPct / 100)) : null;
           return (
             <div key={d.id} style={{ display:"flex", alignItems:"center", gap:12, background:"#111", border:"1px solid #1a1a1a", borderRadius:2, padding:"12px 16px" }}>
-              <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#333", minWidth:24, textAlign:"center" }}>#{i+1}</div>
+              <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#9e9e9e", minWidth:24, textAlign:"center" }}>#{i+1}</div>
               <div style={{ width:40, height:32, background:"#161616", borderRadius:2, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
                 {prod?.imageUrl ? <img src={prod.imageUrl} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <span style={{ fontSize:14, opacity:0.15 }}>🔫</span>}
               </div>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#e8e0d0" }}>{prod?.name || "Unknown"}</div>
-                <div style={{ fontSize:10, color:"#555", marginTop:2, fontFamily:"'Oswald',sans-serif" }}>
+                <div style={{ fontSize:10, color:"#a0a0a0", marginTop:2, fontFamily:"'Oswald',sans-serif" }}>
                   {prod?.category} · ${prod?.price?.toLocaleString()} → ${salePrice?.toLocaleString()} ({d.discountPct}% off)
                 </div>
               </div>

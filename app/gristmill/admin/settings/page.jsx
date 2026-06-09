@@ -37,7 +37,7 @@ export default function SettingsPage() {
     <div style={{ maxWidth:500 }}>
       <PageHeader title="SETTINGS"/>
 
-      {loading ? <div style={{ color:"#444", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em" }}>LOADING...</div> : <>
+      {loading ? <div style={{ color:"#9e9e9e", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em" }}>LOADING...</div> : <>
 
         <div style={{ marginBottom:28 }}>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"#888", letterSpacing:"0.12em", marginBottom:16, paddingBottom:8, borderBottom:"1px solid #1a1a1a" }}>PAYMENT</div>
