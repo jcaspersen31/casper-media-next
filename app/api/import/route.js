@@ -121,6 +121,7 @@ export async function POST(req) {
         const upc = String(row['UPC'] || '').trim();
         const partNum = String(row['Part Number'] || '').trim();
 
+        // Search including inactive so re-importing deleted products reactivates them
         const existing = upc
           ? await prisma.product.findFirst({ where: { upc } })
           : partNum
@@ -128,10 +129,10 @@ export async function POST(req) {
           : null;
 
         if (existing) {
-          await prisma.product.update({ where: { id: existing.id }, data });
+          await prisma.product.update({ where: { id: existing.id }, data: { ...data, active: true } });
           results.updated++;
         } else {
-          await prisma.product.create({ data });
+          await prisma.product.create({ data: { ...data, active: true } });
           results.created++;
         }
       } catch (e) {
