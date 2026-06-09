@@ -246,8 +246,8 @@ export default function ItemPage() {
       </main>
 
       <footer style={{ background:"#050505", borderTop:"1px solid #2a2a2a", padding:"1.25rem 2rem", textAlign:"center" }}>
-        <div style={{ fontSize:12, color:"#aaa", fontStyle:"italic" }}>
-          Gristmill Guns & Optics · 1549 State Route 487, Orangeville PA 17859 · <a href="tel:5707137339" style={{ color:"#aaa", textDecoration:"none" }}>(570) 713-7339</a>
+        <div style={{ fontSize:12, color:"var(--text-muted)", fontStyle:"italic" }}>
+          Gristmill Guns & Optics · 1549 State Route 487, Orangeville PA 17859 · <a href="tel:5707137339" style={{ color:"var(--text-muted)", textDecoration:"none" }}>(570) 713-7339</a>
         </div>
       </footer>
 

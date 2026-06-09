@@ -1167,19 +1167,19 @@ export default function GristmillClient() {
         )}
       </section>
 
-      <footer style={{ background:"#050505", borderTop:"1px solid #2a2a2a", padding:"1.5rem 2rem" }}>
+      <footer className="gm-footer">
         <div style={{ maxWidth:1100, margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
-          <div style={{ fontSize:12, color:"#aaa", fontStyle:"italic", lineHeight:2 }}>
-            <span style={{ color:"#ccc", fontStyle:"normal", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.08em" }}>Gristmill Guns & Optics</span>
+          <div className="gm-footer-text">
+            <span className="gm-footer-name">Gristmill Guns & Optics</span>
             &nbsp;·&nbsp; 1549 State Route 487, Orangeville PA 17859<br/>
-            <a href="tel:5707137339" style={{ color:"#aaa", textDecoration:"none" }}>(570) 713-7339</a>
+            <a href="tel:5707137339">(570) 713-7339</a>
             &nbsp;·&nbsp;
-            <a href="mailto:grant@gristmillguns.com" style={{ color:"#aaa", textDecoration:"none" }}>grant@gristmillguns.com</a>
+            <a href="mailto:grant@gristmillguns.com">grant@gristmillguns.com</a>
             &nbsp;·&nbsp;
-            <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer" style={{ color:"#aaa", textDecoration:"none" }}>@gristmillguns</a>
+            <a href="https://www.instagram.com/gristmillguns" target="_blank" rel="noreferrer">@gristmillguns</a>
             &nbsp;·&nbsp; All sales require valid ID &amp; background check
           </div>
-          <button onClick={() => window.location.href="/gristmill/admin"} style={{ background:"transparent", border:"none", color:"#333", fontSize:10, cursor:"pointer", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.1em", transition:"color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color="#666"} onMouseLeave={e => e.currentTarget.style.color="#333"}>ADMIN</button>
+          <button onClick={() => window.location.href="/gristmill/admin"} style={{ background:"transparent", border:"none", color:"var(--text-dim)", fontSize:10, cursor:"pointer", fontFamily:"var(--font-display)", letterSpacing:"0.1em", transition:"color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color="var(--text-muted)"} onMouseLeave={e => e.currentTarget.style.color="var(--text-dim)"}>ADMIN</button>
         </div>
       </footer>
 

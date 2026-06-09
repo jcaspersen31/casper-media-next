@@ -1,3 +1,4 @@
+import "./gristmill.css";
 import AgeGate from "./AgeGate";
 
 export const metadata = {
