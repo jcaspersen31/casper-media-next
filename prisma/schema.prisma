@@ -17,25 +17,51 @@ model Category {
 }
 
 model Product {
-  id           Int       @id @default(autoincrement())
-  name         String
-  category     String
-  categoryId   Int?
-  price        Int
-  salePrice    Int?
-  description  String?
-  specs        String?
-  imageUrl     String?
-  deposit      Int       @default(0)
-  serialNumber String?
-  sku          String?
-  active       Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id               Int       @id @default(autoincrement())
+  name             String
+  category         String
+  categoryId       Int?
+  price            Int
+  salePrice        Int?
+  msrp             Int?
+  onSale           Boolean   @default(false)
+  discountValue    Float?
+  description      String?
+  specs            String?
+  imageUrl         String?
+  deposit          Int       @default(0)
+  serialNumber     String?
+  sku              String?
+  // Orchid / firearm fields
+  upc              String?
+  manufacturer     String?
+  model            String?
+  partNumber       String?
+  caliber          String?
+  atfType          String?
+  cartridge        String?
+  action           String?
+  barrelLength     String?
+  overallLength    String?
+  magazineCapacity String?
+  magazineType     String?
+  condition        String?
+  quantityOnHand   Int?
+  reorderLevel     Int?
+  lastReceivedDate DateTime?
+  active           Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   categoryRef  Category?   @relation(fields: [categoryId], references: [id])
   dealsQueue   DealQueue[]
   reservations Reservation[]
+}
+
+model DisplaySettings {
+  id            Int      @id @default(autoincrement())
+  visibleFields Json     @default("[]")
+  updatedAt     DateTime @updatedAt
 }
 
 model DealQueue {

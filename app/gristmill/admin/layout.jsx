@@ -26,8 +26,10 @@ function Logo({ size = 36 }) {
 const NAV_ITEMS = [
   { href: "/gristmill/admin/reservations", label: "RESERVATIONS", icon: "📋" },
   { href: "/gristmill/admin/products",     label: "INVENTORY",     icon: "🔫" },
+  { href: "/gristmill/admin/import",       label: "IMPORT CSV",    icon: "📥" },
   { href: "/gristmill/admin/deals",        label: "DEALS QUEUE",   icon: "🎯" },
   { href: "/gristmill/admin/categories",   label: "CATEGORIES",    icon: "📂" },
+  { href: "/gristmill/admin/display",      label: "DISPLAY",       icon: "👁" },
   { href: "/gristmill/admin/settings",     label: "SETTINGS",      icon: "⚙" },
 ];
 

@@ -99,15 +99,29 @@ function Modal({ product, price, type, onClose }) {
 export default function ItemPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [visibleFields, setVisibleFields] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null);
 
   useEffect(() => {
-    fetch(`/api/products/${id}`).then(r => r.json()).then(d => {
-      setProduct(d);
+    Promise.all([
+      fetch(`/api/products/${id}`).then(r => r.json()),
+      fetch('/api/display-settings').then(r => r.json()),
+    ]).then(([prod, disp]) => {
+      setProduct(prod);
+      setVisibleFields(Array.isArray(disp.visibleFields) ? disp.visibleFields : []);
       setLoading(false);
     });
   }, [id]);
+
+  const FIELD_LABELS = {
+    manufacturer:'Manufacturer', model:'Model', caliber:'Caliber',
+    atfType:'Type', cartridge:'Cartridge', action:'Action',
+    barrelLength:'Barrel Length', overallLength:'Overall Length',
+    magazineCapacity:'Capacity', magazineType:'Magazine Type',
+    condition:'Condition', upc:'UPC', partNumber:'Part Number',
+    msrp:'MSRP', quantityOnHand:'In Stock',
+  };
 
   if (loading) return (
     <div style={{ minHeight:"100vh", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center" }}>
@@ -164,7 +178,24 @@ export default function ItemPage() {
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:32, fontWeight:700, color:"#e8e0d0", lineHeight:1.1, marginBottom:12 }}>{product.name}</div>
             <div style={{ fontFamily:"Georgia,serif", fontStyle:"italic", color:"#777", fontSize:15, lineHeight:1.7, marginBottom:20 }}>{product.description}</div>
 
-            {product.specs && (
+            {/* Dynamic fields from display settings */}
+            {visibleFields.length > 0 && (
+              <div style={{ marginBottom:24 }}>
+                <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#555", letterSpacing:"0.16em", marginBottom:10 }}>SPECIFICATIONS</div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"6px 16px" }}>
+                  {visibleFields.filter(f => product[f] !== null && product[f] !== undefined && product[f] !== '').map(f => (
+                    <div key={f} style={{ padding:"6px 0", borderBottom:"1px solid #1a1a1a" }}>
+                      <div style={{ fontSize:9, color:"#555", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.12em" }}>{FIELD_LABELS[f]?.toUpperCase() || f.toUpperCase()}</div>
+                      <div style={{ fontSize:13, color:"#e8e0d0", marginTop:2 }}>
+                        {f === 'msrp' ? `$${product[f]?.toLocaleString()}` : f === 'quantityOnHand' ? `${product[f]} in stock` : product[f]}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Legacy specs field fallback */}
+            {visibleFields.length === 0 && product.specs && (
               <div style={{ marginBottom:24 }}>
                 <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#555", letterSpacing:"0.16em", marginBottom:10 }}>SPECIFICATIONS</div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"6px 16px" }}>
