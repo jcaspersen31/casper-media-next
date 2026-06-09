@@ -1,3 +1,5 @@
+import AgeGate from "./AgeGate";
+
 export const metadata = {
   title: "Gristmill Guns & Optics — Orangeville, PA",
   description: "Gristmill Guns & Optics in Orangeville, PA. Browse our inventory, spin for daily deals, and reserve firearms online. Call (570) 713-7339.",
@@ -9,5 +11,5 @@ export const metadata = {
 };
 
 export default function GristmillLayout({ children }) {
-  return children;
+  return <AgeGate>{children}</AgeGate>;
 }
