@@ -6,7 +6,8 @@ export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url)
     const page     = Math.max(1, parseInt(searchParams.get('page')  || '1'))
-    const limit    = Math.min(48, parseInt(searchParams.get('limit') || '24'))
+    const limitParam = parseInt(searchParams.get('limit') || '24')
+    const limit    = Math.min(limitParam > 100 ? 1000 : 48, limitParam)
     const category = searchParams.get('category') || ''
     const search   = searchParams.get('search')   || ''
 
