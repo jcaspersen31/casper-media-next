@@ -113,6 +113,16 @@ export async function POST(req) {
 
     const results = { created: 0, updated: 0, skipped: 0, errors: [] };
 
+    // Auto-create any missing categories before import
+    const uniqueCats = [...new Set(rows.map(r => mapCategory(r['Category'], r['Sub Category'])).filter(Boolean))];
+    for (const catName of uniqueCats) {
+      const exists = await prisma.category.findFirst({ where: { name: catName } });
+      if (!exists) {
+        const count = await prisma.category.count();
+        await prisma.category.create({ data: { name: catName, sortOrder: count } });
+      }
+    }
+
     for (const row of rows) {
       try {
         const data = buildProductData(row);
