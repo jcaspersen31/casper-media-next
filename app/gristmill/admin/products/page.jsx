@@ -16,6 +16,8 @@ export default function ProductsPage() {
   const [imgPreview, setImgPreview] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filterCat, setFilterCat] = useState("All");
   const fileRef = useRef();
 
   useEffect(() => {
@@ -68,6 +70,19 @@ export default function ProductsPage() {
     r.onload = ev => { setImgPreview(ev.target.result); set("imageUrl", ev.target.result); };
     r.readAsDataURL(f);
   };
+
+  const filtered = products.filter(p => {
+    const matchesCat = filterCat === "All" || p.category === filterCat;
+    const q = search.toLowerCase();
+    const matchesSearch = !q || 
+      p.name?.toLowerCase().includes(q) ||
+      p.manufacturer?.toLowerCase().includes(q) ||
+      p.sku?.toLowerCase().includes(q) ||
+      p.upc?.toLowerCase().includes(q) ||
+      p.caliber?.toLowerCase().includes(q) ||
+      p.model?.toLowerCase().includes(q);
+    return matchesCat && matchesSearch;
+  });
 
   if (editing) return (
     <div>
@@ -130,9 +145,39 @@ export default function ProductsPage() {
       <PageHeader title={`INVENTORY (${products.length})`} action={
         <AdminButton onClick={openNew}>+ ADD PRODUCT</AdminButton>
       }/>
+      {/* Search and filter */}
+      {!loading && (
+        <div style={{ display:"flex", gap:10, marginBottom:16, flexWrap:"wrap" }}>
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search by name, make, model, SKU, UPC, caliber..."
+            style={{ flex:1, minWidth:200, background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 14px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none" }}
+          />
+          <select value={filterCat} onChange={e => setFilterCat(e.target.value)}
+            style={{ background:"#0a0a0a", border:"1px solid #222", color:"#e8e0d0", padding:"8px 12px", borderRadius:2, fontFamily:"'Oswald',sans-serif", fontSize:11, outline:"none", letterSpacing:"0.08em" }}>
+            <option value="All">ALL CATEGORIES</option>
+            {categories.map(c => <option key={c.id} value={c.name}>{c.name.toUpperCase()}</option>)}
+          </select>
+          {(search || filterCat !== "All") && (
+            <button onClick={() => { setSearch(""); setFilterCat("All"); }}
+              style={{ background:"transparent", border:"1px solid #2a2a2a", color:"#666", fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"8px 14px", borderRadius:2, cursor:"pointer", letterSpacing:"0.08em" }}>
+              CLEAR
+            </button>
+          )}
+        </div>
+      )}
+      <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#444", letterSpacing:"0.12em", marginBottom:10 }}>
+        {!loading && `${filtered.length} of ${products.length} ITEMS`}
+      </div>
+
       {loading && <div style={{ color:"#444", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>LOADING...</div>}
+      {!loading && filtered.length === 0 && (
+        <div style={{ color:"#333", fontFamily:"'Oswald',sans-serif", letterSpacing:"0.15em", padding:"3rem 0", textAlign:"center" }}>NO PRODUCTS MATCH</div>
+      )}
       <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-        {products.map(p => (
+        {filtered.map(p => (
           <div key={p.id} style={{ display:"flex", alignItems:"center", gap:12, background:"#111", border:"1px solid #1a1a1a", borderRadius:2, padding:"10px 14px" }}>
             <div style={{ width:52, height:40, background:"#161616", borderRadius:2, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
               {p.imageUrl ? <img src={p.imageUrl} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <span style={{ fontSize:18, opacity:0.15 }}>🔫</span>}
