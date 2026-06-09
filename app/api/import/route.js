@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import * as XLSX from 'xlsx'
 
 function mapCategory(category, subCategory) {
   const sub = (subCategory || '').toLowerCase();
@@ -18,77 +19,49 @@ function mapCategory(category, subCategory) {
 }
 
 function parsePrice(val) {
-  if (!val || val.trim() === '') return null;
+  if (val === null || val === undefined || val === '') return null;
   const n = parseFloat(String(val).replace(/[^0-9.]/g, ''));
   return isNaN(n) ? null : Math.round(n);
 }
 
-function parseIntVal(val) {
-  if (!val || val.trim() === '') return null;
-  const n = parseInt(String(val).replace(/[^0-9]/g, ''));
-  return isNaN(n) ? null : n;
+function parseQty(val) {
+  if (val === null || val === undefined || val === '') return null;
+  // Orchid exports qty as "1.0000" — parse as float then round
+  const n = parseFloat(String(val));
+  return isNaN(n) ? null : Math.round(n);
 }
 
 function parseDate(val) {
-  if (!val || val.trim() === '') return null;
-  try { const d = new Date(val); return isNaN(d.getTime()) ? null : d; } catch { return null; }
-}
-
-function parseCSV(text) {
-  // Strip BOM
-  const clean = text.replace(/^\uFEFF/, '');
-  const lines = clean.split(/\r?\n/);
-  if (!lines.length) return [];
-
-  // Parse headers
-  const headers = parseCSVLine(lines[0]);
-
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    const vals = parseCSVLine(line);
-    // Skip empty rows
-    if (vals.every(v => !v.trim())) continue;
-    const row = {};
-    headers.forEach((h, idx) => {
-      row[h.trim()] = (vals[idx] || '').trim();
-    });
-    // Must have at least a description or part number
-    if (!row['Description'] && !row['Part Number'] && !row['UPC']) continue;
-    rows.push(row);
-  }
-  return rows;
-}
-
-function parseCSVLine(line) {
-  const vals = [];
-  let cur = '';
-  let inQuote = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuote && line[i+1] === '"') { cur += '"'; i++; }
-      else { inQuote = !inQuote; }
-    } else if (ch === ',' && !inQuote) {
-      vals.push(cur);
-      cur = '';
-    } else {
-      cur += ch;
+  if (!val) return null;
+  try {
+    // XLSX may return a date serial number
+    if (typeof val === 'number') {
+      const d = XLSX.SSF.parse_date_code(val);
+      return new Date(d.y, d.m - 1, d.d);
     }
-  }
-  vals.push(cur);
-  return vals;
+    const d = new Date(val);
+    return isNaN(d.getTime()) ? null : d;
+  } catch { return null; }
+}
+
+function parseRows(buffer, fileType) {
+  const workbook = XLSX.read(buffer, {
+    type: 'buffer',
+    cellDates: false,
+    raw: false,
+  });
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  return rows.filter(r => r['Description'] || r['Part Number'] || r['UPC']);
 }
 
 function buildProductData(row) {
   const retailPrice = parsePrice(row['Retail Price']);
   if (!retailPrice) return null;
-
-  const name = (row['Description'] || '').trim();
+  const name = String(row['Description'] || '').trim();
   if (!name) return null;
 
-  const onSale = (row['On Sale'] || '').toLowerCase() === 'yes';
+  const onSale = String(row['On Sale'] || '').toLowerCase() === 'yes';
   const discountValue = parseFloat(row['Discount Value (%)'] || '0') || 0;
   const salePrice = onSale && discountValue > 0
     ? Math.round(retailPrice * (1 - discountValue / 100))
@@ -102,22 +75,22 @@ function buildProductData(row) {
     msrp:             parsePrice(row['MSRP']),
     onSale,
     discountValue:    discountValue || null,
-    upc:              row['UPC'] || null,
-    manufacturer:     row['Manufacturer'] || null,
-    model:            row['Model'] || null,
-    partNumber:       row['Part Number'] || null,
-    sku:              row['Part Number'] || null,
-    caliber:          row['Firearm Caliber / GA'] || null,
-    atfType:          row['ATF Type'] || null,
-    cartridge:        row['Catridge'] || null,
-    action:           row['Action'] || null,
-    barrelLength:     row['Barrel Length'] || null,
-    overallLength:    row['Overall Length'] || null,
-    magazineCapacity: row['Magazine Capacity'] || null,
-    magazineType:     row['Magazine Type'] || null,
-    condition:        row['Firearm Condition'] || null,
-    quantityOnHand:   parseIntVal(row['Quantity on Hand']),
-    reorderLevel:     parseIntVal(row['Reorder Level']),
+    upc:              String(row['UPC'] || '').trim() || null,
+    manufacturer:     String(row['Manufacturer'] || '').trim() || null,
+    model:            String(row['Model'] || '').trim() || null,
+    partNumber:       String(row['Part Number'] || '').trim() || null,
+    sku:              String(row['Part Number'] || '').trim() || null,
+    caliber:          String(row['Firearm Caliber / GA'] || '').trim() || null,
+    atfType:          String(row['ATF Type'] || '').trim() || null,
+    cartridge:        String(row['Catridge'] || '').trim() || null,
+    action:           String(row['Action'] || '').trim() || null,
+    barrelLength:     String(row['Barrel Length'] || '').trim() || null,
+    overallLength:    String(row['Overall Length'] || '').trim() || null,
+    magazineCapacity: String(row['Magazine Capacity'] || '').trim() || null,
+    magazineType:     String(row['Magazine Type'] || '').trim() || null,
+    condition:        String(row['Firearm Condition'] || '').trim() || null,
+    quantityOnHand:   parseQty(row['Quantity on Hand']),
+    reorderLevel:     parseQty(row['Reorder Level']),
     lastReceivedDate: parseDate(row['Last Received Date']),
     description:      [row['Manufacturer'], row['Model']].filter(Boolean).join(' ') || null,
   };
@@ -125,8 +98,13 @@ function buildProductData(row) {
 
 export async function POST(req) {
   try {
-    const { csv, preview } = await req.json();
-    const rows = parseCSV(csv);
+    const formData = await req.formData();
+    const file = formData.get('file');
+    if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+
+    const preview = formData.get('preview') === 'true';
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const rows = parseRows(buffer, file.name);
 
     if (preview) {
       const previewData = rows.slice(0, 10).map(row => buildProductData(row)).filter(Boolean);
@@ -140,10 +118,13 @@ export async function POST(req) {
         const data = buildProductData(row);
         if (!data) { results.skipped++; continue; }
 
-        const existing = row['UPC']
-          ? await prisma.product.findFirst({ where: { upc: row['UPC'] } })
-          : row['Part Number']
-          ? await prisma.product.findFirst({ where: { partNumber: row['Part Number'] } })
+        const upc = String(row['UPC'] || '').trim();
+        const partNum = String(row['Part Number'] || '').trim();
+
+        const existing = upc
+          ? await prisma.product.findFirst({ where: { upc } })
+          : partNum
+          ? await prisma.product.findFirst({ where: { partNumber: partNum } })
           : null;
 
         if (existing) {
@@ -154,7 +135,7 @@ export async function POST(req) {
           results.created++;
         }
       } catch (e) {
-        results.errors.push({ row: row['Description'] || row['Part Number'], error: e.message });
+        results.errors.push({ row: String(row['Description'] || row['Part Number'] || ''), error: e.message });
       }
     }
 
