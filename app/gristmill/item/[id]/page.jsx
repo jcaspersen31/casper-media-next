@@ -7,22 +7,7 @@ const GOLD = "#c9a84c";
 const maskSerial = s => s && s.length > 4 ? `···${s.slice(-4)}` : s ? `···${s}` : null;
 
 function Logo({ size=36 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 200 200" fill="none">
-      <polygon points="100,18 170,68 170,130 30,130 30,68" fill="none" stroke={GOLD} strokeWidth="6"/>
-      <line x1="30" y1="68" x2="170" y2="68" stroke={GOLD} strokeWidth="4"/>
-      <rect x="66" y="50" width="11" height="20" rx="3" fill={GOLD}/>
-      <rect x="123" y="50" width="11" height="20" rx="3" fill={GOLD}/>
-      <circle cx="100" cy="100" r="36" fill="none" stroke="white" strokeWidth="5.5"/>
-      <circle cx="100" cy="100" r="10" fill="none" stroke="white" strokeWidth="4"/>
-      <circle cx="100" cy="100" r="3" fill="white"/>
-      <line x1="100" y1="64" x2="100" y2="79" stroke="white" strokeWidth="4"/>
-      <line x1="100" y1="121" x2="100" y2="136" stroke="white" strokeWidth="4"/>
-      <line x1="64" y1="100" x2="79" y2="100" stroke="white" strokeWidth="4"/>
-      <line x1="121" y1="100" x2="136" y2="100" stroke="white" strokeWidth="4"/>
-      <line x1="30" y1="130" x2="170" y2="130" stroke={GOLD} strokeWidth="4"/>
-    </svg>
-  );
+  return <img src="https://res.cloudinary.com/dq2d56it9/image/upload/v1781047650/Gristmill_Logo_dqmsgw.png" alt="Gristmill Guns & Optics" width={size} height={size} style={{ objectFit:"contain" }}/>
 }
 
 function Modal({ product, price, type, onClose }) {

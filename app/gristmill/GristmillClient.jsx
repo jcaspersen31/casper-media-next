@@ -61,23 +61,10 @@ function getTodaysDeal(dealList) {
 const CATS = ["All","Rifles","Shotguns","Handguns","Optics","Ammunition","Accessories"];
 
 // ── helpers ───────────────────────────────────────────────────────────────
+const LOGO_URL = "https://res.cloudinary.com/dq2d56it9/image/upload/v1781047650/Gristmill_Logo_dqmsgw.png";
+
 function Logo({ size = 48 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 200 200" fill="none">
-      <polygon points="100,18 170,68 170,130 30,130 30,68" fill="none" stroke={GOLD} strokeWidth="6"/>
-      <line x1="30" y1="68" x2="170" y2="68" stroke={GOLD} strokeWidth="4"/>
-      <rect x="66" y="50" width="11" height="20" rx="3" fill={GOLD}/>
-      <rect x="123" y="50" width="11" height="20" rx="3" fill={GOLD}/>
-      <circle cx="100" cy="100" r="36" fill="none" stroke="white" strokeWidth="5.5"/>
-      <circle cx="100" cy="100" r="10" fill="none" stroke="white" strokeWidth="4"/>
-      <circle cx="100" cy="100" r="3" fill="white"/>
-      <line x1="100" y1="64" x2="100" y2="79" stroke="white" strokeWidth="4"/>
-      <line x1="100" y1="121" x2="100" y2="136" stroke="white" strokeWidth="4"/>
-      <line x1="64" y1="100" x2="79" y2="100" stroke="white" strokeWidth="4"/>
-      <line x1="121" y1="100" x2="136" y2="100" stroke="white" strokeWidth="4"/>
-      <line x1="30" y1="130" x2="170" y2="130" stroke={GOLD} strokeWidth="4"/>
-    </svg>
-  );
+  return <img src={LOGO_URL} alt="Gristmill Guns & Optics" width={size} height={size} style={{ objectFit:"contain" }}/>;
 }
 
 function useCountdown(endTime) {
@@ -941,25 +928,39 @@ function AdminPanel({ onClose }) {
 export default function GristmillClient() {
   const [spinDone, setSpinDone] = useState(false);
   const [catFilter, setCatFilter] = useState("All");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const [todaysDeal, setTodaysDeal] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const LIMIT = 24;
 
+  // Fetch today's deal once on mount
   useEffect(() => {
-    // Restore spin state
     if (getStoredSpin()) setSpinDone(true);
-
-    // Load products and today's deal from API
-    Promise.all([
-      fetch('/api/products').then(r => r.json()),
-      fetch('/api/deals/today').then(r => r.json()),
-    ]).then(([prods, deal]) => {
-      setProducts(Array.isArray(prods) ? prods : []);
-      // Normalize discountPct -> pct for frontend consistency
+    fetch('/api/deals/today').then(r => r.json()).then(deal => {
       if (deal && !deal.error) setTodaysDeal({ ...deal, pct: deal.discountPct });
-      setLoading(false);
-    }).catch(() => setLoading(false));
+    });
   }, []);
+
+  // Fetch products when page/filter/search changes
+  useEffect(() => {
+    setLoading(true);
+    const params = new URLSearchParams({ page, limit: LIMIT });
+    if (catFilter && catFilter !== "All") params.set("category", catFilter);
+    if (search) params.set("search", search);
+    fetch(`/api/products?${params}`)
+      .then(r => r.json())
+      .then(data => {
+        setProducts(Array.isArray(data.products) ? data.products : []);
+        setTotalPages(data.totalPages || 1);
+        setTotal(data.total || 0);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [page, catFilter, search]);
 
   const handleSpinResult = () => {
     const endTime = Date.now() + 10 * 60 * 1000;
@@ -967,7 +968,9 @@ export default function GristmillClient() {
     setSpinDone(true);
   };
 
-  // Normalize API fields to match component expectations
+  const handleCatFilter = (cat) => { setCatFilter(cat); setPage(1); };
+  const handleSearch = (val) => { setSearch(val); setPage(1); };
+
   const normalizeProduct = (p) => ({
     ...p,
     cat: p.category,
@@ -978,8 +981,7 @@ export default function GristmillClient() {
   });
 
   const dealProduct = todaysDeal?.product ? normalizeProduct(todaysDeal.product) : null;
-  const normalizedProducts = products.map(normalizeProduct);
-  const filtered = catFilter === "All" ? normalizedProducts : normalizedProducts.filter(p => p.cat === catFilter);
+  const normalized = products.map(normalizeProduct);
 
 
 
