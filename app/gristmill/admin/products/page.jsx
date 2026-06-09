@@ -37,10 +37,10 @@ export default function ProductsPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/products").then(r => r.json()),
+      fetch("/api/products?limit=500").then(r => r.json()),
       fetch("/api/categories").then(r => r.json()),
-    ]).then(([prods, cats]) => {
-      setProducts(Array.isArray(prods) ? prods : []);
+    ]).then(([data, cats]) => {
+      setProducts(Array.isArray(data.products) ? data.products : []);
       setCategories(Array.isArray(cats) ? cats : []);
       setLoading(false);
     });

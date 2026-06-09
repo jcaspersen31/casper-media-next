@@ -428,7 +428,7 @@ function ProductCard({ p }) {
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
       <div style={{ background:"#111", border:`1px solid ${hov ? GOLD : "#1e1e1e"}`, borderRadius:3, overflow:"hidden", transition:"transform 0.18s,border-color 0.18s", transform: hov ? "translateY(-3px)":"none" }}>
         <div style={{ aspectRatio:"4/3", background:"#161616", display:"flex", alignItems:"center", justifyContent:"center", position:"relative", borderBottom:"1px solid #1e1e1e", overflow:"hidden" }}>
-          {(p.img||p.imageUrl) ? <img src={p.img||p.imageUrl} alt={p.name} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
+          {(p.img||p.imageUrl) ? <img src={p.img||p.imageUrl} alt={p.name} loading="lazy" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
             <svg width="64" height="40" viewBox="0 0 64 40" fill="none">
               <rect x="2" y="16" width="42" height="8" rx="2" fill="#2a2a2a" stroke="#3a3a3a" strokeWidth="1"/>
               <rect x="12" y="10" width="30" height="6" rx="1" fill="#222" stroke="#3a3a3a" strokeWidth="1"/>
@@ -1105,23 +1105,65 @@ export default function GristmillPage() {
 
       {/* CATALOG */}
       <section style={{ maxWidth:1100, margin:"0 auto", padding:"3rem 2rem 5rem" }}>
-        <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", marginBottom:"1.5rem", flexWrap:"wrap", gap:12 }}>
+        <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", marginBottom:"1.25rem", flexWrap:"wrap", gap:12 }}>
           <div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"#444", letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:4 }}>BROWSE OUR INVENTORY</div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:26, fontWeight:700, color:"white", letterSpacing:"0.04em" }}>IN-STORE CATALOG</div>
           </div>
-          <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-            {CATS.map(c => (
-              <button key={c} onClick={() => setCatFilter(c)}
-                style={{ background: catFilter===c ? `${GOLD}18`:"transparent", border:`1px solid ${catFilter===c ? GOLD:"#1e1e1e"}`, color: catFilter===c ? GOLD:"#555", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.12em", transition:"all 0.2s" }}>
-                {c}
-              </button>
-            ))}
+          {/* Search */}
+          <input
+            type="text"
+            value={search}
+            onChange={e => handleSearch(e.target.value)}
+            placeholder="Search by name, caliber, make..."
+            style={{ background:"#111", border:"1px solid #2a2a2a", color:"#e8e0d0", padding:"8px 14px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", width:240 }}
+          />
+        </div>
+
+        {/* Category filters */}
+        <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"1.5rem" }}>
+          {CATS.map(c => (
+            <button key={c} onClick={() => handleCatFilter(c)}
+              style={{ background: catFilter===c ? `${GOLD}18`:"transparent", border:`1px solid ${catFilter===c ? GOLD:"#1e1e1e"}`, color: catFilter===c ? GOLD:"#555", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.12em", transition:"all 0.2s" }}>
+              {c}
+            </button>
+          ))}
+        </div>
+
+        {/* Count */}
+        {!loading && <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:10, color:"#444", letterSpacing:"0.12em", marginBottom:16 }}>{total} ITEMS{catFilter!=="All"?` IN ${catFilter.toUpperCase()}`:""}</div>}
+
+        {/* Grid */}
+        {loading ? (
+          <div style={{ padding:"4rem 0", textAlign:"center", fontFamily:"'Oswald',sans-serif", fontSize:12, color:"#333", letterSpacing:"0.2em" }}>LOADING...</div>
+        ) : normalized.length === 0 ? (
+          <div style={{ padding:"4rem 0", textAlign:"center", fontFamily:"'Oswald',sans-serif", fontSize:12, color:"#333", letterSpacing:"0.2em" }}>NO ITEMS FOUND</div>
+        ) : (
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"1rem" }}>
+            {normalized.map(p => <ProductCard key={p.id} p={p}/>)}
           </div>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:"1rem" }}>
-          {filtered.map(p => <ProductCard key={p.id} p={p}/>)}
-        </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12, marginTop:"2.5rem" }}>
+            <button
+              onClick={() => setPage(p => Math.max(1, p-1))}
+              disabled={page === 1}
+              style={{ background:"transparent", border:`1px solid ${page===1?"#1e1e1e":GOLD}`, color:page===1?"#333":GOLD, fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"8px 20px", borderRadius:2, cursor:page===1?"not-allowed":"pointer", letterSpacing:"0.1em", transition:"all 0.2s" }}>
+              ← PREV
+            </button>
+            <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"#555", letterSpacing:"0.12em" }}>
+              PAGE {page} OF {totalPages}
+            </div>
+            <button
+              onClick={() => setPage(p => Math.min(totalPages, p+1))}
+              disabled={page === totalPages}
+              style={{ background:"transparent", border:`1px solid ${page===totalPages?"#1e1e1e":GOLD}`, color:page===totalPages?"#333":GOLD, fontFamily:"'Oswald',sans-serif", fontSize:11, padding:"8px 20px", borderRadius:2, cursor:page===totalPages?"not-allowed":"pointer", letterSpacing:"0.1em", transition:"all 0.2s" }}>
+              NEXT →
+            </button>
+          </div>
+        )}
       </section>
 
       <footer style={{ background:"#050505", borderTop:"1px solid #2a2a2a", padding:"1.5rem 2rem" }}>

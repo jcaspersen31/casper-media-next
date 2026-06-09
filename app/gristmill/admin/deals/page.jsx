@@ -91,11 +91,11 @@ export default function DealsPage() {
   useEffect(() => {
     Promise.all([
       fetch("/api/deals").then(r => r.json()),
-      fetch("/api/products").then(r => r.json()),
+      fetch("/api/products?limit=500").then(r => r.json()),
       fetch("/api/deals/today").then(r => r.json()),
     ]).then(([deals, prods, today]) => {
       setQueue(Array.isArray(deals) ? deals : []);
-      setProducts(Array.isArray(prods) ? prods.sort((a,b) => a.name.localeCompare(b.name)) : []);
+      setProducts(Array.isArray(prods.products) ? prods.products.sort((a,b) => a.name.localeCompare(b.name)) : []);
       setTodaysDeal(today);
       setLoading(false);
     });
