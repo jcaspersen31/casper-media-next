@@ -928,6 +928,7 @@ function AdminPanel({ onClose }) {
 export default function GristmillClient() {
   const [spinDone, setSpinDone] = useState(false);
   const [catFilter, setCatFilter] = useState("All");
+  const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -942,6 +943,9 @@ export default function GristmillClient() {
     if (getStoredSpin()) setSpinDone(true);
     fetch('/api/deals/today').then(r => r.json()).then(deal => {
       if (deal && !deal.error) setTodaysDeal({ ...deal, pct: deal.discountPct });
+    });
+    fetch('/api/categories').then(r => r.json()).then(d => {
+      if (Array.isArray(d.categories)) setCategories(d.categories.map(c => c.name));
     });
   }, []);
 
@@ -1136,7 +1140,7 @@ export default function GristmillClient() {
 
         {/* Category filters */}
         <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"1.5rem" }}>
-          {CATS.map(c => (
+          {["All", ...categories].map(c => (
             <button key={c} onClick={() => handleCatFilter(c)}
               style={{ background: catFilter===c ? `${GOLD}18`:"transparent", border:`1px solid ${catFilter===c ? GOLD:"#1e1e1e"}`, color: catFilter===c ? GOLD:"#a0a0a0", fontFamily:"'Oswald',sans-serif", fontSize:10, padding:"5px 12px", borderRadius:2, cursor:"pointer", letterSpacing:"0.12em", transition:"all 0.2s" }}>
               {c}
