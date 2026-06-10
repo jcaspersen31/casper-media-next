@@ -31,6 +31,7 @@ export default function ProductsPage() {
   const [imgPreview, setImgPreview] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState("");
   const [filterCat, setFilterCat] = useState("All");
   const fileRef = useRef();
@@ -126,12 +127,34 @@ export default function ProductsPage() {
     setProducts(ps => ps.filter(p => p.id !== id));
   };
 
-  const handleImg = e => {
+  const handleImg = async e => {
     const f = e.target.files[0];
     if (!f) return;
-    const r = new FileReader();
-    r.onload = ev => { setImgPreview(ev.target.result); set("imageUrl", ev.target.result); };
-    r.readAsDataURL(f);
+    // Show local preview immediately
+    const reader = new FileReader();
+    reader.onload = ev => setImgPreview(ev.target.result);
+    reader.readAsDataURL(f);
+    // Upload to Cloudinary
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", f);
+      fd.append("upload_preset", "gristmill");
+      fd.append("folder", "gristmill");
+      const res = await fetch("https://api.cloudinary.com/v1_1/dq2d56it9/image/upload", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (data.secure_url) {
+        setImgPreview(data.secure_url);
+        set("imageUrl", data.secure_url);
+      }
+    } catch(e) {
+      console.error("Cloudinary upload failed:", e);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const filtered = products.filter(p => {

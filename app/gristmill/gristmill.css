@@ -228,3 +228,11 @@ body {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.6; }
 }
+
+/* ── CLOUDINARY CONFIG ───────────────────────────────── 
+   Update these if Cloudinary credentials change.
+   Cloud name: dq2d56it9
+   Upload preset: gristmill
+   Folder: gristmill
+   Full upload URL: https://api.cloudinary.com/v1_1/dq2d56it9/image/upload
+────────────────────────────────────────────────────── */
