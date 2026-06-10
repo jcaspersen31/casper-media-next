@@ -960,14 +960,18 @@ export default function GristmillClient() {
         setTotalPages(data.totalPages || 1);
         setTotal(data.total || 0);
         setLoading(false);
-        // Scroll to top of catalog on page change
-        if (catalogRef.current) {
-          const top = catalogRef.current.getBoundingClientRect().top + window.scrollY - 80;
-          window.scrollTo({ top, behavior: "smooth" });
-        }
+
       })
       .catch(() => setLoading(false));
   }, [page, catFilter, search]);
+
+  // Scroll after products render
+  useEffect(() => {
+    if (!loading && catalogRef.current && page > 1) {
+      const top = catalogRef.current.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  }, [products]);
 
   const handleSpinResult = () => {
     const endTime = Date.now() + 10 * 60 * 1000;
