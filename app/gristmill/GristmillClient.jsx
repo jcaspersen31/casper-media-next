@@ -263,7 +263,7 @@ function DealResult({ product, pct, onReserve, onPayFull }) {
 
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, background:"var(--bg-card)", border:"1px solid var(--border)", borderRadius:3, padding:24 }}>
         <div style={{ aspectRatio:"4/3", background:"#161616", border:"1px solid var(--border)", borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
-          {product.img ? <img src={product.img} alt={product.name} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
+          {product.img ? <img src={product.img} alt={product.name} style={{ width:"100%", height:"100%", objectFit:"contain" }}/> :
             <svg width="80" height="50" viewBox="0 0 80 50" fill="none">
               <rect x="2" y="20" width="52" height="10" rx="2" fill="#2a2a2a" stroke="#9e9e9e" strokeWidth="1"/>
               <rect x="16" y="12" width="36" height="8" rx="1" fill="#222" stroke="#9e9e9e" strokeWidth="1"/>
@@ -416,7 +416,7 @@ function ProductCard({ p }) {
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
       <div style={{ background:"var(--bg-card)", border:`1px solid ${hov ? GOLD : "#1e1e1e"}`, borderRadius:3, overflow:"hidden", transition:"transform 0.18s,border-color 0.18s", transform: hov ? "translateY(-3px)":"none" }}>
         <div style={{ aspectRatio:"4/3", background:"#161616", display:"flex", alignItems:"center", justifyContent:"center", position:"relative", borderBottom:"1px solid var(--border)", overflow:"hidden" }}>
-          {(p.img||p.imageUrl) ? <img src={p.img||p.imageUrl} alt={p.name} loading="lazy" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
+          {(p.img||p.imageUrl) ? <img src={p.img||p.imageUrl} alt={p.name} loading="lazy" style={{ width:"100%", height:"100%", objectFit:"contain" }}/> :
             <svg width="64" height="40" viewBox="0 0 64 40" fill="none">
               <rect x="2" y="16" width="42" height="8" rx="2" fill="#2a2a2a" stroke="#9e9e9e" strokeWidth="1"/>
               <rect x="12" y="10" width="30" height="6" rx="1" fill="#222" stroke="#9e9e9e" strokeWidth="1"/>
@@ -775,7 +775,7 @@ function AdminPanel({ onClose }) {
               {products.map(p => (
                 <div key={p.id} style={{ display:"flex", alignItems:"center", gap:12, background:"var(--bg-card)", border:"1px solid #1a1a1a", borderRadius:2, padding:"10px 14px" }}>
                   <div style={{ width:48, height:36, background:"#161616", borderRadius:2, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    {p.img ? <img src={p.img} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <span style={{ fontSize:16, opacity:0.15 }}>🔫</span>}
+                    {p.img ? <img src={p.img} alt="" style={{ width:"100%", height:"100%", objectFit:"contain" }}/> : <span style={{ fontSize:16, opacity:0.15 }}>🔫</span>}
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"var(--text)", display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}>
@@ -905,7 +905,7 @@ function AdminPanel({ onClose }) {
                 <label style={lStyle}>PRODUCT PHOTO</label>
                 <div onClick={() => fileRef.current.click()} onMouseEnter={e => e.currentTarget.style.borderColor=GOLD} onMouseLeave={e => e.currentTarget.style.borderColor="#1e1e1e"}
                   style={{ aspectRatio:"4/3", background:"var(--bg)", border:"2px dashed #1e1e1e", borderRadius:3, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", cursor:"pointer", overflow:"hidden", transition:"border-color 0.2s" }}>
-                  {imgPreview ? <img src={imgPreview} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> :
+                  {imgPreview ? <img src={imgPreview} alt="" style={{ width:"100%", height:"100%", objectFit:"contain" }}/> :
                     <div style={{ textAlign:"center", color:"var(--text-dim)" }}>
                       <div style={{ fontSize:28, marginBottom:6 }}>↑</div>
                       <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.1em" }}>CLICK TO UPLOAD</div>
@@ -1047,7 +1047,7 @@ export default function GristmillClient() {
           {/* Hero photo — full width */}
           <div style={{ width:"100%", aspectRatio:"21/9", background:"var(--bg-card)", border:"1px solid var(--border)", borderRadius:3, marginBottom:"1.5rem", overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", position:"relative" }}>
             {/* REPLACE src below with Cloudinary URL of exterior/hero shot */}
-            {false ? <img src="" alt="Gristmill Guns exterior" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : (
+            {false ? <img src="" alt="Gristmill Guns exterior" style={{ width:"100%", height:"100%", objectFit:"contain" }}/> : (
               <div style={{ textAlign:"center", color:"#2a2a2a" }}>
                 <div style={{ fontSize:40, marginBottom:8 }}>🏚</div>
                 <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.18em" }}>EXTERIOR PHOTO</div>
@@ -1065,7 +1065,7 @@ export default function GristmillClient() {
             ].map(({ slot, hint, icon }) => (
               <div key={slot} style={{ aspectRatio:"4/3", background:"var(--bg-card)", border:"1px solid var(--border)", borderRadius:3, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
                 {/* REPLACE false with true and add src URL when photo is ready */}
-                {false ? <img src="" alt={slot} style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : (
+                {false ? <img src="" alt={slot} style={{ width:"100%", height:"100%", objectFit:"contain" }}/> : (
                   <div style={{ textAlign:"center", color:"#2a2a2a", padding:"1rem" }}>
                     <div style={{ fontSize:28, marginBottom:6 }}>{icon}</div>
                     <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, letterSpacing:"0.14em" }}>{slot}</div>

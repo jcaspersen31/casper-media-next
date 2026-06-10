@@ -148,7 +148,7 @@ export default function ItemPage() {
           {/* Image */}
           <div style={{ aspectRatio:"4/3", background:"var(--bg-card)", border:"1px solid var(--border)", borderRadius:3, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
             {product.imageUrl
-              ? <img src={product.imageUrl} alt={product.name} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+              ? <img src={product.imageUrl} alt={product.name} style={{ width:"100%", height:"100%", objectFit:"contain" }}/>
               : <svg width="100" height="62" viewBox="0 0 100 62" fill="none">
                   <rect x="2" y="24" width="66" height="14" rx="2" fill="#2a2a2a" stroke="#9e9e9e" strokeWidth="1.5"/>
                   <rect x="20" y="14" width="46" height="10" rx="1" fill="#222" stroke="#9e9e9e" strokeWidth="1.5"/>

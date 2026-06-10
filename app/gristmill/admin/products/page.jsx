@@ -281,7 +281,7 @@ export default function ProductsPage() {
             style={{ aspectRatio:"4/3", background:"var(--bg)", border:"2px dashed #1e1e1e", borderRadius:3, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", cursor:"pointer", overflow:"hidden", transition:"border-color 0.2s", marginBottom:12 }}
           >
             {imgPreview
-              ? <img src={imgPreview} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+              ? <img src={imgPreview} alt="" style={{ width:"100%", height:"100%", objectFit:"contain" }}/>
               : <div style={{ textAlign:"center", color:"var(--text-dim)" }}>
                   <div style={{ fontSize:32, marginBottom:8 }}>↑</div>
                   <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:12, letterSpacing:"0.1em" }}>CLICK TO UPLOAD</div>
@@ -348,7 +348,7 @@ export default function ProductsPage() {
         {filtered.map(p => (
           <div key={p.id} style={{ display:"flex", alignItems:"center", gap:12, background:"var(--bg-card)", border:"1px solid #1a1a1a", borderRadius:2, padding:"10px 14px" }}>
             <div style={{ width:52, height:40, background:"#161616", borderRadius:2, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
-              {p.imageUrl ? <img src={p.imageUrl} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <span style={{ fontSize:16, opacity:0.15 }}>🔫</span>}
+              {p.imageUrl ? <img src={p.imageUrl} alt="" style={{ width:"100%", height:"100%", objectFit:"contain" }}/> : <span style={{ fontSize:16, opacity:0.15 }}>🔫</span>}
             </div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"var(--text)", display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}>

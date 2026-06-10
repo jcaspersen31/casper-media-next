@@ -183,7 +183,7 @@ export default function DealsPage() {
             <div key={d.id} style={{ display:"flex", alignItems:"center", gap:12, background:"var(--bg-card)", border:"1px solid #1a1a1a", borderRadius:2, padding:"12px 16px" }}>
               <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:11, color:"var(--text-dim)", minWidth:24, textAlign:"center" }}>#{i+1}</div>
               <div style={{ width:40, height:32, background:"#161616", borderRadius:2, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                {prod?.imageUrl ? <img src={prod.imageUrl} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <span style={{ fontSize:14, opacity:0.15 }}>🔫</span>}
+                {prod?.imageUrl ? <img src={prod.imageUrl} alt="" style={{ width:"100%", height:"100%", objectFit:"contain" }}/> : <span style={{ fontSize:14, opacity:0.15 }}>🔫</span>}
               </div>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:13, color:"var(--text)" }}>{prod?.name || "Unknown"}</div>
