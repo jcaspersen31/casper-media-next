@@ -945,6 +945,8 @@ export default function GristmillClient() {
     });
   }, []);
 
+  const catalogRef = useRef(null);
+
   // Fetch products when page/filter/search changes
   useEffect(() => {
     setLoading(true);
@@ -958,6 +960,10 @@ export default function GristmillClient() {
         setTotalPages(data.totalPages || 1);
         setTotal(data.total || 0);
         setLoading(false);
+        // Scroll to top of catalog on page change
+        if (catalogRef.current) {
+          catalogRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       })
       .catch(() => setLoading(false));
   }, [page, catFilter, search]);
@@ -1107,7 +1113,7 @@ export default function GristmillClient() {
       </section>
 
       {/* CATALOG */}
-      <section style={{ maxWidth:1100, margin:"0 auto", padding:"3rem 2rem 5rem" }}>
+      <section ref={catalogRef} style={{ maxWidth:1100, margin:"0 auto", padding:"3rem 2rem 5rem" }}>
         <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", marginBottom:"1.25rem", flexWrap:"wrap", gap:12 }}>
           <div>
             <div style={{ fontFamily:"'Oswald',sans-serif", fontSize:9, color:"var(--text-dim)", letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:4 }}>BROWSE OUR INVENTORY</div>
