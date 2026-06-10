@@ -962,7 +962,8 @@ export default function GristmillClient() {
         setLoading(false);
         // Scroll to top of catalog on page change
         if (catalogRef.current) {
-          catalogRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+          const top = catalogRef.current.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: "smooth" });
         }
       })
       .catch(() => setLoading(false));
