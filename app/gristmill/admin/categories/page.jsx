@@ -59,11 +59,21 @@ export default function CategoriesPage() {
   const syncMissing = async () => {
     setSyncing(true);
     setSyncResult(null);
-    const res = await fetch("/api/categories/sync", { method:"POST" });
-    const d = await res.json();
-    setSyncResult(d.count);
-    setSyncing(false);
-    loadCategories(); // Reload to show new categories
+    try {
+      const res = await fetch("/api/categories/sync", { method:"POST" });
+      const d = await res.json();
+      if (d.error) { setError(d.error); return; }
+      setSyncResult(d.count);
+      // Reload after a short delay to ensure DB has committed
+      setTimeout(() => {
+        setLoading(true);
+        loadCategories();
+      }, 500);
+    } catch(e) {
+      setError(e.message);
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const iStyle = { background:"var(--bg)", border:"1px solid var(--border-mid)", color:"var(--text)", padding:"7px 12px", borderRadius:2, fontFamily:"Georgia,serif", fontSize:13, outline:"none", boxSizing:"border-box" };
