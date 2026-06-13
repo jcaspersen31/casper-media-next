@@ -1,30 +1,18 @@
 {
-  "name": "casper-media-next",
+  "name": "casper-media-web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "db:migrate": "prisma migrate deploy",
-    "db:generate": "prisma generate",
-    "db:seed": "prisma db seed",
-    "db:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0",
     "next": "^16.2.7",
     "pg": "^8.21.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "xlsx": "^0.18.5"
+    "react-dom": "^19.0.0"
   },
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
-  "devDependencies": {
-    "prisma": "^5.22.0"
-  }
+  "devDependencies": {}
 }
