@@ -1,15 +1,25 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
 
-export default function AdminHome() {
+export default async function AdminHome() {
+  const [reports, paid, customers, columnAliases, unconfirmedAliases, rules, products] = await Promise.all([
+    db.prepare("SELECT COUNT(*)::int c FROM reports").get(),
+    db.prepare("SELECT COUNT(*)::int c FROM reports WHERE status != 'uploaded'").get(),
+    db.prepare("SELECT COUNT(*)::int c FROM users WHERE role = 'customer'").get(),
+    db.prepare("SELECT COUNT(*)::int c FROM column_aliases").get(),
+    db.prepare("SELECT COUNT(*)::int c FROM column_aliases WHERE confirmed = 0").get(),
+    db.prepare("SELECT COUNT(*)::int c FROM rules").get(),
+    db.prepare("SELECT COUNT(*)::int c FROM products").get(),
+  ]);
+
   const counts = {
-    reports: db.prepare("SELECT COUNT(*) c FROM reports").get().c,
-    paid: db.prepare("SELECT COUNT(*) c FROM reports WHERE status != 'uploaded'").get().c,
-    customers: db.prepare("SELECT COUNT(*) c FROM users WHERE role = 'customer'").get().c,
-    columnAliases: db.prepare("SELECT COUNT(*) c FROM column_aliases").get().c,
-    unconfirmedAliases: db.prepare("SELECT COUNT(*) c FROM column_aliases WHERE confirmed = 0").get().c,
-    rules: db.prepare("SELECT COUNT(*) c FROM rules").get().c,
-    products: db.prepare("SELECT COUNT(*) c FROM products").get().c,
+    reports: reports.c,
+    paid: paid.c,
+    customers: customers.c,
+    columnAliases: columnAliases.c,
+    unconfirmedAliases: unconfirmedAliases.c,
+    rules: rules.c,
+    products: products.c,
   };
 
   const cards = [

@@ -1,7 +1,7 @@
 import { db } from "./db";
 
-export function loadReportForUser(reportId, user) {
-  const report = db
+export async function loadReportForUser(reportId, user) {
+  const report = await db
     .prepare(
       `SELECT r.*, u.name as customer_name, u.email as customer_email, us.name as usage_name
        FROM reports r

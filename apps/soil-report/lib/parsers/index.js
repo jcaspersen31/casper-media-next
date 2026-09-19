@@ -17,7 +17,7 @@ function detectSourceType(filename) {
 // resolve via fuzzy match are reported separately from ones that don't
 // resolve at all, so the customer/admin can see what was guessed vs. what
 // needs a real mapping.
-function normalizeRows(rawRows) {
+async function normalizeRows(rawRows) {
   const samples = [];
   const flaggedColumns = new Set();
   const autoMatched = new Map(); // sourceLabel -> metricKey
@@ -28,7 +28,7 @@ function normalizeRows(rawRows) {
 
     for (const [sourceLabel, value] of Object.entries(row)) {
       if (value === "" || value == null) continue;
-      const resolved = resolveHeader(sourceLabel);
+      const resolved = await resolveHeader(sourceLabel);
       if (!resolved) {
         flaggedColumns.add(sourceLabel);
         continue;
@@ -73,10 +73,10 @@ export async function parseUpload(buffer, filename) {
   } else if (sourceType === "xlsx") {
     rawRows = parseXlsx(buffer);
   } else {
-    rawRows = await parsePdf(buffer, allKnownHeaders());
+    rawRows = await parsePdf(buffer, await allKnownHeaders());
   }
 
-  const { samples, flaggedColumns, autoMatchedColumns } = normalizeRows(rawRows);
+  const { samples, flaggedColumns, autoMatchedColumns } = await normalizeRows(rawRows);
 
   if (samples.length === 0) {
     throw new Error("No data rows were found in the uploaded file.");

@@ -3,9 +3,9 @@ import { db } from "./db";
 // Compares one sample's raw metric values against the rules defined for a
 // usage, returning one evaluation per metric that has both a value and a
 // matching rule.
-export function evaluateSample(rawValues, usageId) {
-  const metrics = db.prepare("SELECT * FROM metrics").all();
-  const rules = db
+export async function evaluateSample(rawValues, usageId) {
+  const metrics = await db.prepare("SELECT * FROM metrics").all();
+  const rules = await db
     .prepare(
       `SELECT r.*, p.name as product_name, p.store_url as product_store_url, p.category as product_category
        FROM rules r
@@ -49,22 +49,25 @@ export function evaluateSample(rawValues, usageId) {
 // Runs the rules engine for every sample on a report and assembles the data
 // each report_templates section needs, ready for both the web view and PDF
 // renderers to consume identically.
-export function assembleReportData(reportId) {
-  const report = db.prepare("SELECT * FROM reports WHERE id = ?").get(reportId);
+export async function assembleReportData(reportId) {
+  const report = await db.prepare("SELECT * FROM reports WHERE id = ?").get(reportId);
   if (!report) throw new Error("Report not found.");
 
-  const usage = db.prepare("SELECT * FROM usages WHERE id = ?").get(report.usage_id);
-  const template = db.prepare("SELECT * FROM report_templates WHERE usage_id = ?").get(report.usage_id);
+  const usage = await db.prepare("SELECT * FROM usages WHERE id = ?").get(report.usage_id);
+  const template = await db.prepare("SELECT * FROM report_templates WHERE usage_id = ?").get(report.usage_id);
   const sections = template ? JSON.parse(template.sections) : [];
 
-  const sampleRows = db.prepare("SELECT * FROM samples WHERE report_id = ?").all(reportId);
-  const samples = sampleRows.map((s) => ({
-    id: s.id,
-    sampleId: s.sample_id,
-    evaluations: evaluateSample(JSON.parse(s.raw_values), report.usage_id),
-  }));
+  const sampleRows = await db.prepare("SELECT * FROM samples WHERE report_id = ?").all(reportId);
+  const samples = [];
+  for (const s of sampleRows) {
+    samples.push({
+      id: s.id,
+      sampleId: s.sample_id,
+      evaluations: await evaluateSample(JSON.parse(s.raw_values), report.usage_id),
+    });
+  }
 
-  const allProducts = db.prepare("SELECT * FROM products").all();
+  const allProducts = await db.prepare("SELECT * FROM products").all();
 
   return {
     reportId: report.id,

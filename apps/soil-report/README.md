@@ -6,10 +6,14 @@ original product spec this implements.
 
 ## Quickstart
 
+Needs a Postgres instance — a local one, or a free/cheap one on Railway.
+
 ```bash
 npm install
-npm run seed     # creates data/soil-report.db and demo data
-npm run dev      # http://localhost:3100
+cp .env.example .env.local   # set DATABASE_URL (and SESSION_SECRET)
+npm run migrate               # creates the schema — safe to re-run
+npm run seed                  # demo users, metrics, rules, products
+npm run dev                   # http://localhost:3100
 ```
 
 Demo logins (created by `npm run seed`):
@@ -44,9 +48,9 @@ history / ask for details).
 ## What's real vs. stubbed for the POC
 
 - **Auth** — real: bcrypt password hashing, signed session cookies, role-gated routes.
-- **Database** — SQLite (`better-sqlite3`) instead of Postgres, so the POC runs
-  with zero external infra. Swapping to Postgres later just means porting
-  `lib/db.js`'s schema/queries — the app code doesn't depend on SQLite specifics.
+- **Database** — real Postgres (`pg`), via `schema.sql` + `npm run migrate`. `lib/db.js`
+  is a thin async wrapper (`db.prepare(sql).get/all/run(...params)`, `?` placeholders)
+  so call sites read like typical SQL-in-JS rather than raw `pg` query calls.
 - **File parsing** — real for CSV/XLSX. PDF parsing is a best-effort heuristic
   (`lib/parsers/pdf.js`): it extracts text and scans for "known label ...
   number" per line, since PDFs don't expose real table structure. It works

@@ -5,7 +5,7 @@ export async function POST(request) {
   const body = await request.json();
   const { email, password } = body || {};
 
-  const user = email ? findUserByEmail(email) : null;
+  const user = email ? await findUserByEmail(email) : null;
   if (!user || !verifyPassword(password || "", user.password_hash)) {
     return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
   }

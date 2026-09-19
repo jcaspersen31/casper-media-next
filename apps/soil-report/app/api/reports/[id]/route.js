@@ -12,7 +12,7 @@ export async function GET(request, { params }) {
   if (!report) return NextResponse.json({ error: "Report not found." }, { status: 404 });
   if (report === "forbidden") return NextResponse.json({ error: "Not your report." }, { status: 403 });
 
-  const samples = db.prepare("SELECT id, sample_id, raw_values FROM samples WHERE report_id = ?").all(report.id);
+  const samples = await db.prepare("SELECT id, sample_id, raw_values FROM samples WHERE report_id = ?").all(report.id);
 
   return NextResponse.json({
     report: {
@@ -33,10 +33,10 @@ export async function DELETE(request, { params }) {
   if (auth.response) return auth.response;
 
   const { id } = await params;
-  const report = loadReportForUser(Number(id), auth.user);
+  const report = await loadReportForUser(Number(id), auth.user);
   if (!report) return NextResponse.json({ error: "Report not found." }, { status: 404 });
   if (report === "forbidden") return NextResponse.json({ error: "Not your report." }, { status: 403 });
 
-  db.prepare("DELETE FROM reports WHERE id = ?").run(report.id);
+  await db.prepare("DELETE FROM reports WHERE id = ?").run(report.id);
   return NextResponse.json({ ok: true });
 }

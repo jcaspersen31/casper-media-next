@@ -47,7 +47,7 @@ export async function getSessionUser() {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, getSecret());
-    const user = db
+    const user = await db
       .prepare("SELECT id, role, email, name, company FROM users WHERE id = ?")
       .get(Number(payload.sub));
     return user || null;
@@ -76,13 +76,13 @@ export async function requireAdmin() {
   return user;
 }
 
-export function findUserByEmail(email) {
+export async function findUserByEmail(email) {
   return db.prepare("SELECT * FROM users WHERE email = ?").get(email);
 }
 
-export function createUser({ role, email, password, name, company }) {
+export async function createUser({ role, email, password, name, company }) {
   const password_hash = hashPassword(password);
-  const info = db
+  const info = await db
     .prepare(
       "INSERT INTO users (role, email, password_hash, name, company) VALUES (?,?,?,?,?)"
     )

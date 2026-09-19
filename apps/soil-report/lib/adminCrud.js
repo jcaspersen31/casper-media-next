@@ -14,7 +14,7 @@ export function makeCrudHandlers({ table, columns, orderBy = "id" }) {
   async function list() {
     const auth = await requireAdminOrResponse();
     if (auth.response) return auth.response;
-    const rows = db.prepare(`SELECT * FROM ${table} ORDER BY ${orderBy}`).all();
+    const rows = await db.prepare(`SELECT * FROM ${table} ORDER BY ${orderBy}`).all();
     return NextResponse.json({ [table]: rows });
   }
 
@@ -23,10 +23,10 @@ export function makeCrudHandlers({ table, columns, orderBy = "id" }) {
     if (auth.response) return auth.response;
     const body = await request.json();
     const placeholders = columns.map(() => "?").join(",");
-    const info = db
+    const info = await db
       .prepare(`INSERT INTO ${table} (${columns.join(",")}) VALUES (${placeholders})`)
       .run(...serializeBody(body));
-    const row = db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(info.lastInsertRowid);
+    const row = await db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(info.lastInsertRowid);
     return NextResponse.json({ [table.replace(/s$/, "")]: row }, { status: 201 });
   }
 
@@ -36,8 +36,8 @@ export function makeCrudHandlers({ table, columns, orderBy = "id" }) {
     const { id } = await params;
     const body = await request.json();
     const setClause = columns.map((c) => `${c} = ?`).join(", ");
-    db.prepare(`UPDATE ${table} SET ${setClause} WHERE id = ?`).run(...serializeBody(body), Number(id));
-    const row = db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(Number(id));
+    await db.prepare(`UPDATE ${table} SET ${setClause} WHERE id = ?`).run(...serializeBody(body), Number(id));
+    const row = await db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(Number(id));
     return NextResponse.json({ [table.replace(/s$/, "")]: row });
   }
 
@@ -45,7 +45,7 @@ export function makeCrudHandlers({ table, columns, orderBy = "id" }) {
     const auth = await requireAdminOrResponse();
     if (auth.response) return auth.response;
     const { id } = await params;
-    db.prepare(`DELETE FROM ${table} WHERE id = ?`).run(Number(id));
+    await db.prepare(`DELETE FROM ${table} WHERE id = ?`).run(Number(id));
     return NextResponse.json({ ok: true });
   }
 

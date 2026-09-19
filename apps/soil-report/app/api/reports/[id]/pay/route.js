@@ -13,7 +13,7 @@ export async function POST(request, { params }) {
   if (auth.response) return auth.response;
 
   const { id } = await params;
-  const report = loadReportForUser(Number(id), auth.user);
+  const report = await loadReportForUser(Number(id), auth.user);
   if (!report) return NextResponse.json({ error: "Report not found." }, { status: 404 });
   if (report === "forbidden") return NextResponse.json({ error: "Not your report." }, { status: 403 });
 
@@ -28,11 +28,11 @@ export async function POST(request, { params }) {
   // (or, better, this route would only be reachable after a webhook marks
   // the PaymentIntent succeeded). For the POC we simulate an instant
   // successful payment so the rest of the flow can be demoed without keys.
-  db.prepare(
-    "INSERT INTO payments (report_id, amount, status, provider_ref) VALUES (?,?,?,?)"
-  ).run(report.id, REPORT_PRICE_CENTS, "paid", isStripeConfigured ? null : "MOCK_PAYMENT");
+  await db
+    .prepare("INSERT INTO payments (report_id, amount, status, provider_ref) VALUES (?,?,?,?)")
+    .run(report.id, REPORT_PRICE_CENTS, "paid", isStripeConfigured ? null : "MOCK_PAYMENT");
 
-  db.prepare("UPDATE reports SET status = 'paid' WHERE id = ?").run(report.id);
+  await db.prepare("UPDATE reports SET status = 'paid' WHERE id = ?").run(report.id);
 
   return NextResponse.json({ ok: true, amount: REPORT_PRICE_CENTS, mock: !isStripeConfigured });
 }

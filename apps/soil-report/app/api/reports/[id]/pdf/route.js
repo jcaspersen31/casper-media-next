@@ -10,7 +10,7 @@ export async function GET(request, { params }) {
   if (auth.response) return auth.response;
 
   const { id } = await params;
-  const report = loadReportForUser(Number(id), auth.user);
+  const report = await loadReportForUser(Number(id), auth.user);
   if (!report) return NextResponse.json({ error: "Report not found." }, { status: 404 });
   if (report === "forbidden") return NextResponse.json({ error: "Not your report." }, { status: 403 });
   if (report.status !== "generated" || !report.assembled_data) {

@@ -4,7 +4,3 @@
 .env*
 !.env.example
 .DS_Store
-/data/*.db
-/data/*.db-journal
-/data/*.db-wal
-/data/*.db-shm

@@ -12,7 +12,7 @@ export async function GET() {
   }
   const rows =
     user.role === "admin"
-      ? db
+      ? await db
           .prepare(
             `SELECT r.*, u.name as customer_name, u.email as customer_email, us.name as usage_name
              FROM reports r
@@ -21,7 +21,7 @@ export async function GET() {
              ORDER BY r.created_at DESC`
           )
           .all()
-      : db
+      : await db
           .prepare(
             `SELECT r.*, us.name as usage_name
              FROM reports r
@@ -66,7 +66,7 @@ export async function POST(request) {
     `INSERT INTO reports (customer_id, usage_id, original_filename, status, flagged_columns, auto_matched_columns)
      VALUES (?,?,?, 'uploaded', ?, ?)`
   );
-  const info = insertReport.run(
+  const info = await insertReport.run(
     user.id,
     Number(usageId),
     file.name,
@@ -79,7 +79,7 @@ export async function POST(request) {
     "INSERT INTO samples (report_id, sample_id, raw_values) VALUES (?,?,?)"
   );
   for (const sample of parsed.samples) {
-    insertSample.run(reportId, sample.sample_id, JSON.stringify(sample.raw_values));
+    await insertSample.run(reportId, sample.sample_id, JSON.stringify(sample.raw_values));
   }
 
   return NextResponse.json({

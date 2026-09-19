@@ -6,6 +6,6 @@ export async function GET() {
   const auth = await requireUserOrResponse();
   if (auth.response) return auth.response;
 
-  const rows = db.prepare("SELECT id, name, description FROM usages ORDER BY name").all();
+  const rows = await db.prepare("SELECT id, name, description FROM usages ORDER BY name").all();
   return NextResponse.json({ usages: rows });
 }
