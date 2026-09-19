@@ -1,6 +1,7 @@
 import { parseCsv } from "./csv";
 import { parseXlsx } from "./xlsx";
 import { parsePdf } from "./pdf";
+import { resolveHeader, allKnownHeaders } from "../columnAliases";
 
 function detectSourceType(filename) {
   const ext = filename.toLowerCase().split(".").pop();
@@ -11,11 +12,15 @@ function detectSourceType(filename) {
 }
 
 // Normalizes raw parsed rows (source-column-label -> raw string value) into
-// canonical samples using the lab profile's column_map, and flags source
-// columns present in the file that the column_map doesn't know about.
-function normalizeRows(rawRows, columnMap) {
+// canonical samples by resolving each header against the global column
+// alias table (exact match, then fuzzy match + auto-learn). Columns that
+// resolve via fuzzy match are reported separately from ones that don't
+// resolve at all, so the customer/admin can see what was guessed vs. what
+// needs a real mapping.
+function normalizeRows(rawRows) {
   const samples = [];
   const flaggedColumns = new Set();
+  const autoMatched = new Map(); // sourceLabel -> metricKey
 
   for (const row of rawRows) {
     const raw_values = {};
@@ -23,60 +28,59 @@ function normalizeRows(rawRows, columnMap) {
 
     for (const [sourceLabel, value] of Object.entries(row)) {
       if (value === "" || value == null) continue;
-      const metricKey = columnMap[sourceLabel];
-      if (!metricKey) {
+      const resolved = resolveHeader(sourceLabel);
+      if (!resolved) {
         flaggedColumns.add(sourceLabel);
         continue;
       }
-      if (metricKey === "sample_id") {
-        sample_id = value;
+      if (resolved.matchType === "fuzzy") {
+        autoMatched.set(sourceLabel, resolved.metricKey);
+      }
+      if (resolved.metricKey === "sample_id") {
+        // First matching column wins if more than one maps to sample_id
+        // (e.g. a lab's own internal sample number plus a customer field label).
+        if (sample_id === null) sample_id = value;
         continue;
       }
       const num = Number(value);
-      raw_values[metricKey] = Number.isFinite(num) ? num : value;
+      raw_values[resolved.metricKey] = Number.isFinite(num) ? num : value;
     }
 
     samples.push({ sample_id, raw_values });
   }
 
-  return { samples, flaggedColumns: [...flaggedColumns] };
+  return {
+    samples,
+    flaggedColumns: [...flaggedColumns],
+    autoMatchedColumns: [...autoMatched.entries()].map(([sourceLabel, metricKey]) => ({ sourceLabel, metricKey })),
+  };
 }
 
 /**
- * Parses an uploaded file against a lab profile's column map.
- * @returns {Promise<{ samples: {sample_id: string|null, raw_values: object}[], flaggedColumns: string[], sourceType: string }>}
+ * Parses an uploaded file, resolving its columns against the global column
+ * alias table — no lab profile selection required.
+ * @returns {Promise<{ samples: {sample_id: string|null, raw_values: object}[], flaggedColumns: string[], autoMatchedColumns: {sourceLabel: string, metricKey: string}[], sourceType: string }>}
  */
-export async function parseUpload(buffer, filename, labProfile) {
-  const detectedType = detectSourceType(filename);
-  if (!detectedType) {
+export async function parseUpload(buffer, filename) {
+  const sourceType = detectSourceType(filename);
+  if (!sourceType) {
     throw new Error("Could not determine file type. Upload a .csv, .xlsx, or .pdf file.");
   }
-  if (labProfile && labProfile.source_type !== detectedType) {
-    throw new Error(
-      `You selected "${labProfile.lab_name}" (${labProfile.source_type.toUpperCase()}), but "${filename}" looks like a ${detectedType.toUpperCase()} file. Pick a matching lab profile, or upload a ${labProfile.source_type.toUpperCase()} file.`
-    );
-  }
-
-  const sourceType = labProfile?.source_type || detectedType;
-
-  const columnMap = labProfile ? JSON.parse(labProfile.column_map || "{}") : {};
 
   let rawRows;
   if (sourceType === "csv") {
     rawRows = parseCsv(buffer);
   } else if (sourceType === "xlsx") {
     rawRows = parseXlsx(buffer);
-  } else if (sourceType === "pdf") {
-    rawRows = await parsePdf(buffer, Object.keys(columnMap));
   } else {
-    throw new Error(`Unsupported source type: ${sourceType}`);
+    rawRows = await parsePdf(buffer, allKnownHeaders());
   }
 
-  const { samples, flaggedColumns } = normalizeRows(rawRows, columnMap);
+  const { samples, flaggedColumns, autoMatchedColumns } = normalizeRows(rawRows);
 
   if (samples.length === 0) {
     throw new Error("No data rows were found in the uploaded file.");
   }
 
-  return { samples, flaggedColumns, sourceType };
+  return { samples, flaggedColumns, autoMatchedColumns, sourceType };
 }

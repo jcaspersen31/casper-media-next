@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 // Generic list+inline-create+edit+delete table for simple, flat-column
-// admin resources (metrics, usages, products). Rules/lab-profiles/templates
+// admin resources (metrics, usages, products). Rules/column-aliases/templates
 // have relational or JSON fields and get their own pages.
 export default function AdminCrudTable({ title, apiPath, listKey, fields, emptyRow }) {
   const [rows, setRows] = useState(null);

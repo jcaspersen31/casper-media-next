@@ -44,11 +44,18 @@ CREATE TABLE IF NOT EXISTS usages (
   description TEXT
 );
 
-CREATE TABLE IF NOT EXISTS lab_profiles (
+-- Global source-column-header -> canonical metric key matching. header_text
+-- is normalized (lowercased, punctuation stripped) so lookups are exact-match
+-- first; parsers/index.js falls back to fuzzy matching against this table
+-- and writes the header back here on a confident guess (confirmed = 0), so
+-- the next report with that exact header short-circuits to an exact match.
+-- Not tied to a lab: with only a couple of labs in practice, one global
+-- table beats making customers pick which lab format they have.
+CREATE TABLE IF NOT EXISTS column_aliases (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
-  lab_name    TEXT NOT NULL,
-  source_type TEXT NOT NULL CHECK (source_type IN ('csv','xlsx','pdf')),
-  column_map  TEXT NOT NULL DEFAULT '{}', -- JSON: source column/label -> metric key
+  header_text TEXT NOT NULL UNIQUE,
+  metric_key  TEXT NOT NULL, -- a metrics.key value, or the literal 'sample_id'
+  confirmed   INTEGER NOT NULL DEFAULT 1, -- 1 = admin-entered/seeded, 0 = auto-learned via fuzzy match
   created_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -79,11 +86,11 @@ CREATE TABLE IF NOT EXISTS rules (
 CREATE TABLE IF NOT EXISTS reports (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,
   customer_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  lab_profile_id INTEGER REFERENCES lab_profiles(id),
   usage_id       INTEGER REFERENCES usages(id),
   original_filename TEXT,
   status         TEXT NOT NULL DEFAULT 'uploaded' CHECK (status IN ('uploaded','paid','generated')),
   flagged_columns TEXT DEFAULT '[]', -- JSON list of unmapped source columns
+  auto_matched_columns TEXT DEFAULT '[]', -- JSON list of {sourceLabel, metricKey} guessed via fuzzy match
   assembled_data TEXT, -- JSON: rules-engine output, cached once generated
   created_at     TEXT NOT NULL DEFAULT (datetime('now'))
 );

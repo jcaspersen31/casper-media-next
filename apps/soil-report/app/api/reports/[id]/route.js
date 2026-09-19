@@ -18,8 +18,25 @@ export async function GET(request, { params }) {
     report: {
       ...report,
       flagged_columns: JSON.parse(report.flagged_columns || "[]"),
+      auto_matched_columns: JSON.parse(report.auto_matched_columns || "[]"),
       assembled_data: report.assembled_data ? JSON.parse(report.assembled_data) : null,
     },
     samples: samples.map((s) => ({ ...s, raw_values: JSON.parse(s.raw_values) })),
   });
+}
+
+// Lets a customer remove a faulty import (wrong file, bad parse) and start
+// over, or an admin clean up any report. Cascades to that report's samples
+// and payments.
+export async function DELETE(request, { params }) {
+  const auth = await requireUserOrResponse();
+  if (auth.response) return auth.response;
+
+  const { id } = await params;
+  const report = loadReportForUser(Number(id), auth.user);
+  if (!report) return NextResponse.json({ error: "Report not found." }, { status: 404 });
+  if (report === "forbidden") return NextResponse.json({ error: "Not your report." }, { status: 403 });
+
+  db.prepare("DELETE FROM reports WHERE id = ?").run(report.id);
+  return NextResponse.json({ ok: true });
 }

@@ -2,6 +2,7 @@
 // Usage: npm run seed
 import bcrypt from "bcryptjs";
 import { db } from "../lib/db.js";
+import { normalizeHeader } from "../lib/columnMatch.js";
 
 function upsertUser({ role, email, password, name, company }) {
   const existing = db.prepare("SELECT id FROM users WHERE email = ?").get(email);
@@ -164,29 +165,40 @@ upsertRule(usages.foodPlot, metrics.H3A_K, null, 100, "Low", "Potassium is defic
 upsertRule(usages.foodPlot, metrics.H3A_K, 100, 250, "Medium", "Potassium levels are adequate for forage.", null);
 upsertRule(usages.foodPlot, metrics.H3A_K, 250, null, "High", "Potassium is sufficient.", null);
 
-// lab_profiles: column_map is source column/label -> canonical metric key
-function upsertLabProfile(lab_name, source_type, column_map) {
-  const existing = db.prepare("SELECT id FROM lab_profiles WHERE lab_name = ?").get(lab_name);
-  const json = JSON.stringify(column_map);
+// column_aliases: global source-header -> canonical metric key matching,
+// confirmed=1 since these are admin-entered. Every uploaded report resolves
+// its columns against this table regardless of which lab it came from —
+// customers never pick a lab/format. Unrecognized headers fall back to
+// fuzzy matching (which learns new aliases automatically) and, failing
+// that, show up flagged for admin review.
+function upsertAlias(header_text, metric_key) {
+  const normalized = normalizeHeader(header_text);
+  const existing = db.prepare("SELECT id FROM column_aliases WHERE header_text = ?").get(normalized);
   if (existing) {
-    db.prepare("UPDATE lab_profiles SET column_map = ? WHERE id = ?").run(json, existing.id);
+    db.prepare("UPDATE column_aliases SET metric_key = ?, confirmed = 1 WHERE id = ?").run(metric_key, existing.id);
     return existing.id;
   }
   return db
-    .prepare("INSERT INTO lab_profiles (lab_name, source_type, column_map) VALUES (?,?,?)")
-    .run(lab_name, source_type, json).lastInsertRowid;
+    .prepare("INSERT INTO column_aliases (header_text, metric_key, confirmed) VALUES (?,?,1)")
+    .run(normalized, metric_key).lastInsertRowid;
 }
 
-const genericColumnMap = {
+const genericAliases = {
   "Sample ID": "sample_id",
+  "Field ID": "sample_id",
   "pH": "Soil_pH",
   "soil pH": "Soil_pH",
+  "1:1 Soil pH": "Soil_pH",
   "H3A-P": "H3A_P",
   "P (H3A)": "H3A_P",
+  "H3A Inorganic Phosphorus": "H3A_P",
   "H3A-K": "H3A_K",
   "K (H3A)": "H3A_K",
+  "H3A ICAP Potassium": "H3A_K",
   "WEOC": "WEOC",
+  "H2O Total Organic C": "WEOC",
   "WEON": "WEON",
+  "H2O Organic N": "WEON",
   "CEC": "CEC",
   "%Ca Sat": "Ca_Sat",
   "Ca Saturation": "Ca_Sat",
@@ -195,28 +207,12 @@ const genericColumnMap = {
   "Organic Matter": "Organic_Matter",
   "OM %": "Organic_Matter",
   "Soil Health Score": "Soil_Health_Score",
-};
-
-upsertLabProfile("Generic Haney-style Lab (CSV)", "csv", genericColumnMap);
-upsertLabProfile("Generic Haney-style Lab (XLSX)", "xlsx", genericColumnMap);
-upsertLabProfile("Generic Haney-style Lab (PDF)", "pdf", genericColumnMap);
-
-// Real Ward Labs Haney test CSV export column headers. Most columns on that
-// report are lab/customer metadata (Cust ID, Name, Address, dates, etc.) or
-// metrics we don't have canonical keys/rules for yet (WDRF Buffer, CO2-C,
-// Available N/P/K, Organic C:N, etc.) — those are expected to stay flagged
-// until an admin decides they're worth adding as metrics + rules.
-const wardLabsColumnMap = {
-  "Field ID": "sample_id",
-  "1:1 Soil pH": "Soil_pH",
-  "H3A Inorganic Phosphorus": "H3A_P",
-  "H3A ICAP Potassium": "H3A_K",
-  "H2O Total Organic C": "WEOC",
-  "H2O Organic N": "WEON",
   "Soil Health Calculation": "Soil_Health_Score",
 };
 
-upsertLabProfile("Ward Labs Haney (CSV)", "csv", wardLabsColumnMap);
+for (const [header, metricKey] of Object.entries(genericAliases)) {
+  upsertAlias(header, metricKey);
+}
 
 console.log("Seed complete.");
 console.log("Admin login:    admin@caspermediallc.com / admin1234");

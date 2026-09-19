@@ -11,9 +11,8 @@ const STATUS_LABEL = {
 
 export default function DashboardPage() {
   const [reports, setReports] = useState(null);
-  const [labProfiles, setLabProfiles] = useState([]);
   const [usages, setUsages] = useState([]);
-  const [form, setForm] = useState({ lab_profile_id: "", usage_id: "" });
+  const [usageId, setUsageId] = useState("");
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -27,33 +26,8 @@ export default function DashboardPage() {
 
   useEffect(() => {
     loadReports();
-    fetch("/api/lab-profiles").then((r) => r.json()).then((d) => setLabProfiles(d.labProfiles || []));
     fetch("/api/usages").then((r) => r.json()).then((d) => setUsages(d.usages || []));
   }, []);
-
-  function detectFileType(filename) {
-    const ext = filename.toLowerCase().split(".").pop();
-    if (ext === "csv") return "csv";
-    if (ext === "xlsx" || ext === "xls") return "xlsx";
-    if (ext === "pdf") return "pdf";
-    return null;
-  }
-
-  const fileType = file ? detectFileType(file.name) : null;
-  const matchingProfiles = fileType ? labProfiles.filter((lp) => lp.source_type === fileType) : labProfiles;
-
-  function onFileChange(e) {
-    const picked = e.target.files?.[0] || null;
-    setFile(picked);
-    setError("");
-    if (!picked) return;
-    const type = detectFileType(picked.name);
-    const stillValid = labProfiles.some((lp) => lp.id === Number(form.lab_profile_id) && lp.source_type === type);
-    if (!stillValid) {
-      const onlyMatch = labProfiles.filter((lp) => lp.source_type === type);
-      setForm((f) => ({ ...f, lab_profile_id: onlyMatch.length === 1 ? String(onlyMatch[0].id) : "" }));
-    }
-  }
 
   async function onUpload(e) {
     e.preventDefault();
@@ -67,12 +41,14 @@ export default function DashboardPage() {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      fd.append("lab_profile_id", form.lab_profile_id);
-      fd.append("usage_id", form.usage_id);
+      fd.append("usage_id", usageId);
       const res = await fetch("/api/reports", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Upload failed");
       let msg = `Uploaded — ${data.sampleCount} sample(s) parsed.`;
+      if (data.autoMatchedColumns?.length) {
+        msg += ` ${data.autoMatchedColumns.length} column(s) were auto-matched by best guess.`;
+      }
       if (data.flaggedColumns?.length) {
         msg += ` ${data.flaggedColumns.length} column(s) weren't recognized: ${data.flaggedColumns.join(", ")}.`;
       }
@@ -86,6 +62,12 @@ export default function DashboardPage() {
     }
   }
 
+  async function removeReport(id) {
+    if (!confirm("Delete this report? This can't be undone.")) return;
+    await fetch(`/api/reports/${id}`, { method: "DELETE" });
+    loadReports();
+  }
+
   return (
     <div className="page">
       <h1 style={{ fontSize: 26, fontWeight: 800, marginBottom: 24 }}>My reports</h1>
@@ -95,42 +77,18 @@ export default function DashboardPage() {
         <form onSubmit={onUpload}>
           <div className="field">
             <label className="label">File (CSV, XLSX, or PDF)</label>
-            <input type="file" accept=".csv,.xlsx,.xls,.pdf" onChange={onFileChange} />
+            <input type="file" accept=".csv,.xlsx,.xls,.pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <div className="field">
-              <label className="label">Lab / report format</label>
-              <select
-                required
-                value={form.lab_profile_id}
-                onChange={(e) => setForm((f) => ({ ...f, lab_profile_id: e.target.value }))}
-              >
-                <option value="">Select...</option>
-                {matchingProfiles.map((lp) => (
-                  <option key={lp.id} value={lp.id}>
-                    {lp.lab_name} ({lp.source_type.toUpperCase()})
-                  </option>
-                ))}
-              </select>
-              {file && matchingProfiles.length === 0 && (
-                <div className="error-text">No lab profile is set up for .{fileType} files yet.</div>
-              )}
-            </div>
-            <div className="field">
-              <label className="label">Land usage</label>
-              <select
-                required
-                value={form.usage_id}
-                onChange={(e) => setForm((f) => ({ ...f, usage_id: e.target.value }))}
-              >
-                <option value="">Select...</option>
-                {usages.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="field">
+            <label className="label">Land usage</label>
+            <select required value={usageId} onChange={(e) => setUsageId(e.target.value)}>
+              <option value="">Select...</option>
+              {usages.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.name}
+                </option>
+              ))}
+            </select>
           </div>
           {error && <div className="error-text">{error}</div>}
           {notice && <div className="success-text">{notice}</div>}
@@ -164,10 +122,17 @@ export default function DashboardPage() {
                     <span className={`badge badge-${r.status}`}>{STATUS_LABEL[r.status] || r.status}</span>
                   </td>
                   <td>{new Date(r.created_at).toLocaleDateString()}</td>
-                  <td>
-                    <Link href={`/reports/${r.id}`} style={{ color: "var(--green-light)" }}>
+                  <td style={{ whiteSpace: "nowrap" }}>
+                    <Link href={`/reports/${r.id}`} style={{ color: "var(--green-light)", marginRight: 16 }}>
                       View →
                     </Link>
+                    <button
+                      className="btn btn-outline"
+                      style={{ padding: "4px 12px" }}
+                      onClick={() => removeReport(r.id)}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

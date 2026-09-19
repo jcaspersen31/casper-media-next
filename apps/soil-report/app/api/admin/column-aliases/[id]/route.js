@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminOrResponse } from "@/lib/apiAuth";
+import { normalizeHeader } from "@/lib/columnMatch";
 import { db } from "@/lib/db";
 
 export async function PUT(request, { params }) {
@@ -7,21 +8,22 @@ export async function PUT(request, { params }) {
   if (auth.response) return auth.response;
   const { id } = await params;
   const body = await request.json();
-  const { lab_name, source_type, column_map } = body;
-  db.prepare("UPDATE lab_profiles SET lab_name = ?, source_type = ?, column_map = ? WHERE id = ?").run(
-    lab_name,
-    source_type,
-    JSON.stringify(column_map || {}),
+  const header_text = normalizeHeader(body.header_text || "");
+  const metric_key = body.metric_key;
+  // Editing/saving an auto-learned alias is how an admin confirms it.
+  db.prepare("UPDATE column_aliases SET header_text = ?, metric_key = ?, confirmed = 1 WHERE id = ?").run(
+    header_text,
+    metric_key,
     Number(id)
   );
-  const row = db.prepare("SELECT * FROM lab_profiles WHERE id = ?").get(Number(id));
-  return NextResponse.json({ lab_profile: row });
+  const row = db.prepare("SELECT * FROM column_aliases WHERE id = ?").get(Number(id));
+  return NextResponse.json({ column_alias: row });
 }
 
 export async function DELETE(request, { params }) {
   const auth = await requireAdminOrResponse();
   if (auth.response) return auth.response;
   const { id } = await params;
-  db.prepare("DELETE FROM lab_profiles WHERE id = ?").run(Number(id));
+  db.prepare("DELETE FROM column_aliases WHERE id = ?").run(Number(id));
   return NextResponse.json({ ok: true });
 }

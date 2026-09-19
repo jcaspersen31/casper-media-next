@@ -44,40 +44,34 @@ export async function POST(request) {
 
   const formData = await request.formData();
   const file = formData.get("file");
-  const labProfileId = formData.get("lab_profile_id");
   const usageId = formData.get("usage_id");
 
   if (!file || typeof file === "string") {
     return NextResponse.json({ error: "A file is required." }, { status: 400 });
   }
-  if (!labProfileId || !usageId) {
-    return NextResponse.json({ error: "Lab profile and usage are required." }, { status: 400 });
-  }
-
-  const labProfile = db.prepare("SELECT * FROM lab_profiles WHERE id = ?").get(Number(labProfileId));
-  if (!labProfile) {
-    return NextResponse.json({ error: "Unknown lab profile." }, { status: 400 });
+  if (!usageId) {
+    return NextResponse.json({ error: "Usage is required." }, { status: 400 });
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
 
   let parsed;
   try {
-    parsed = await parseUpload(buffer, file.name, labProfile);
+    parsed = await parseUpload(buffer, file.name);
   } catch (err) {
     return NextResponse.json({ error: err.message || "Could not parse file." }, { status: 422 });
   }
 
   const insertReport = db.prepare(
-    `INSERT INTO reports (customer_id, lab_profile_id, usage_id, original_filename, status, flagged_columns)
-     VALUES (?,?,?,?, 'uploaded', ?)`
+    `INSERT INTO reports (customer_id, usage_id, original_filename, status, flagged_columns, auto_matched_columns)
+     VALUES (?,?,?, 'uploaded', ?, ?)`
   );
   const info = insertReport.run(
     user.id,
-    labProfile.id,
     Number(usageId),
     file.name,
-    JSON.stringify(parsed.flaggedColumns)
+    JSON.stringify(parsed.flaggedColumns),
+    JSON.stringify(parsed.autoMatchedColumns)
   );
   const reportId = info.lastInsertRowid;
 
@@ -91,6 +85,7 @@ export async function POST(request) {
   return NextResponse.json({
     report: { id: reportId, status: "uploaded" },
     flaggedColumns: parsed.flaggedColumns,
+    autoMatchedColumns: parsed.autoMatchedColumns,
     sampleCount: parsed.samples.length,
   });
 }

@@ -6,9 +6,21 @@ import Link from "next/link";
 export default function AdminReportsPage() {
   const [reports, setReports] = useState(null);
 
+  async function load() {
+    const res = await fetch("/api/reports");
+    const data = await res.json();
+    setReports(data.reports || []);
+  }
+
   useEffect(() => {
-    fetch("/api/reports").then((r) => r.json()).then((d) => setReports(d.reports || []));
+    load();
   }, []);
+
+  async function removeReport(id) {
+    if (!confirm("Delete this report? This can't be undone.")) return;
+    await fetch(`/api/reports/${id}`, { method: "DELETE" });
+    load();
+  }
 
   return (
     <div>
@@ -41,10 +53,13 @@ export default function AdminReportsPage() {
                     <span className={`badge badge-${r.status}`}>{r.status}</span>
                   </td>
                   <td>{new Date(r.created_at).toLocaleDateString()}</td>
-                  <td>
-                    <Link href={`/reports/${r.id}`} style={{ color: "var(--green-light)" }}>
+                  <td style={{ whiteSpace: "nowrap" }}>
+                    <Link href={`/reports/${r.id}`} style={{ color: "var(--green-light)", marginRight: 16 }}>
                       View →
                     </Link>
+                    <button className="btn btn-outline" style={{ padding: "4px 12px" }} onClick={() => removeReport(r.id)}>
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -1,24 +1,27 @@
 import pdfParse from "pdf-parse";
+import { normalizeHeader } from "../columnMatch";
 
 // Best-effort PDF "table" extraction: pdf-parse gives us flat text, not a
 // real table structure, so we scan line-by-line for "<label> ... <number>"
-// patterns and match the label against the lab profile's known source
-// labels. This is intentionally simple for the POC — labs whose PDF layout
+// patterns and match the (normalized) label against every known column
+// alias. This is intentionally simple for the POC — labs whose PDF layout
 // doesn't fit "label ... value per line" will show up as flagged/missing
 // rather than silently misparsed.
-export async function parsePdf(buffer, knownLabels) {
+export async function parsePdf(buffer, knownHeaders) {
   const data = await pdfParse(buffer);
   const lines = data.text
     .split("\n")
     .map((l) => l.trim())
     .filter(Boolean);
 
-  const sortedLabels = [...knownLabels].sort((a, b) => b.length - a.length);
+  // Longest normalized label first, so a specific alias ("h3a icap potassium")
+  // wins over a shorter one that happens to also be a substring.
+  const sortedHeaders = [...knownHeaders].sort((a, b) => b.length - a.length);
   const result = {};
 
   for (const line of lines) {
-    const lower = line.toLowerCase();
-    const match = sortedLabels.find((label) => lower.includes(label.toLowerCase()));
+    const normalizedLine = normalizeHeader(line);
+    const match = sortedHeaders.find((header) => normalizedLine.includes(header));
     if (!match) continue;
     const numbers = line.match(/-?\d+(\.\d+)?/g);
     if (!numbers || numbers.length === 0) continue;

@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState, use as usePromise } from "react";
+import { useRouter } from "next/navigation";
 import { buildSectionViewModels } from "@/lib/renderSections";
 import ReportView from "../ReportView";
 
 export default function ReportDetailPage({ params }) {
   const { id } = usePromise(params);
+  const router = useRouter();
   const [report, setReport] = useState(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -55,6 +57,12 @@ export default function ReportDetailPage({ params }) {
     }
   }
 
+  async function removeReport() {
+    if (!confirm("Delete this report? This can't be undone.")) return;
+    await fetch(`/api/reports/${id}`, { method: "DELETE" });
+    router.push("/dashboard");
+  }
+
   if (error) {
     return (
       <div className="page">
@@ -78,19 +86,35 @@ export default function ReportDetailPage({ params }) {
           <h1 style={{ fontSize: 24, fontWeight: 800 }}>{report.original_filename}</h1>
           <span className={`badge badge-${report.status}`}>{report.status}</span>
         </div>
-        {report.status === "generated" && (
-          <a href={`/api/reports/${id}/pdf`} className="btn" style={{ textDecoration: "none" }}>
-            Download PDF
-          </a>
-        )}
+        <div style={{ display: "flex", gap: 8 }}>
+          {report.status === "generated" && (
+            <a href={`/api/reports/${id}/pdf`} className="btn" style={{ textDecoration: "none" }}>
+              Download PDF
+            </a>
+          )}
+          <button className="btn btn-outline" onClick={removeReport}>
+            Delete report
+          </button>
+        </div>
       </div>
+
+      {report.auto_matched_columns?.length > 0 && (
+        <div className="card" style={{ marginBottom: 20, borderColor: "rgba(92,157,63,0.4)" }}>
+          <strong style={{ color: "var(--green-light)" }}>Some columns were auto-matched by best guess</strong>
+          <p style={{ color: "var(--text-muted)", fontSize: 14, marginTop: 6 }}>
+            {report.auto_matched_columns.map((c) => `${c.sourceLabel} → ${c.metricKey}`).join(", ")} — these weren&apos;t
+            an exact match, so double-check the values below look right. If a guess is wrong, delete this report,
+            have an admin fix it under Column mappings, and re-upload.
+          </p>
+        </div>
+      )}
 
       {report.flagged_columns?.length > 0 && (
         <div className="card" style={{ marginBottom: 20, borderColor: "rgba(216,165,72,0.4)" }}>
           <strong style={{ color: "var(--amber)" }}>Some columns weren&apos;t recognized</strong>
           <p style={{ color: "var(--text-muted)", fontSize: 14, marginTop: 6 }}>
             {report.flagged_columns.join(", ")} — these weren&apos;t mapped to a known metric and were excluded from
-            the report. An admin can add them to the lab profile&apos;s column map.
+            the report. An admin can map them under Column mappings.
           </p>
         </div>
       )}

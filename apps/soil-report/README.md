@@ -17,8 +17,29 @@ Demo logins (created by `npm run seed`):
 - Customer: `customer@example.com` / `customer1234`
 
 A sample lab CSV you can upload as-is is in `sample-data/generic-lab-sample.csv`
-(pick the "Generic Haney-style Lab (CSV)" profile and "Row Crop Farming" or
-"Food Plot / Wildlife" usage).
+(any usage works with it).
+
+## Column mapping — no lab profile picker
+
+Customers just upload a file and pick a usage — there's no "which lab format
+is this" step. Every source column is matched against a single global
+`column_aliases` table (`lib/columnAliases.js`):
+
+1. **Exact match** on the normalized header (lowercased, punctuation stripped).
+2. **Fuzzy match** (`lib/columnMatch.js`, token overlap, no external dep) against
+   every known alias if there's no exact hit. A confident guess is used
+   immediately *and* written back to `column_aliases` as `confirmed = 0`, so
+   the same header resolves via the fast exact-match path next time — the
+   mapping table grows on its own as new lab formats show up.
+3. Anything neither step resolves is flagged on the report (visible to the
+   customer and admin) rather than guessed or silently dropped.
+
+Admin reviews auto-learned (unconfirmed) mappings under **Column mappings**,
+confirming or correcting them — that's the only manual step, and it only
+happens once per unique header, not once per report. This assumes a small
+number of labs in practice; if that stops being true, the next step up is
+LLM-assisted matching for anything the fuzzy pass misses (see conversation
+history / ask for details).
 
 ## What's real vs. stubbed for the POC
 
@@ -48,7 +69,9 @@ A sample lab CSV you can upload as-is is in `sample-data/generic-lab-sample.csv`
 
 - Real threshold numbers/bands per metric and usage — seeded rules are demo
   placeholders only.
-- Full list of lab profiles to support at launch.
+- Which labs to expect at launch, so their real column headers can be
+  seeded as confirmed aliases up front instead of relying on the fuzzy
+  match to learn them from the first real upload.
 - Real product catalog and store URLs.
 - Final report pricing (seeded at a placeholder $49.00).
 - Stripe account/keys for real payments.
