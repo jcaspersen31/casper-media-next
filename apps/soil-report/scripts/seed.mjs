@@ -201,6 +201,23 @@ upsertLabProfile("Generic Haney-style Lab (CSV)", "csv", genericColumnMap);
 upsertLabProfile("Generic Haney-style Lab (XLSX)", "xlsx", genericColumnMap);
 upsertLabProfile("Generic Haney-style Lab (PDF)", "pdf", genericColumnMap);
 
+// Real Ward Labs Haney test CSV export column headers. Most columns on that
+// report are lab/customer metadata (Cust ID, Name, Address, dates, etc.) or
+// metrics we don't have canonical keys/rules for yet (WDRF Buffer, CO2-C,
+// Available N/P/K, Organic C:N, etc.) — those are expected to stay flagged
+// until an admin decides they're worth adding as metrics + rules.
+const wardLabsColumnMap = {
+  "Field ID": "sample_id",
+  "1:1 Soil pH": "Soil_pH",
+  "H3A Inorganic Phosphorus": "H3A_P",
+  "H3A ICAP Potassium": "H3A_K",
+  "H2O Total Organic C": "WEOC",
+  "H2O Organic N": "WEON",
+  "Soil Health Calculation": "Soil_Health_Score",
+};
+
+upsertLabProfile("Ward Labs Haney (CSV)", "csv", wardLabsColumnMap);
+
 console.log("Seed complete.");
 console.log("Admin login:    admin@caspermediallc.com / admin1234");
 console.log("Customer login: customer@example.com / customer1234");
