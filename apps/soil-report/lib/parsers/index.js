@@ -47,10 +47,17 @@ function normalizeRows(rawRows, columnMap) {
  * @returns {Promise<{ samples: {sample_id: string|null, raw_values: object}[], flaggedColumns: string[], sourceType: string }>}
  */
 export async function parseUpload(buffer, filename, labProfile) {
-  const sourceType = labProfile?.source_type || detectSourceType(filename);
-  if (!sourceType) {
+  const detectedType = detectSourceType(filename);
+  if (!detectedType) {
     throw new Error("Could not determine file type. Upload a .csv, .xlsx, or .pdf file.");
   }
+  if (labProfile && labProfile.source_type !== detectedType) {
+    throw new Error(
+      `You selected "${labProfile.lab_name}" (${labProfile.source_type.toUpperCase()}), but "${filename}" looks like a ${detectedType.toUpperCase()} file. Pick a matching lab profile, or upload a ${labProfile.source_type.toUpperCase()} file.`
+    );
+  }
+
+  const sourceType = labProfile?.source_type || detectedType;
 
   const columnMap = labProfile ? JSON.parse(labProfile.column_map || "{}") : {};
 

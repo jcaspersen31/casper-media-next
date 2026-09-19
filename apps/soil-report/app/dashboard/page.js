@@ -31,6 +31,30 @@ export default function DashboardPage() {
     fetch("/api/usages").then((r) => r.json()).then((d) => setUsages(d.usages || []));
   }, []);
 
+  function detectFileType(filename) {
+    const ext = filename.toLowerCase().split(".").pop();
+    if (ext === "csv") return "csv";
+    if (ext === "xlsx" || ext === "xls") return "xlsx";
+    if (ext === "pdf") return "pdf";
+    return null;
+  }
+
+  const fileType = file ? detectFileType(file.name) : null;
+  const matchingProfiles = fileType ? labProfiles.filter((lp) => lp.source_type === fileType) : labProfiles;
+
+  function onFileChange(e) {
+    const picked = e.target.files?.[0] || null;
+    setFile(picked);
+    setError("");
+    if (!picked) return;
+    const type = detectFileType(picked.name);
+    const stillValid = labProfiles.some((lp) => lp.id === Number(form.lab_profile_id) && lp.source_type === type);
+    if (!stillValid) {
+      const onlyMatch = labProfiles.filter((lp) => lp.source_type === type);
+      setForm((f) => ({ ...f, lab_profile_id: onlyMatch.length === 1 ? String(onlyMatch[0].id) : "" }));
+    }
+  }
+
   async function onUpload(e) {
     e.preventDefault();
     setError("");
@@ -69,6 +93,10 @@ export default function DashboardPage() {
       <div className="card" style={{ marginBottom: 32 }}>
         <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Upload a lab report</h2>
         <form onSubmit={onUpload}>
+          <div className="field">
+            <label className="label">File (CSV, XLSX, or PDF)</label>
+            <input type="file" accept=".csv,.xlsx,.xls,.pdf" onChange={onFileChange} />
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div className="field">
               <label className="label">Lab / report format</label>
@@ -78,12 +106,15 @@ export default function DashboardPage() {
                 onChange={(e) => setForm((f) => ({ ...f, lab_profile_id: e.target.value }))}
               >
                 <option value="">Select...</option>
-                {labProfiles.map((lp) => (
+                {matchingProfiles.map((lp) => (
                   <option key={lp.id} value={lp.id}>
                     {lp.lab_name} ({lp.source_type.toUpperCase()})
                   </option>
                 ))}
               </select>
+              {file && matchingProfiles.length === 0 && (
+                <div className="error-text">No lab profile is set up for .{fileType} files yet.</div>
+              )}
             </div>
             <div className="field">
               <label className="label">Land usage</label>
@@ -100,10 +131,6 @@ export default function DashboardPage() {
                 ))}
               </select>
             </div>
-          </div>
-          <div className="field">
-            <label className="label">File (CSV, XLSX, or PDF)</label>
-            <input type="file" accept=".csv,.xlsx,.xls,.pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} />
           </div>
           {error && <div className="error-text">{error}</div>}
           {notice && <div className="success-text">{notice}</div>}
