@@ -29,9 +29,3 @@ export async function resolveHeader(sourceLabel) {
 
   return { metricKey: match.metricKey, matchType: "fuzzy" };
 }
-
-// Every known header, for the PDF parser's line-scanning heuristic.
-export async function allKnownHeaders() {
-  const rows = await db.prepare("SELECT header_text FROM column_aliases").all();
-  return rows.map((r) => r.header_text);
-}

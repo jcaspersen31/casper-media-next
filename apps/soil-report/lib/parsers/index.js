@@ -1,7 +1,7 @@
 import { parseCsv } from "./csv";
 import { parseXlsx } from "./xlsx";
 import { parsePdf } from "./pdf";
-import { resolveHeader, allKnownHeaders } from "../columnAliases";
+import { resolveHeader } from "../columnAliases";
 
 function detectSourceType(filename) {
   const ext = filename.toLowerCase().split(".").pop();
@@ -78,7 +78,7 @@ export async function parseUpload(buffer, filename) {
   } else if (sourceType === "xlsx") {
     rawRows = parseXlsx(buffer);
   } else {
-    rawRows = await parsePdf(buffer, await allKnownHeaders());
+    rawRows = await parsePdf(buffer);
   }
 
   const { samples, flaggedColumns, autoMatchedColumns } = await normalizeRows(rawRows);
