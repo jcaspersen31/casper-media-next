@@ -119,6 +119,46 @@ const metrics = {
   Soil_Health_Score: await upsertMetric("Soil_Health_Score", "Soil Health Score", ""),
 };
 
+// Additional metrics seen on real Haney-test exports that we capture but
+// don't have rules for yet — they'll stop showing as "flagged" on upload,
+// but won't appear in any report section until an admin adds real
+// threshold rules for them (see /admin/rules). Not fabricating agronomic
+// thresholds here — see SPEC.md's open items.
+await upsertMetric("WDRF_Buffer", "WDRF Buffer pH", "");
+await upsertMetric("Soluble_Salt", "Soluble Salt (1:1)", "mmhos/cm");
+await upsertMetric("Excess_Lime", "Excess Lime", "");
+await upsertMetric("CO2_C", "CO2-C Respiration", "ppm");
+await upsertMetric("H2O_Total_N", "Water Extractable Total N", "ppm");
+await upsertMetric("H3A_Nitrate", "Nitrate (H3A)", "ppm");
+await upsertMetric("H3A_Ammonium", "Ammonium (H3A)", "ppm");
+await upsertMetric("H3A_Inorganic_N", "Inorganic Nitrogen (H3A)", "ppm");
+await upsertMetric("H3A_Total_P", "Total Phosphorus (H3A)", "ppm");
+await upsertMetric("H3A_Organic_P", "Organic Phosphorus (H3A)", "ppm");
+await upsertMetric("H3A_Ca", "Calcium (H3A)", "ppm");
+await upsertMetric("H3A_Al", "Aluminum (H3A)", "ppm");
+await upsertMetric("H3A_Fe", "Iron (H3A)", "ppm");
+await upsertMetric("H3A_S", "Sulfur (H3A)", "ppm");
+await upsertMetric("H3A_Zn", "Zinc (H3A)", "ppm");
+await upsertMetric("H3A_Mn", "Manganese (H3A)", "ppm");
+await upsertMetric("H3A_Cu", "Copper (H3A)", "ppm");
+await upsertMetric("H3A_Mg", "Magnesium (H3A)", "ppm");
+await upsertMetric("H3A_Na", "Sodium (H3A)", "ppm");
+await upsertMetric("MAC_Pct", "Microbially Active Carbon", "%");
+await upsertMetric("Organic_CN_Ratio", "Organic C:N Ratio", "");
+await upsertMetric("Organic_Inorganic_N_Ratio", "Organic N : Inorganic N Ratio", "");
+await upsertMetric("Organic_N_Release", "Organic N Release", "lbs/ac");
+await upsertMetric("Organic_N_Reserve", "Organic N Reserve", "lbs/ac");
+await upsertMetric("Organic_P_Release", "Organic P Release", "lbs/ac");
+await upsertMetric("Organic_P_Reserve", "Organic P Reserve", "lbs/ac");
+await upsertMetric("Available_N", "Available N", "lbs/ac");
+await upsertMetric("Available_P", "Available P", "lbs/ac");
+await upsertMetric("Available_K", "Available K", "lbs/ac");
+await upsertMetric("Nutrient_Value", "Nutrient Value", "$/ac");
+await upsertMetric("Traditional_N", "Traditional N Recommendation", "lbs/ac");
+await upsertMetric("Haney_Test_N", "Haney Test N Recommendation", "lbs/ac");
+await upsertMetric("Lbs_N_Difference", "N Recommendation Difference", "lbs/ac");
+await upsertMetric("N_Savings", "N Savings", "$/ac");
+
 const usages = {
   rowCrop: await upsertUsage("Row Crop Farming", "Commodity row crops such as corn and soybeans."),
   foodPlot: await upsertUsage("Food Plot / Wildlife", "Food plots and wildlife forage management."),
@@ -200,6 +240,58 @@ const genericAliases = {
   "OM %": "Organic_Matter",
   "Soil Health Score": "Soil_Health_Score",
   "Soil Health Calculation": "Soil_Health_Score",
+
+  // Real Haney-test columns we capture but don't have rules for yet.
+  "WDRF Buffer": "WDRF_Buffer",
+  "1:1 Soluble Salt": "Soluble_Salt",
+  "Excess Lime": "Excess_Lime",
+  "CO2-C": "CO2_C",
+  "H2O Total N": "H2O_Total_N",
+  "H3A Nitrate": "H3A_Nitrate",
+  "H3A Ammonium": "H3A_Ammonium",
+  "H3A Inorganic Nitrogen": "H3A_Inorganic_N",
+  "H3A Total Phosphorus": "H3A_Total_P",
+  "H3A Organic Phosphorus": "H3A_Organic_P",
+  "H3A ICAP Calcium": "H3A_Ca",
+  "H3A ICAP Aluminum": "H3A_Al",
+  "H3A ICAP Iron": "H3A_Fe",
+  "H3A ICAP Sulfur": "H3A_S",
+  "H3A ICAP Zinc": "H3A_Zn",
+  "H3A ICAP Manganese": "H3A_Mn",
+  "H3A ICAP Copper": "H3A_Cu",
+  "H3A ICAP Magnesium": "H3A_Mg",
+  "H3A ICAP Sodium": "H3A_Na",
+  "% MAC": "MAC_Pct",
+  "Organic C:N": "Organic_CN_Ratio",
+  "Organic N:Inorganic N": "Organic_Inorganic_N_Ratio",
+  "Organic N Release": "Organic_N_Release",
+  "Organic N Reserve": "Organic_N_Reserve",
+  "Organic P Release": "Organic_P_Release",
+  "Organic P Reserve": "Organic_P_Reserve",
+  "Available N": "Available_N",
+  "Available P": "Available_P",
+  "Available K": "Available_K",
+  "Nutrient Value": "Nutrient_Value",
+  "Traditional N": "Traditional_N",
+  "Haney Test N": "Haney_Test_N",
+  "Lbs N Difference": "Lbs_N_Difference",
+  "N savings": "N_Savings",
+
+  // Lab/customer metadata — not a metric, deliberately ignored rather than flagged.
+  "Cust ID": "_ignore",
+  "Name": "_ignore",
+  "Company": "_ignore",
+  "Address 1": "_ignore",
+  "City": "_ignore",
+  "ST": "_ignore",
+  "Zip": "_ignore",
+  "Date Recd": "_ignore",
+  "Date Rept": "_ignore",
+  "Lab No": "_ignore",
+  "Grower": "_ignore",
+  "Cover Crop Mix": "_ignore",
+  "Beginning Depth": "_ignore",
+  "Ending Depth": "_ignore",
 };
 
 for (const [header, metricKey] of Object.entries(genericAliases)) {

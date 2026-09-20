@@ -121,6 +121,7 @@ export default function ColumnAliasesAdminPage() {
             <select required value={draft.metric_key} onChange={(e) => setDraft((d) => ({ ...d, metric_key: e.target.value }))}>
               <option value="">Select...</option>
               <option value="sample_id">sample_id (field/sample identifier)</option>
+              <option value="_ignore">_ignore (not a metric — name, address, dates, etc.)</option>
               {metrics.map((m) => (
                 <option key={m.id} value={m.key}>
                   {m.key}

@@ -42,6 +42,11 @@ async function normalizeRows(rawRows) {
         if (sample_id === null) sample_id = value;
         continue;
       }
+      if (resolved.metricKey === "_ignore") {
+        // Known lab/customer metadata (name, address, dates, ...) — not a
+        // metric, deliberately not captured or flagged.
+        continue;
+      }
       const num = Number(value);
       raw_values[resolved.metricKey] = Number.isFinite(num) ? num : value;
     }
