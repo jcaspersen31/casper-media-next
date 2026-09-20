@@ -22,6 +22,7 @@ function narrativeFor(evaluations, sentenceTemplate) {
 // already holds each section's resolved admin-edited definition (see
 // lib/rulesEngine.js's assembleReportData) — no DB access needed here.
 export function buildSectionViewModels(assembled) {
+  if (!Array.isArray(assembled?.sections)) return null;
   return assembled.sections.map((def) => {
     if (def.type === "product_list") {
       const products = assembled.allProducts.filter((p) => p.category === def.productCategory);

@@ -92,6 +92,11 @@ export default function ReportDetailPage({ params }) {
               Download PDF
             </a>
           )}
+          {report.status === "generated" && (
+            <button className="btn btn-outline" onClick={generate} disabled={busy}>
+              {busy ? "Regenerating..." : "Regenerate report"}
+            </button>
+          )}
           <button className="btn btn-outline" onClick={removeReport}>
             Delete report
           </button>
@@ -145,9 +150,22 @@ export default function ReportDetailPage({ params }) {
         </div>
       )}
 
-      {report.status === "generated" && report.assembled_data && (
-        <ReportView sectionViewModels={buildSectionViewModels(report.assembled_data)} usageName={report.usage_name} />
-      )}
+      {report.status === "generated" && report.assembled_data && (() => {
+        const sectionViewModels = buildSectionViewModels(report.assembled_data);
+        if (!sectionViewModels) {
+          return (
+            <div className="card">
+              <strong style={{ color: "var(--amber)" }}>This report needs to be regenerated</strong>
+              <p style={{ color: "var(--text-muted)", fontSize: 14, marginTop: 6 }}>
+                It was generated before a report-template update and is stored in an older format. Click{" "}
+                <strong>Regenerate report</strong> above to rebuild it — your uploaded data is still saved, so nothing
+                needs to be re-uploaded.
+              </p>
+            </div>
+          );
+        }
+        return <ReportView sectionViewModels={sectionViewModels} usageName={report.usage_name} />;
+      })()}
     </div>
   );
 }
