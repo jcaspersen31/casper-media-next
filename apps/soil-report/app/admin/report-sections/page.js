@@ -125,11 +125,7 @@ export default function ReportSectionsAdminPage() {
           </div>
           <div className="field" style={{ marginBottom: 0 }}>
             <label className="label">Type</label>
-            <select
-              value={draft.type}
-              disabled={!!editingId}
-              onChange={(e) => setDraft((d) => ({ ...d, type: e.target.value }))}
-            >
+            <select value={draft.type} onChange={(e) => setDraft((d) => ({ ...d, type: e.target.value }))}>
               {SECTION_TYPES.map((t) => (
                 <option key={t.value} value={t.value}>
                   {t.label}
