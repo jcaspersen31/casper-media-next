@@ -45,12 +45,26 @@ export async function POST(request) {
   const formData = await request.formData();
   const file = formData.get("file");
   const usageId = formData.get("usage_id");
+  const requestedCustomerId = formData.get("customer_id");
 
   if (!file || typeof file === "string") {
     return NextResponse.json({ error: "A file is required." }, { status: 400 });
   }
   if (!usageId) {
     return NextResponse.json({ error: "Usage is required." }, { status: 400 });
+  }
+
+  // Admins can upload on behalf of a customer (e.g. samples mailed in and
+  // handled by the office); everyone else's uploads belong to themselves.
+  let customerId = user.id;
+  if (user.role === "admin" && requestedCustomerId) {
+    const customer = await db
+      .prepare("SELECT id FROM users WHERE id = ? AND role = 'customer'")
+      .get(Number(requestedCustomerId));
+    if (!customer) {
+      return NextResponse.json({ error: "Unknown customer." }, { status: 400 });
+    }
+    customerId = customer.id;
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -67,7 +81,7 @@ export async function POST(request) {
      VALUES (?,?,?, 'uploaded', ?, ?)`
   );
   const info = await insertReport.run(
-    user.id,
+    customerId,
     Number(usageId),
     file.name,
     JSON.stringify(parsed.flaggedColumns),
