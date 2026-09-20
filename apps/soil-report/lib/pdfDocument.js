@@ -85,9 +85,11 @@ export function SoilReportDocument({ sectionViewModels, usageName, reportId }) {
             )}
 
             {(section.type === "metric_table" || section.type === "narrative") &&
-              section.perSample.map((s) => (
-                <View key={s.sampleId}>
-                  {section.perSample.length > 1 && <Text style={styles.sampleLabel}>{s.sampleId}</Text>}
+              section.perSample.map((s, i) => (
+                <View key={`${s.sampleId}-${i}`}>
+                  {section.perSample.length > 1 && (
+                    <Text style={styles.sampleLabel}>Sample: {s.sampleId}</Text>
+                  )}
                   {section.type === "narrative" ? (
                     <Text style={styles.narrative}>{s.narrative}</Text>
                   ) : (

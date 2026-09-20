@@ -82,10 +82,10 @@ export default function ReportView({ sectionViewModels, usageName }) {
           )}
 
           {(section.type === "metric_table" || section.type === "narrative") &&
-            section.perSample.map((s) => (
-              <div key={s.sampleId} style={{ marginBottom: 12 }}>
+            section.perSample.map((s, i) => (
+              <div key={`${s.sampleId}-${i}`} style={{ marginBottom: 12 }}>
                 {section.perSample.length > 1 && (
-                  <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8 }}>{s.sampleId}</div>
+                  <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 8 }}>Sample: {s.sampleId}</div>
                 )}
                 {section.type === "narrative" ? (
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.6, fontSize: 14 }}>{s.narrative}</p>
