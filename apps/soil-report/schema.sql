@@ -41,7 +41,22 @@ CREATE TABLE IF NOT EXISTS column_aliases (
 CREATE TABLE IF NOT EXISTS report_templates (
   id       SERIAL PRIMARY KEY,
   usage_id INTEGER NOT NULL REFERENCES usages(id) ON DELETE CASCADE,
-  sections TEXT NOT NULL DEFAULT '[]' -- JSON ordered list of section keys
+  sections TEXT NOT NULL DEFAULT '[]' -- JSON ordered list of report_sections.key values
+);
+
+-- Admin-managed report sections. report_templates.sections references these
+-- by `key` (not id) so a section can be renamed without touching templates.
+-- type: 'metric_table' | 'narrative' | 'product_list'.
+CREATE TABLE IF NOT EXISTS report_sections (
+  id                SERIAL PRIMARY KEY,
+  key               TEXT NOT NULL UNIQUE,
+  title             TEXT NOT NULL,
+  type              TEXT NOT NULL CHECK (type IN ('metric_table','narrative','product_list')),
+  intro_text        TEXT, -- optional lead-in paragraph shown above the section's content
+  metric_keys       TEXT, -- JSON array of metrics.key; null/empty = every evaluated metric (metric_table/narrative only)
+  sentence_template TEXT, -- narrative only; {metric} {value} {unit} {band} {recommendation} placeholders
+  product_category  TEXT, -- product_list only; matches products.category
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS products (

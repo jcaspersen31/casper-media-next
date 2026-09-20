@@ -55,7 +55,26 @@ export async function assembleReportData(reportId) {
 
   const usage = await db.prepare("SELECT * FROM usages WHERE id = ?").get(report.usage_id);
   const template = await db.prepare("SELECT * FROM report_templates WHERE usage_id = ?").get(report.usage_id);
-  const sections = template ? JSON.parse(template.sections) : [];
+  const sectionKeys = template ? JSON.parse(template.sections) : [];
+
+  // Resolve each key to its current admin-editable definition and embed it
+  // directly, so the web view / PDF renderers don't need their own DB access
+  // and a report always renders with the wording that was live at generate
+  // time, even if a section is edited or deleted afterward.
+  const sections = [];
+  for (const key of sectionKeys) {
+    const row = await db.prepare("SELECT * FROM report_sections WHERE key = ?").get(key);
+    if (!row) continue; // section was deleted since the template referenced it
+    sections.push({
+      key: row.key,
+      title: row.title,
+      type: row.type,
+      introText: row.intro_text || null,
+      metricKeys: row.metric_keys ? JSON.parse(row.metric_keys) : null,
+      sentenceTemplate: row.sentence_template || null,
+      productCategory: row.product_category || null,
+    });
+  }
 
   const sampleRows = await db.prepare("SELECT * FROM samples WHERE report_id = ?").all(reportId);
   const samples = [];

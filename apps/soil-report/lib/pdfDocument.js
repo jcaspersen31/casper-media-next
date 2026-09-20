@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   colBand: { width: "15%" },
   colRec: { width: "45%" },
   narrative: { lineHeight: 1.5 },
+  introText: { lineHeight: 1.5, color: "#444", marginBottom: 8 },
   sampleLabel: { fontWeight: 700, marginTop: 8, marginBottom: 4 },
   productCard: { marginBottom: 8 },
   productName: { fontWeight: 700 },
@@ -67,6 +68,7 @@ export function SoilReportDocument({ sectionViewModels, usageName, reportId }) {
         {sectionViewModels.map((section) => (
           <View key={section.key} style={styles.section} wrap={false}>
             <Text style={styles.h2}>{section.title}</Text>
+            {section.introText && <Text style={styles.introText}>{section.introText}</Text>}
 
             {section.type === "product_list" && (
               <View>

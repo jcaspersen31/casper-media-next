@@ -1,19 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-const SECTION_KEYS = [
-  { key: "biology_narrative", label: "Soil biology narrative" },
-  { key: "crop_fertilizer_table", label: "Crop fertilizer table" },
-  { key: "lime_recommendation", label: "Lime recommendation" },
-  { key: "cool_season_mix", label: "Cool season mix recommendations" },
-  { key: "warm_season_mix", label: "Warm season mix recommendations" },
-  { key: "seasonal_nutrient_table", label: "Seasonal nutrient table" },
-];
+import Link from "next/link";
 
 export default function ReportTemplatesAdminPage() {
   const [rows, setRows] = useState(null);
   const [usages, setUsages] = useState([]);
+  const [sectionKeys, setSectionKeys] = useState([]);
   const [newUsageId, setNewUsageId] = useState("");
   const [error, setError] = useState("");
 
@@ -26,6 +19,9 @@ export default function ReportTemplatesAdminPage() {
   useEffect(() => {
     load();
     fetch("/api/admin/usages").then((r) => r.json()).then((d) => setUsages(d.usages || []));
+    fetch("/api/admin/report-sections")
+      .then((r) => r.json())
+      .then((d) => setSectionKeys((d.report_sections || []).map((s) => ({ key: s.key, label: s.title }))));
   }, []);
 
   async function toggleSection(row, key) {
@@ -77,7 +73,12 @@ export default function ReportTemplatesAdminPage() {
     <div>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 16 }}>Report templates</h1>
       <p style={{ color: "var(--text-muted)", fontSize: 14, marginBottom: 20 }}>
-        Each usage has one template that controls which sections appear in its reports, and in what order.
+        Each usage has one template that controls which sections appear in its reports, and in what order. Create or
+        edit a section&apos;s content under{" "}
+        <Link href="/admin/report-sections" style={{ color: "var(--green-light)" }}>
+          Report sections
+        </Link>{" "}
+        first, then toggle it on here.
       </p>
 
       {rows === null && <p style={{ color: "var(--text-muted)" }}>Loading...</p>}
@@ -89,7 +90,7 @@ export default function ReportTemplatesAdminPage() {
             <div key={row.id} className="card" style={{ marginBottom: 20 }}>
               <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12 }}>{row.usage_name}</h2>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {SECTION_KEYS.map((sec) => {
+                {sectionKeys.map((sec) => {
                   const included = sections.includes(sec.key);
                   const order = sections.indexOf(sec.key);
                   return (

@@ -51,7 +51,12 @@ export default function ReportView({ sectionViewModels, usageName }) {
       </p>
       {sectionViewModels.map((section) => (
         <div key={section.key} className="card" style={{ marginBottom: 20 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>{section.title}</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: section.introText ? 8 : 16 }}>{section.title}</h2>
+          {section.introText && (
+            <p style={{ color: "var(--text-muted)", lineHeight: 1.6, fontSize: 14, marginBottom: 16 }}>
+              {section.introText}
+            </p>
+          )}
 
           {section.type === "product_list" && (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))", gap: 12 }}>

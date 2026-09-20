@@ -40,6 +40,18 @@ CREATE TABLE IF NOT EXISTS report_templates (
   sections TEXT NOT NULL DEFAULT '[]'
 );
 
+CREATE TABLE IF NOT EXISTS report_sections (
+  id                SERIAL PRIMARY KEY,
+  key               TEXT NOT NULL UNIQUE,
+  title             TEXT NOT NULL,
+  type              TEXT NOT NULL CHECK (type IN ('metric_table','narrative','product_list')),
+  intro_text        TEXT,
+  metric_keys       TEXT,
+  sentence_template TEXT,
+  product_category  TEXT,
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS products (
   id        SERIAL PRIMARY KEY,
   name      TEXT NOT NULL,
@@ -154,6 +166,19 @@ SELECT v.name, v.store_url, v.category FROM (VALUES
   ('Sunflower & Sorghum Warm Season Mix', 'https://example-store.com/products/warm-season-mix', 'warm_season_seed')
 ) AS v(name, store_url, category)
 WHERE NOT EXISTS (SELECT 1 FROM products p WHERE p.name = v.name);
+
+INSERT INTO report_sections (key, title, type, intro_text, metric_keys, sentence_template, product_category) VALUES
+  ('biology_narrative', 'Soil Biology', 'narrative',
+   'Soil biology drives how well your ground cycles nutrients and holds structure. Here''s what this sample shows:',
+   '["WEOC","WEON","Organic_Matter","Soil_Health_Score"]',
+   '{metric} measured {value}{unit}, rated {band}. {recommendation}',
+   NULL),
+  ('crop_fertilizer_table', 'Fertility Recommendations', 'metric_table', NULL, NULL, NULL, NULL),
+  ('lime_recommendation', 'Lime Recommendation', 'metric_table', NULL, '["Soil_pH","Ca_Sat"]', NULL, NULL),
+  ('cool_season_mix', 'Cool Season Mix Recommendations', 'product_list', NULL, NULL, NULL, 'cool_season_seed'),
+  ('warm_season_mix', 'Warm Season Mix Recommendations', 'product_list', NULL, NULL, NULL, 'warm_season_seed'),
+  ('seasonal_nutrient_table', 'Nutrient Levels', 'metric_table', NULL, NULL, NULL, NULL)
+ON CONFLICT (key) DO NOTHING;
 
 INSERT INTO report_templates (usage_id, sections)
 SELECT id, '["biology_narrative","crop_fertilizer_table"]' FROM usages WHERE name = 'Row Crop Farming'

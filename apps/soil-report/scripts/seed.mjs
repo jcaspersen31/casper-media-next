@@ -53,6 +53,20 @@ async function upsertTemplate(usage_id, sections) {
   return info.lastInsertRowid;
 }
 
+// report_sections: admin-editable section definitions. Not re-applied if
+// the key already exists, so an admin's edits survive a reseed.
+async function upsertReportSection({ key, title, type, introText, metricKeys, sentenceTemplate, productCategory }) {
+  const existing = await db.prepare("SELECT id FROM report_sections WHERE key = ?").get(key);
+  if (existing) return existing.id;
+  const info = await db
+    .prepare(
+      `INSERT INTO report_sections (key, title, type, intro_text, metric_keys, sentence_template, product_category)
+       VALUES (?,?,?,?,?,?,?)`
+    )
+    .run(key, title, type, introText || null, metricKeys ? JSON.stringify(metricKeys) : null, sentenceTemplate || null, productCategory || null);
+  return info.lastInsertRowid;
+}
+
 // rules: band thresholds per usage/metric. Demo numbers only — client to confirm real thresholds.
 async function upsertRule(usage_id, metric_id, band_low, band_high, band_label, recommendation_text, product_id) {
   const existing = await db
@@ -172,6 +186,37 @@ const products = {
   coolSeasonMix: await upsertProduct("Clover & Brassica Cool Season Mix", "https://example-store.com/products/cool-season-mix", "cool_season_seed"),
   warmSeasonMix: await upsertProduct("Sunflower & Sorghum Warm Season Mix", "https://example-store.com/products/warm-season-mix", "warm_season_seed"),
 };
+
+const DEFAULT_SENTENCE_TEMPLATE = "{metric} measured {value}{unit}, rated {band}. {recommendation}";
+
+await upsertReportSection({
+  key: "biology_narrative",
+  title: "Soil Biology",
+  type: "narrative",
+  introText: "Soil biology drives how well your ground cycles nutrients and holds structure. Here's what this sample shows:",
+  metricKeys: ["WEOC", "WEON", "Organic_Matter", "Soil_Health_Score"],
+  sentenceTemplate: DEFAULT_SENTENCE_TEMPLATE,
+});
+await upsertReportSection({ key: "crop_fertilizer_table", title: "Fertility Recommendations", type: "metric_table" });
+await upsertReportSection({
+  key: "lime_recommendation",
+  title: "Lime Recommendation",
+  type: "metric_table",
+  metricKeys: ["Soil_pH", "Ca_Sat"],
+});
+await upsertReportSection({
+  key: "cool_season_mix",
+  title: "Cool Season Mix Recommendations",
+  type: "product_list",
+  productCategory: "cool_season_seed",
+});
+await upsertReportSection({
+  key: "warm_season_mix",
+  title: "Warm Season Mix Recommendations",
+  type: "product_list",
+  productCategory: "warm_season_seed",
+});
+await upsertReportSection({ key: "seasonal_nutrient_table", title: "Nutrient Levels", type: "metric_table" });
 
 await upsertTemplate(usages.rowCrop, ["biology_narrative", "crop_fertilizer_table"]);
 await upsertTemplate(usages.foodPlot, [
