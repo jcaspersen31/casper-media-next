@@ -7,7 +7,8 @@ function MetricTable({ evaluations }) {
     return <p style={{ color: "var(--text-muted)", fontSize: 14 }}>No matching metrics on this sample.</p>;
   }
   return (
-    <table style={{ marginBottom: 12 }}>
+    <div style={{ overflowX: "auto", marginBottom: 12 }}>
+    <table style={{ marginBottom: 0 }}>
       <thead>
         <tr>
           <th>Metric</th>
@@ -40,6 +41,7 @@ function MetricTable({ evaluations }) {
         ))}
       </tbody>
     </table>
+    </div>
   );
 }
 
