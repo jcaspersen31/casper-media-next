@@ -1,5 +1,16 @@
 import { db } from "./db";
 
+// True if at least one sample on the report has at least one metric that
+// resolved to a known column — i.e. there's something for the rules engine
+// to actually evaluate. A report where every column was flagged/unmatched
+// would otherwise still let a customer pay for a report with nothing in it.
+export function hasUsableData(samples) {
+  return samples.some((s) => {
+    const values = typeof s.raw_values === "string" ? JSON.parse(s.raw_values || "{}") : s.raw_values || {};
+    return Object.keys(values).length > 0;
+  });
+}
+
 export async function loadReportForUser(reportId, user) {
   const report = await db
     .prepare(

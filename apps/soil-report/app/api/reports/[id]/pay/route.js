@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireUserOrResponse } from "@/lib/apiAuth";
-import { loadReportForUser } from "@/lib/reports";
+import { loadReportForUser, hasUsableData } from "@/lib/reports";
 import { db } from "@/lib/db";
 
 // POC payment amount. In production this would come from admin-configurable
@@ -19,6 +19,17 @@ export async function POST(request, { params }) {
 
   if (report.status !== "uploaded") {
     return NextResponse.json({ error: `Report is already ${report.status}.` }, { status: 409 });
+  }
+
+  const samples = await db.prepare("SELECT raw_values FROM samples WHERE report_id = ?").all(report.id);
+  if (!hasUsableData(samples)) {
+    return NextResponse.json(
+      {
+        error:
+          "None of this report's columns could be matched to a known metric, so there's nothing to evaluate. Delete it and re-upload, or ask an admin to review the flagged columns first.",
+      },
+      { status: 422 }
+    );
   }
 
   const isStripeConfigured = Boolean(process.env.STRIPE_SECRET_KEY);

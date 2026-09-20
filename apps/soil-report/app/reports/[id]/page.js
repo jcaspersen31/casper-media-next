@@ -124,7 +124,20 @@ export default function ReportDetailPage({ params }) {
         </div>
       )}
 
-      {report.status === "uploaded" && (
+      {report.status === "uploaded" && report.has_usable_data === false && (
+        <div className="card" style={{ borderColor: "rgba(216,90,72,0.4)" }}>
+          <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: "var(--red)" }}>
+            No usable data was found
+          </h2>
+          <p style={{ color: "var(--text-muted)", fontSize: 14, marginBottom: 16 }}>
+            None of this file&apos;s columns could be matched to a known metric, so there would be nothing to put in
+            a report. Delete this report and try re-uploading (a different export, or a cleaner copy of the file),
+            or ask an admin to review the columns listed above under Column mappings.
+          </p>
+        </div>
+      )}
+
+      {report.status === "uploaded" && report.has_usable_data !== false && (
         <div className="card">
           <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Unlock this report</h2>
           <p style={{ color: "var(--text-muted)", fontSize: 14, marginBottom: 16 }}>

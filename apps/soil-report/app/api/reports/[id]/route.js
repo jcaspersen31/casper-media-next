@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireUserOrResponse } from "@/lib/apiAuth";
-import { loadReportForUser } from "@/lib/reports";
+import { loadReportForUser, hasUsableData } from "@/lib/reports";
 import { db } from "@/lib/db";
 
 export async function GET(request, { params }) {
@@ -20,6 +20,7 @@ export async function GET(request, { params }) {
       flagged_columns: JSON.parse(report.flagged_columns || "[]"),
       auto_matched_columns: JSON.parse(report.auto_matched_columns || "[]"),
       assembled_data: report.assembled_data ? JSON.parse(report.assembled_data) : null,
+      has_usable_data: hasUsableData(samples),
     },
     samples: samples.map((s) => ({ ...s, raw_values: JSON.parse(s.raw_values) })),
   });
