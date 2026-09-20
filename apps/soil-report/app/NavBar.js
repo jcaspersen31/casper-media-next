@@ -44,6 +44,7 @@ export default function NavBar({ user }) {
           {user && user.role === "customer" && (
             <>
               <Link href="/dashboard">My reports</Link>
+              <Link href="/account">My account</Link>
               <button className="btn-outline btn" onClick={logout}>Log out</button>
             </>
           )}
@@ -51,6 +52,7 @@ export default function NavBar({ user }) {
             <>
               <Link href="/admin">Admin</Link>
               <Link href="/dashboard">My reports</Link>
+              <Link href="/account">My account</Link>
               <button className="btn-outline btn" onClick={logout}>Log out</button>
             </>
           )}
