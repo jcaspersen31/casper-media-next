@@ -67,3 +67,9 @@ export const db = {
     return new Statement(sql);
   },
 };
+
+// Runs a raw, possibly multi-statement SQL string with no placeholder
+// conversion — for one-off scripts (schema + seed), not app queries.
+export async function execRaw(sql) {
+  await pool.query(sql);
+}
