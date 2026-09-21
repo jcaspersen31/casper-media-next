@@ -25,8 +25,8 @@ export default function Home() {
     {
       name: "Your Garage Log",
       icon: "🚗",
-      badge: "In development",
-      badgeClass: "badge-building",
+      badge: "Live",
+      badgeClass: "badge-live",
       featured: false,
       desc: "Parts tracking, build journals, and tuning logs for car restorers, restomod builders, and track-day enthusiasts. Research parts anywhere, buy when ready, keep the history forever.",
       tags: ["React Native", "iOS & Android"],
