@@ -32,6 +32,26 @@ export default function Home() {
       tags: ["React Native", "iOS & Android"],
       link: null,
     },
+    {
+      name: "Commissioning",
+      icon: "✅",
+      badge: "In development",
+      badgeClass: "badge-building",
+      featured: false,
+      desc: "Checklists, functional tests, and issue tracking for independent commissioning agents. Built phone-first for the mechanical room, with contractors completing their work from a simple invite link.",
+      tags: ["Web", "Mobile-first"],
+      link: null,
+    },
+    {
+      name: "Soil Reports",
+      icon: "🌱",
+      badge: "In development",
+      badgeClass: "badge-building",
+      featured: false,
+      desc: "Upload a soil lab report and get a clear deficiency report with recommendations and product suggestions, so growers spend less time decoding numbers and more time fixing what matters.",
+      tags: ["Next.js", "PostgreSQL"],
+      link: null,
+    },
   ];
 
   const clientWork = [
