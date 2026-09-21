@@ -3,6 +3,7 @@ export default function Home() {
     {
       name: "FindUrDinner",
       icon: "🍜",
+      logo: "/logos/findurdinner.png",
       badge: "Live",
       badgeClass: "badge-live",
       featured: true,
@@ -14,6 +15,7 @@ export default function Home() {
     {
       name: "WorksiteTrack",
       icon: "🏗",
+      logo: "/logos/worksitetrack.png",
       badge: "Beta",
       badgeClass: "badge-dev",
       featured: true,
@@ -25,6 +27,7 @@ export default function Home() {
     {
       name: "Your Garage Log",
       icon: "🚗",
+      logo: "/logos/yourgaragelog.png",
       badge: "Live",
       badgeClass: "badge-live",
       featured: false,
@@ -119,7 +122,8 @@ export default function Home() {
         .project-card.featured { border-color: rgba(216,90,48,0.25); }
         .project-card.featured:hover { border-color: rgba(216,90,48,0.45); }
         .project-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
-        .project-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--orange-dim); border: 0.5px solid rgba(216,90,48,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .project-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--orange-dim); border: 0.5px solid rgba(216,90,48,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; overflow: hidden; }
+        .project-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .project-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
         .badge-live { background: rgba(59,109,17,0.2); color: #7DC443; border: 0.5px solid rgba(59,109,17,0.3); }
         .badge-dev { background: rgba(216,90,48,0.15); color: var(--orange-light); border: 0.5px solid rgba(216,90,48,0.2); }
@@ -223,7 +227,7 @@ export default function Home() {
             {products.filter(p => p.featured).map(p => (
               <a key={p.name} href={p.link || '#'} className="project-card featured" target={p.link ? "_blank" : undefined} rel="noreferrer">
                 <div className="project-header">
-                  <div className="project-icon">{p.icon}</div>
+                  <div className="project-icon">{p.logo ? <img src={p.logo} alt={`${p.name} logo`} width="48" height="48" /> : p.icon}</div>
                   <span className={`project-badge ${p.badgeClass}`}>{p.badge}</span>
                 </div>
                 <div className="project-name">{p.name}</div>
@@ -243,7 +247,7 @@ export default function Home() {
               return (
               <Card key={p.name} className="project-card" {...linkProps}>
                 <div className="project-header">
-                  <div className="project-icon">{p.icon}</div>
+                  <div className="project-icon">{p.logo ? <img src={p.logo} alt={`${p.name} logo`} width="48" height="48" /> : p.icon}</div>
                   <span className={`project-badge ${p.badgeClass}`}>{p.badge}</span>
                 </div>
                 <div className="project-name">{p.name}</div>
