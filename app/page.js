@@ -185,7 +185,7 @@ export default function Home() {
               <div className="hero-stat-label">Products in market</div>
             </div>
             <div className="hero-stat-item">
-              <div className="hero-stat-num">50,000+</div>
+              <div className="hero-stat-num">294,000+</div>
               <div className="hero-stat-label">Restaurants indexed</div>
             </div>
             <div className="hero-stat-item">
@@ -281,7 +281,7 @@ export default function Home() {
             </div>
             <div className="about-stats">
               <div className="stat-card"><div className="stat-num">3+</div><div className="stat-label">Products in market</div></div>
-              <div className="stat-card"><div className="stat-num">50k+</div><div className="stat-label">Restaurants in FindUrDinner</div></div>
+              <div className="stat-card"><div className="stat-num">294k+</div><div className="stat-label">Restaurants in FindUrDinner</div></div>
               <div className="stat-card"><div className="stat-num">2026</div><div className="stat-label">Founded in Pennsylvania</div></div>
               <div className="stat-card"><div className="stat-num">∞</div><div className="stat-label">Problems left to solve</div></div>
             </div>
