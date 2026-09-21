@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CasperCX preview</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Interactive preview of a commissioning checklist and issue tracker. Sample data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1f4; --surface:#ffffff; --surface2:#f5f7f9; --ink:#12202c; --muted:#586876;
+  --line:#d3dbe2; --line2:#e5eaef;
+  --accent:#1f3f8f; --accent-ink:#ffffff; --accent-soft:#e2e9f8;
+  --pass:#17803f; --pass-soft:#dff2e6;
+  --fail:#c22f3a; --fail-soft:#fbe4e6;
+  --warn:#96600a; --warn-soft:#fbeed6;
+  --na:#5f6d79; --na-soft:#e8ecf0;
+  --shadow:0 1px 2px rgba(18,32,44,.06),0 6px 18px rgba(18,32,44,.07);
+  --overlay:rgba(12,20,28,.5);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0d141b; --surface:#141e28; --surface2:#19252f; --ink:#e6edf3; --muted:#93a3b1;
+    --line:#2a3947; --line2:#223040;
+    --accent:#86a6ff; --accent-ink:#0b1424; --accent-soft:#1c2a4a;
+    --pass:#4dc884; --pass-soft:#153a27;
+    --fail:#ff7b84; --fail-soft:#42191e;
+    --warn:#f0b455; --warn-soft:#3b2b0d;
+    --na:#9aa9b6; --na-soft:#222f3a;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35);
+    --overlay:rgba(0,0,0,.62);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0d141b; --surface:#141e28; --surface2:#19252f; --ink:#e6edf3; --muted:#93a3b1;
+  --line:#2a3947; --line2:#223040;
+  --accent:#86a6ff; --accent-ink:#0b1424; --accent-soft:#1c2a4a;
+  --pass:#4dc884; --pass-soft:#153a27;
+  --fail:#ff7b84; --fail-soft:#42191e;
+  --warn:#f0b455; --warn-soft:#3b2b0d;
+  --na:#9aa9b6; --na-soft:#222f3a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35);
+  --overlay:rgba(0,0,0,.62);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;line-height:1.45;padding-inline:16px;padding-block:16px 48px}
+.mono{font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+.wrap{max-width:1180px;margin:0 auto}
+
+.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.logo{font-weight:600;font-size:19px;letter-spacing:-.015em}
+.logo b{color:var(--accent);font-weight:600}
+.proj{color:var(--muted);font-size:13px}
+.proj .mono{font-size:12px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:6px;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
+
+.hint{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;background:var(--accent-soft);border:1px solid var(--line);padding:10px 14px;border-radius:8px;margin-top:14px;font-size:13px}
+.hint button{border:0;background:none;color:var(--muted);font-size:18px;line-height:1;padding:0 2px}
+
+.tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--line);margin-top:14px}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;font-weight:500;color:var(--muted);white-space:nowrap;margin-bottom:-1px}
+.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--accent)}
+.badge{display:inline-block;min-width:20px;text-align:center;margin-left:6px;padding:0 6px;border-radius:999px;background:var(--fail);color:#fff;font-size:11px;font-weight:600;line-height:18px}
+
+main{margin-top:20px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--na-soft);color:var(--na);white-space:nowrap}
+.pill.pass{background:var(--pass-soft);color:var(--pass)}
+.pill.fail{background:var(--fail-soft);color:var(--fail)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.accent{background:var(--accent-soft);color:var(--accent)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:6px 12px;font-weight:500}
+.btn:hover{background:var(--surface2)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--fail)}
+.btn.sm{padding:3px 9px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.muted{color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.spread{justify-content:space-between}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-weight:500;color:var(--muted)}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+
+/* overview */
+.grid2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.panel h3{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:12px}
+.stack{display:flex;flex-direction:column;gap:20px}
+.bigrow{display:flex;flex-wrap:wrap;gap:18px 32px;margin-bottom:14px}
+.bignum{font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.bignum small{display:block;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0;margin-top:6px}
+.bar{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--na-soft)}
+.bar i{display:block;height:100%}
+.bar .s-notstarted{background:var(--line)}
+.bar .s-inprogress{background:var(--warn)}
+.bar .s-complete{background:var(--accent)}
+.bar .s-verified{background:var(--pass)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:12px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;background:var(--c)}
+.list{display:flex;flex-direction:column}
+.li{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line2)}
+.li:last-child{border-bottom:0}
+table.plain{width:100%;border-collapse:collapse}
+table.plain th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}
+table.plain td{padding:9px 8px;border-bottom:1px solid var(--line2);vertical-align:top}
+.tw{overflow-x:auto}
+.num{font-variant-numeric:tabular-nums}
+.act{font-size:13px}
+.act .t{color:var(--muted);font-size:12px;margin-right:8px}
+
+/* matrix */
+.mtop{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:flex-end;justify-content:space-between;margin-bottom:12px}
+.mtop h2{font-size:20px;letter-spacing:-.01em}
+.mwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table.matrix{border-collapse:separate;border-spacing:0;width:100%;min-width:660px}
+.matrix th,.matrix td{border-bottom:1px solid var(--line2);padding:6px 10px;vertical-align:middle}
+.matrix th:first-child,.matrix td:first-child{position:sticky;left:0;background:var(--surface);z-index:1;min-width:250px;max-width:320px;border-right:1px solid var(--line)}
+.matrix thead th{vertical-align:bottom;padding-block:12px;text-align:center;font-weight:500}
+.matrix thead th:first-child{text-align:left}
+.matrix tr.sec td{background:var(--surface2);font-weight:600;padding-block:8px}
+.matrix tr.sec td:first-child{background:var(--surface2)}
+.matrix td.u{text-align:center;min-width:150px}
+.matrix td.flag{background:var(--warn-soft)}
+.matrix tr:last-child td{border-bottom:0}
+.tag{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:14px}
+.tmini{display:flex;justify-content:center;gap:4px;margin-top:6px}
+.dot{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:5px;font-size:9px;font-weight:600;font-family:'IBM Plex Mono',monospace;background:var(--line);color:var(--muted)}
+.dot.inprogress{background:var(--warn-soft);color:var(--warn)}
+.dot.complete{background:var(--accent-soft);color:var(--accent)}
+.dot.verified{background:var(--pass);color:#fff}
+.cellbtn{width:38px;height:30px;border-radius:6px;border:1px dashed var(--line);background:transparent;display:inline-grid;place-items:center;font-weight:600;font-size:12px;color:var(--muted)}
+.cellbtn.p{background:var(--pass-soft);color:var(--pass);border:1px solid transparent}
+.cellbtn.n{background:var(--na-soft);color:var(--na);border:1px solid transparent}
+.cellbtn.f{background:var(--fail-soft);color:var(--fail);border:1px solid transparent}
+.ref{font-size:10.5px;color:var(--fail);margin-top:2px}
+.tri{display:grid;grid-template-columns:34px 1fr;gap:1px 8px;font-size:12px;text-align:left;width:100%;background:none;border:0;padding:2px 0}
+.tri i{font-style:normal;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;padding-top:1px}
+.tri .diff{color:var(--warn);font-weight:600}
+.flagnote{font-size:11px;color:var(--warn);font-weight:600;margin-top:3px;text-align:left}
+.flagnote.ok{color:var(--pass)}
+.colhead{display:flex;flex-direction:column;align-items:center;gap:4px}
+.mini-progress{width:90px;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.mini-progress i{display:block;height:100%;background:var(--accent)}
+.note{font-size:12px;color:var(--muted)}
+.legendm{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12px;color:var(--muted);align-items:center}
+.narrow-only{display:none}
+@media (max-width:719px){.narrow-only{display:block}}
+
+/* tests */
+.test{max-width:780px}
+.tline{display:grid;grid-template-columns:28px 1fr;gap:6px 10px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.tline .n{color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px;padding-top:2px}
+.tline .ctl{grid-column:2;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.th{font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:600;color:var(--muted);padding:16px 0 4px;border-bottom:1px solid var(--line)}
+.var{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:4px;white-space:nowrap}
+.pfseg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.pfseg button{border:0;background:var(--surface);padding:5px 12px;font-weight:500;color:var(--muted);border-right:1px solid var(--line)}
+.pfseg button:last-child{border-right:0}
+.pfseg button[aria-pressed=true].p{background:var(--pass);color:#fff}
+.pfseg button[aria-pressed=true].f{background:var(--fail);color:#fff}
+.pfseg button[aria-pressed=true].n{background:var(--na);color:#fff}
+.attempts{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+
+/* issues */
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--surface2)}
+.pri{font-weight:600;font-size:12px}
+.pri.URGENT,.pri.HIGH{color:var(--fail)}
+.pri.MODERATE{color:var(--warn)}
+.pri.LOW{color:var(--muted)}
+.ph{display:inline-grid;place-items:center;width:44px;height:34px;border-radius:6px;background:var(--surface2);border:1px solid var(--line);color:var(--muted)}
+
+/* modal */
+.ov{position:fixed;inset:0;background:var(--overlay);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.md{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);width:100%;max-width:520px;max-height:calc(100dvh - 32px);overflow:auto;padding:20px}
+@media (max-width:560px){.ov{align-items:flex-end;padding:0}.md{border-radius:14px 14px 0 0;max-width:none;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}}
+.md h3{font-size:17px;margin-bottom:4px}
+.md .sub{color:var(--muted);margin-bottom:14px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.field label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.03em}
+.inp{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:8px 10px;min-height:38px}
+textarea.inp{min-height:76px;resize:vertical}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;margin:0 0 14px}
+.kv dt{color:var(--muted);font-size:12px;letter-spacing:.03em;padding-top:1px}
+.kv dd{margin:0}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:16px}
+.comments{display:flex;flex-direction:column;gap:8px;margin:8px 0 12px}
+.cm{background:var(--surface2);border-radius:8px;padding:8px 10px;font-size:13px}
+.cm b{font-weight:600}
+.cm span{color:var(--muted);font-size:11px;margin-left:6px}
+.photos{display:flex;gap:6px;margin:6px 0 14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:9px;box-shadow:var(--shadow);z-index:60;font-weight:500;max-width:calc(100% - 32px)}
+
+/* phone */
+.stage{display:flex;flex-direction:column;align-items:center;gap:12px}
+.cap{color:var(--muted);font-size:13px;text-align:center;max-width:520px}
+.phone{width:100%;max-width:392px;height:780px;background:var(--surface);border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+@media (max-width:440px){.phone{border-radius:16px;height:720px}}
+.ph-head{padding:14px 16px 10px;border-bottom:1px solid var(--line);background:var(--surface)}
+.ph-head .t1{font-weight:600;font-size:16px}
+.ph-head .t2{color:var(--muted);font-size:12px}
+.ph-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sig{border:1px solid var(--line);background:var(--surface2);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--pass)}
+.sig.off{color:var(--warn);background:var(--warn-soft);border-color:transparent}
+.offbar{background:var(--warn-soft);color:var(--warn);font-size:12px;font-weight:500;padding:6px 16px}
+.ph-body{flex:1;overflow:auto;background:var(--bg)}
+.ph-foot{border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--surface)}
+.ph-foot .btn{width:100%;min-height:46px;font-weight:600}
+.pgroup{padding:16px 16px 6px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+.pcard{display:block;width:100%;text-align:left;background:var(--surface);border:0;border-bottom:1px solid var(--line2);padding:12px 16px}
+.pcard .r1{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.pcard .r2{color:var(--muted);font-size:12px;margin-top:2px}
+.pcard .bar{margin-top:8px;height:6px}
+.pcard .bar i{background:var(--accent)}
+.clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.psec{background:var(--surface);margin-top:10px;border-block:1px solid var(--line)}
+.psec-h{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;width:100%;background:var(--surface2);border:0;text-align:left;font-weight:600}
+.psec-h small{font-weight:500;color:var(--muted)}
+.pl{padding:12px 16px;border-top:1px solid var(--line2)}
+.pl p{margin:0 0 10px}
+.p3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pfn{min-height:46px;border-radius:9px;border:1px solid var(--line);background:var(--surface);font-weight:600;color:var(--muted)}
+.pfn[aria-pressed=true].p{background:var(--pass);border-color:var(--pass);color:#fff}
+.pfn[aria-pressed=true].f{background:var(--fail);border-color:var(--fail);color:#fff}
+.pfn[aria-pressed=true].n{background:var(--na);border-color:var(--na);color:#fff}
+.pfn:disabled{opacity:.55}
+.ref2{font-size:12px;color:var(--muted);margin-bottom:8px}
+.ref2 b{color:var(--ink);font-weight:500}
+.inrow{display:flex;gap:6px}
+.cam{min-width:46px;border-radius:8px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--muted)}
+.cam.on{color:var(--pass);border-color:var(--pass)}
+.warnline{font-size:12px;color:var(--warn);margin-top:6px;font-weight:500}
+.banner{margin:12px 16px 0;padding:10px 12px;border-radius:9px;background:var(--accent-soft);font-size:13px}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.ok{background:var(--pass-soft);color:var(--pass)}
+.back{border:0;background:none;color:var(--accent);font-weight:600;padding:0}
+.plink{font-size:12px;color:var(--accent);font-weight:600;background:none;border:0;padding:4px 0}
+
+/* paper */
+.rtabs{margin-bottom:6px}
+.paper{background:#fff;color:#151b21;max-width:860px;margin:14px auto 0;padding:34px 40px;box-shadow:var(--shadow);border:1px solid var(--line);font-size:11.5px;overflow-x:auto}
+.paper h2{font-size:17px;letter-spacing:-.01em;margin-bottom:2px}
+.paper .meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 20px;color:#4d5964;border-bottom:2px solid #151b21;padding-bottom:8px;margin-bottom:10px}
+.paper table{width:100%;border-collapse:collapse;min-width:520px}
+.paper th,.paper td{border:1px solid #c5ccd3;padding:4px 6px;text-align:left;vertical-align:top}
+.paper th{background:#eef1f4;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase}
+.paper td.c{text-align:center}
+.paper tr.s td{background:#eef1f4;font-weight:600}
+.paper .d{font-weight:700;text-decoration:underline}
+.paper .foot{display:flex;justify-content:space-between;margin-top:12px;color:#4d5964;font-size:10.5px}
+.paper .th2{width:38px;height:28px;background:#e5e9ed;display:inline-block;border-radius:3px;margin-right:4px;vertical-align:middle}
+[hidden]{display:none!important}
+body{margin:0}
+.sitefoot{max-width:1180px;margin:32px auto 0;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo">Casper<b>CX</b></div>
+      <div class="proj">Riverside Elementary School · <span class="mono">CX-2026-014</span> · sample data</div>
+    </div>
+    <div class="seg" role="group" aria-label="Preview as">
+      <button type="button" data-act="view" data-v="agent" aria-pressed="true">Agent</button>
+      <button type="button" data-act="view" data-v="contractor" aria-pressed="false">Contractor (phone)</button>
+    </div>
+  </header>
+  <div id="hint"></div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Sections"></nav>
+  <main id="main"></main>
+  <div class="sitefoot">Interactive preview with sample data. Company names and figures are fictional. A Casper Media LLC project in early development.</div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s);};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var fmtDate=function(d){var p=d.split('-');return MONTHS[+p[1]-1]+' '+(+p[2]);};
+var nowT=function(){try{return new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});}catch(e){return 'now';}};
+
+/* ---------- reference data ---------- */
+var TRADES=['GC','HVAC','Electrical','Controls'];
+var TL={GC:'General',HVAC:'HVAC',Electrical:'Electrical',Controls:'Controls'};
+var CO={GC:'Ridgeline Construction',HVAC:'Keystone Mechanical',Electrical:'Brightline Electric',Controls:'Northfield Controls'};
+var UNITS=[{tag:'RTU-1',loc:'Roof, Building A'},{tag:'RTU-2',loc:'Roof, Building A'},{tag:'RTU-3',loc:'Roof, Building B'}];
+var STL={notstarted:'Not started',inprogress:'In progress',complete:'Contractor complete',verified:'Verified'};
+var STP={notstarted:'',inprogress:'warn',complete:'accent',verified:'pass'};
+var ISTAT=['Open','In progress','Completed – CxA review','Back-check','Closed'];
+var ISTP={'Open':'fail','In progress':'warn','Completed – CxA review':'accent','Back-check':'','Closed':'pass'};
+
+var SECS=[
+ {id:'doc',title:'Documentation submitted',trade:'GC',kind:'check',lines:['Manufacturer’s cut sheets','Performance data (fan curves, coil data)','Installation and startup manual and plan','Sequences and control strategies','O&M manuals']},
+ {id:'model',title:'Model verification',trade:'HVAC',kind:'attr',lines:[{k:'mfr',label:'Manufacturer'},{k:'model',label:'Model'},{k:'fan',label:'Supply fan HP'},{k:'mbh',label:'Gas furnace input (MBH)'},{k:'ref',label:'Refrigerant type'},{k:'elec',label:'Volts / Ph / A'},{k:'ser',label:'Serial #',instOnly:true}]},
+ {id:'cab',title:'Cabinet and general installation',trade:'HVAC',kind:'check',lines:['Permanent labels affixed','Casing condition good: no dents, leaks, door gaskets installed','Access doors close tightly – no leaks','Boot between duct and unit tight and in good condition','Vibration isolation equipment installed','Maintenance access acceptable for unit and components','Thermal insulation installed per specification','Clean-up of equipment completed per contract documents','Filters installed and construction filters removed']},
+ {id:'pip',title:'Piping and coils',trade:'HVAC',kind:'check',lines:['Gas piping in good condition and painted','Valves located at unit, as required','Pipe fittings complete and properly supported']},
+ {id:'fan',title:'Fans',trade:'HVAC',kind:'check',lines:['Supply fan area clean','Supply fan and motor properly lubricated']},
+ {id:'duc',title:'Ducts (preliminary check)',trade:'HVAC',kind:'check',lines:['No apparent severe duct restrictions','OSA intakes located away from pollutant sources and exhaust outlets','Balancing dampers installed as per drawings']},
+ {id:'ele',title:'Electrical',trade:'Electrical',kind:'check',lines:['Power disconnects in place and labeled','All electric connections tight','Proper grounding installed for components and unit']},
+ {id:'ctl',title:'Controls',trade:'Controls',kind:'check',lines:['Smoke detectors in place','All control devices and wiring complete']},
+ {id:'ops',title:'Operational checks',trade:'HVAC',kind:'check',lines:['Supply fan rotation correct','Supply fan has no unusual noise or vibration','Disconnect switch properly activates and deactivates the unit']}
+];
+var ALL=[];
+SECS.forEach(function(sec){
+  sec.lines.forEach(function(l,i){
+    if(sec.kind==='attr') ALL.push({id:'model.'+l.k,label:l.label,sec:sec,attr:l});
+    else ALL.push({id:sec.id+'.'+i,label:l,sec:sec});
+  });
+});
+var ATTR={
+ 'RTU-1':{mfr:{spec:'Trane',sub:'Carrier'},model:{spec:'YCD360D',sub:'48FC-30'},fan:{spec:'15',sub:'7.5'},mbh:{spec:'600',sub:'600'},ref:{spec:'R-454B',sub:'R-454B'},elec:{spec:'208/3/190',sub:'208/3/190'}},
+ 'RTU-2':{mfr:{spec:'Trane',sub:'Trane'},model:{spec:'YHC048E',sub:'YHC048E'},fan:{spec:'1',sub:'1'},mbh:{spec:'80',sub:'80'},ref:{spec:'R-454B',sub:'R-454B'},elec:{spec:'208/3/34',sub:'208/3/34'}},
+ 'RTU-3':{mfr:{spec:'Trane',sub:'Trane'},model:{spec:'YHK090A',sub:'YSK090A'},fan:{spec:'3',sub:'3'},mbh:{spec:'150',sub:'150'},ref:{spec:'R-454B',sub:'R-454B'},elec:{spec:'208/3/49',sub:'208/3/49'}}
+};
+var SERIAL={'RTU-1':'2214K07741','RTU-2':'2215K11903','RTU-3':'2215K11961'};
+var CHKNO={};UNITS.forEach(function(u,ui){TRADES.forEach(function(t,ti){CHKNO[u.tag+'|'+t]=201+ui*4+ti;});});
+
+var TESTLINES=[
+ {t:'h',x:'General'},
+ {t:'s',id:'t1',x:'The unit is a packaged rooftop unit with gas heat and DX cooling serving Zone A.'},
+ {t:'h',x:'Run conditions'},
+ {t:'s',id:'t2',x:'Zone temperature setpoints will initially be set to {{heat}} heating and {{cool}} cooling.'},
+ {t:'h',x:'Occupied mode'},
+ {t:'s',id:'t3',x:'The supply fan starts and runs continuously when the occupied schedule is active.'},
+ {t:'s',id:'t4',x:'On a call for heating, the gas furnace stages on to hold the heating setpoint.'},
+ {t:'s',id:'t5',x:'On a call for cooling, compressors stage on to hold the cooling setpoint.'},
+ {t:'s',id:'t6',x:'The economizer modulates open to hold mixed-air temperature when outdoor air is suitable.'},
+ {t:'s',id:'t7',x:'A smoke detector alarm shuts down the supply fan and sends an alarm to the BMS.'},
+ {t:'h',x:'Monitor and alarm points'},
+ {t:'tbl',rows:[['Point','Alarm condition'],['Zone temperature','±4°F from setpoint for 15 min'],['Supply fan status','Command on, status off after 30 sec'],['Filter differential pressure','Above 1.0 in. w.c.']]}
+];
+var TESTVARS={heat:'70°F',cool:'74°F'};
+
+/* ---------- state ---------- */
+var S={view:'agent',tab:'overview',trade:'All',issueFilter:'All',reportTab:'matrix',hint:true,
+ res:{},inst:{},resolve:{},st:{},returned:{},issueAt:{},photo:{},issues:[],audit:[],ctx:null,
+ chkSeq:{},nextFO:4,
+ test:{cur:1,attempts:[{n:1,res:{t1:'p',t2:'p',t3:'p'},issue:{}}]},
+ phone:{screen:'home',unit:null,collapsed:{},offline:false,queued:0}};
+
+function seed(){
+ var PLAN={'RTU-1':{GC:'verified',HVAC:'inprogress',Electrical:'complete',Controls:'complete'},
+  'RTU-2':{GC:'verified',HVAC:'complete',Electrical:'verified',Controls:'complete'},
+  'RTU-3':{GC:'complete',HVAC:'inprogress',Electrical:'inprogress',Controls:'notstarted'}};
+ UNITS.forEach(function(u){
+  var t=u.tag;S.res[t]={};S.inst[t]={};S.resolve[t]={};S.st[t]={};
+  TRADES.forEach(function(tr){S.st[t][tr]=PLAN[t][tr];});
+  ALL.forEach(function(l){
+   var st=PLAN[t][l.sec.trade];
+   if(st==='complete'||st==='verified'){
+    if(l.attr){S.inst[t][l.attr.k]=l.attr.instOnly?SERIAL[t]:ATTR[t][l.attr.k].sub;}
+    else S.res[t][l.id]='p';
+   }
+  });
+ });
+ function fill(unit,trade,count,skip){
+  var ls=ALL.filter(function(l){return l.sec.trade===trade;});
+  ls.forEach(function(l,i){
+   var k=l.attr?l.attr.k:l.id;
+   if(i>=count||skip.indexOf(k)>-1)return;
+   if(l.attr){S.inst[unit][l.attr.k]=l.attr.instOnly?SERIAL[unit]:ATTR[unit][l.attr.k].sub;}
+   else S.res[unit][l.id]='p';
+  });
+ }
+ fill('RTU-1','HVAC',99,['elec','ser','cab.7','cab.8','pip.1','ops.0']);
+ fill('RTU-3','HVAC',15,[]);
+ fill('RTU-3','Electrical',1,[]);
+ S.issues=[
+  {id:'FO-3-1',status:'Open',pri:'HIGH',desc:'Exhaust fan EF-1 is making loud noise and the motor was found hot. Check alignment and amp draw.',asset:'EF-1',trade:'HVAC',due:'2026-10-01',source:'Visit 3',by:'Dana Ortiz (CxA)',photos:3,comments:[]},
+  {id:'FO-3-2',status:'In progress',pri:'URGENT',desc:'Hot water gauges top out at 120°F but the controller is calling for 160°F. Recalibrate or replace all analog gauges.',asset:'Hot water system',trade:'HVAC',due:'2026-10-01',source:'Visit 3',by:'Dana Ortiz (CxA)',photos:2,comments:[{who:'Sam Rivera',text:'Replacement gauges ordered, arrive Thursday.',t:'Sep 19'}]},
+  {id:'FO-3-3',status:'Completed – CxA review',pri:'MODERATE',desc:'Ductwork is not labeled for supply, return, OA or exhaust. Label all and send completion photos.',asset:'Building A ductwork',trade:'HVAC',due:'2026-10-01',source:'Visit 3',by:'Dana Ortiz (CxA)',photos:3,comments:[{who:'Sam Rivera',text:'Labeled all exposed duct. Photos attached.',t:'Sep 20'}]},
+  {id:'FO-2-4',status:'Completed – CxA review',pri:'HIGH',desc:'Unit heater UH-1 control valve is inaccessible. Add an access panel.',asset:'UH-1',trade:'HVAC',due:'2026-08-03',source:'Visit 2',by:'Dana Ortiz (CxA)',photos:3,comments:[{who:'Sam Rivera',text:'Access panel installed.',t:'Aug 29'}]},
+  {id:'FO-2-2',status:'Closed',pri:'LOW',desc:'Seal the DX pipe penetration above the BMS panel.',asset:'BMS panel',trade:'GC',due:'2026-08-03',source:'Visit 2',by:'Dana Ortiz (CxA)',photos:1,comments:[]},
+  {id:'FO-2-1',status:'Back-check',pri:'MODERATE',desc:'Provide calibration records for the CO and NO2 gas detection sensors and add them to the O&M manuals.',asset:'Gas detection',trade:'Controls',due:'2026-08-03',source:'Visit 2',by:'Dana Ortiz (CxA)',photos:0,comments:[]}
+ ];
+ S.audit=[
+  {t:'Sep 20',who:'Sam Rivera',text:'marked ductwork labeling issue FO-3-3 completed'},
+  {t:'Sep 19',who:'Jordan Lee',text:'submitted RTU-2 electrical checklist'},
+  {t:'Sep 18',who:'Dana Ortiz',text:'published Visit 3 with 3 issues'}
+ ];
+}
+seed();
+
+/* ---------- helpers ---------- */
+function linesOf(trade){return ALL.filter(function(l){return l.sec.trade===trade;});}
+function isDone(unit,l){return l.attr?!!(S.inst[unit][l.attr.k]||'').trim():!!S.res[unit][l.id];}
+function prog(unit,trade){var ls=linesOf(trade);var d=ls.filter(function(l){return isDone(unit,l);}).length;return {done:d,total:ls.length};}
+function vals(unit,k){var a=(ATTR[unit]||{})[k]||{};return {spec:a.spec||'',sub:a.sub||'',inst:(S.inst[unit][k]||'')};}
+function differs(v){var m={};[v.spec,v.sub,v.inst].forEach(function(x){if(x&&x.trim())m[x.trim().toLowerCase()]=1;});return Object.keys(m).length>1;}
+function needsReview(unit,k){return differs(vals(unit,k))&&!S.resolve[unit][k];}
+function reviewCount(){var n=0;UNITS.forEach(function(u){Object.keys(ATTR[u.tag]).forEach(function(k){if(needsReview(u.tag,k))n++;});});return n;}
+function openIssues(){return S.issues.filter(function(i){return i.status!=='Closed';});}
+function issueById(id){return S.issues.filter(function(i){return i.id===id;})[0];}
+function log(who,text){S.audit.unshift({t:nowT(),who:who,text:text});}
+function toast(msg){var el=$('#toast');el.textContent=msg;el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(function(){el.hidden=true;},2600);}
+function touch(unit,trade){if(S.st[unit][trade]==='notstarted')S.st[unit][trade]='inprogress';}
+function locked(unit,trade){var s=S.st[unit][trade];return s==='complete'||s==='verified';}
+function pill(cls,text){return '<span class="pill '+cls+'">'+esc(text)+'</span>';}
+function statusPill(st){return pill(STP[st],STL[st]);}
+function issuePill(s){return pill(ISTP[s],s);}
+function isNarrow(){return window.matchMedia('(max-width:719px)').matches;}
+
+function newIssue(o){
+ var id;
+ if(o.chk){var n=(S.chkSeq[o.chk]=(S.chkSeq[o.chk]||0)+1);id='CHK-'+o.chk+'-'+n;}
+ else{id='FO-3-'+(S.nextFO++);}
+ var it={id:id,status:'Open',pri:o.pri,desc:o.desc,asset:o.asset,trade:o.trade,due:o.due,source:o.source,by:o.by,photos:o.photos?1:0,comments:[]};
+ S.issues.unshift(it);
+ return it;
+}
+
+/* ---------- modal ---------- */
+function closeModal(){var o=$('.ov');if(o)o.remove();}
+function modal(html){
+ closeModal();
+ var ov=document.createElement('div');ov.className='ov';
+ ov.innerHTML='<div class="md" role="dialog" aria-modal="true">'+html+'</div>';
+ ov.addEventListener('mousedown',function(e){if(e.target===ov)closeModal();});
+ document.body.appendChild(ov);
+ var f=ov.querySelector('textarea,input:not([disabled]),select');if(f)f.focus();
+ return ov;
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+
+/* ---------- render ---------- */
+function keep(fn){
+ var pb=$('.ph-body'),mw=$('.mwrap');
+ var a=pb?pb.scrollTop:0,b=mw?mw.scrollLeft:0,c=window.scrollY;
+ fn();
+ pb=$('.ph-body');mw=$('.mwrap');
+ if(pb)pb.scrollTop=a;if(mw)mw.scrollLeft=b;
+}
+function render(){
+ keep(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-act=view]'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-v')===S.view));});
+  $('#hint').innerHTML=S.hint?'<div class="hint"><div><b>Try it.</b> Switch to <b>Contractor (phone)</b>, open RTU-1, finish the last lines (mark one Failed to raise an issue), then mark it complete with the emailed code. Switch back to <b>Agent</b> to verify it. Everything here is sample data.</div><button type="button" data-act="hint" aria-label="Dismiss">×</button></div>':'';
+  var tabs=$('#tabs');
+  if(S.view==='agent'){
+   var t=[['overview','Overview'],['checklists','Checklists'],['tests','Tests'],['issues','Issues'],['reports','Reports']];
+   tabs.hidden=false;
+   tabs.innerHTML=t.map(function(x){
+    var b='';
+    if(x[0]==='issues'){var n=S.issues.filter(function(i){return i.status==='Completed – CxA review';}).length;if(n)b='<span class="badge" title="Awaiting your review">'+n+'</span>';}
+    if(x[0]==='checklists'){var m=reviewCount();if(m)b='<span class="badge" title="Model mismatches to review">'+m+'</span>';}
+    return '<button type="button" role="tab" data-act="tab" data-t="'+x[0]+'" aria-selected="'+(S.tab===x[0])+'">'+x[1]+b+'</button>';
+   }).join('');
+   var v={overview:vOverview,checklists:vMatrix,tests:vTests,issues:vIssues,reports:vReports}[S.tab];
+   $('#main').innerHTML=v();
+  }else{
+   tabs.hidden=true;tabs.innerHTML='';
+   $('#main').innerHTML=vPhone();
+  }
+ });
+}
+
+/* ---------- agent: overview ---------- */
+function allChecklists(){var a=[];UNITS.forEach(function(u){TRADES.forEach(function(t){a.push({u:u.tag,t:t,st:S.st[u.tag][t],p:prog(u.tag,t)});});});return a;}
+function vOverview(){
+ var cl=allChecklists(),c={notstarted:0,inprogress:0,complete:0,verified:0};
+ cl.forEach(function(x){c[x.st]++;});
+ var tot=cl.length;
+ var seg=['verified','complete','inprogress','notstarted'].map(function(k){return '<i class="s-'+k+'" style="width:'+(c[k]/tot*100)+'%" title="'+STL[k]+': '+c[k]+'"></i>';}).join('');
+ var ready=cl.filter(function(x){return x.st==='complete';});
+ var awaiting=S.issues.filter(function(i){return i.status==='Completed – CxA review';}).length;
+ var mm=reviewCount();
+ var att=S.test.attempts[S.test.attempts.length-1];
+ var readyH=ready.length?ready.map(function(x){
+  return '<div class="li"><div><span class="tag">'+x.u+'</span> · '+TL[x.t]+' <span class="muted">· '+esc(CO[x.t])+'</span></div><div class="row"><button class="btn sm" type="button" data-act="goto-matrix" data-trade="'+x.t+'">Review</button><button class="btn sm" type="button" data-act="return" data-unit="'+x.u+'" data-trade="'+x.t+'">Return</button><button class="btn sm primary" type="button" data-act="verify" data-unit="'+x.u+'" data-trade="'+x.t+'">Verify</button></div></div>';
+ }).join(''):'<p class="muted" style="margin:0">Nothing waiting. Finished checklists from contractors appear here.</p>';
+ var co=TRADES.map(function(t){
+  var mine=cl.filter(function(x){return x.t===t;});
+  var fin=mine.filter(function(x){return x.st==='complete'||x.st==='verified';}).length;
+  var oi=openIssues().filter(function(i){return i.trade===t;}).length;
+  return '<tr><td>'+esc(CO[t])+'<div class="note">'+TL[t]+'</div></td><td class="num">'+fin+' of '+mine.length+'</td><td class="num">'+oi+'</td></tr>';
+ }).join('');
+ var byStat=ISTAT.map(function(s){return [s,S.issues.filter(function(i){return i.status===s;}).length];});
+ var act=S.audit.slice(0,6).map(function(a){return '<div class="act li" style="justify-content:flex-start"><span class="t">'+esc(a.t)+'</span><span><b>'+esc(a.who)+'</b> '+esc(a.text)+'</span></div>';}).join('');
+ return '<div class="grid2"><div class="stack">'+
+  '<section class="panel"><h3>Prefunctional checklists</h3><div class="bigrow"><div class="bignum">'+tot+'<small>checklists (3 units × 4 trades)</small></div><div class="bignum">'+c.verified+'<small>verified</small></div><div class="bignum">'+ready.length+'<small>ready to verify</small></div></div>'+
+  '<div class="bar" role="img" aria-label="Checklist status">'+seg+'</div>'+
+  '<div class="legend"><span style="--c:var(--pass)">Verified '+c.verified+'</span><span style="--c:var(--accent)">Contractor complete '+c.complete+'</span><span style="--c:var(--warn)">In progress '+c.inprogress+'</span><span style="--c:var(--line)">Not started '+c.notstarted+'</span></div></section>'+
+  '<section class="panel"><h3>Ready to verify</h3>'+readyH+'</section>'+
+  '<section class="panel"><h3>By company</h3><div class="tw"><table class="plain"><thead><tr><th>Company</th><th>Checklists done</th><th>Open issues</th></tr></thead><tbody>'+co+'</tbody></table></div></section>'+
+  '</div><div class="stack">'+
+  '<section class="panel"><h3>Needs your attention</h3><div class="list">'+
+   '<div class="li"><span>Model mismatches to review</span><span class="row"><b class="num">'+mm+'</b><button class="btn sm" type="button" data-act="goto-matrix" data-trade="HVAC">Open</button></span></div>'+
+   '<div class="li"><span>Issues awaiting your review</span><span class="row"><b class="num">'+awaiting+'</b><button class="btn sm" type="button" data-act="tab" data-t="issues">Open</button></span></div>'+
+   '<div class="li"><span>Functional test TST-11</span><span class="row">'+pill(attStatusCls(att),attStatusText(att))+'<button class="btn sm" type="button" data-act="tab" data-t="tests">Open</button></span></div>'+
+  '</div></section>'+
+  '<section class="panel"><h3>Issues</h3><div class="list">'+byStat.map(function(x){return '<div class="li"><span>'+issuePill(x[0])+'</span><b class="num">'+x[1]+'</b></div>';}).join('')+'</div></section>'+
+  '<section class="panel"><h3>Recent activity</h3>'+act+'</section>'+
+ '</div></div>';
+}
+
+/* ---------- agent: matrix ---------- */
+function vMatrix(){
+ var tr=S.trade;
+ var chips=['All'].concat(TRADES).map(function(t){return '<button type="button" class="chip" data-act="trade" data-trade="'+t+'" aria-pressed="'+(tr===t)+'">'+(t==='All'?'All trades':TL[t])+'</button>';}).join('');
+ var head='<th><div class="note" style="text-align:left">Item</div></th>'+UNITS.map(function(u){
+  var inner='<div class="colhead"><span class="tag">'+u.tag+'</span><span class="note">'+esc(u.loc)+'</span>';
+  if(tr==='All'){
+   inner+='<div class="tmini">'+TRADES.map(function(t){return '<span class="dot '+S.st[u.tag][t]+'" title="'+TL[t]+': '+STL[S.st[u.tag][t]]+'">'+TL[t][0]+'</span>';}).join('')+'</div>';
+  }else{
+   var p=prog(u.tag,tr);
+   inner+=statusPill(S.st[u.tag][tr])+'<div class="mini-progress"><i style="width:'+(p.done/p.total*100)+'%"></i></div><span class="note num">'+p.done+' of '+p.total+' lines</span>';
+   if(S.st[u.tag][tr]==='complete')inner+='<button type="button" class="btn sm primary" data-act="verify" data-unit="'+u.tag+'" data-trade="'+tr+'">Verify</button>';
+  }
+  return '<th>'+inner+'</div></th>';
+ }).join('');
+ var body='';
+ SECS.forEach(function(sec){
+  if(tr!=='All'&&sec.trade!==tr)return;
+  body+='<tr class="sec"><td><div class="row spread" style="flex-wrap:nowrap"><span>'+esc(sec.title)+'</span><span class="pill">'+TL[sec.trade]+'</span></div>'+
+   (sec.kind==='check'?'<button type="button" class="plink" data-act="secall" data-sec="'+sec.id+'">Mark all Passed…</button>':'')+'</td><td colspan="'+UNITS.length+'"></td></tr>';
+  linesOf(sec.trade).filter(function(l){return l.sec===sec;}).forEach(function(l){
+   if(l.attr){
+    var lab=l.attr.instOnly?'Serial # (installed)':esc(l.label);
+    body+='<tr><td>'+lab+'</td>'+UNITS.map(function(u){
+     var v=vals(u.tag,l.attr.k),d=differs(v),res=S.resolve[u.tag][l.attr.k];
+     var cls=d&&!res?' flag':'';
+     var h='<button type="button" class="tri" data-act="attr" data-unit="'+u.tag+'" data-k="'+l.attr.k+'" aria-label="Review '+esc(l.label)+' for '+u.tag+'">';
+     if(!l.attr.instOnly){
+      h+='<i>Spec</i><span class="'+(d&&v.spec&&v.spec.toLowerCase()!==v.inst.toLowerCase()&&v.inst?'':'')+'">'+esc(v.spec)+'</span>';
+      h+='<i>Subm</i><span class="'+(d&&v.sub.toLowerCase()!==v.spec.toLowerCase()?'diff':'')+'">'+esc(v.sub)+'</span>';
+     }
+     h+='<i>Inst</i><span class="'+(d&&v.inst&&v.inst.toLowerCase()!==v.spec.toLowerCase()?'diff':'')+'">'+(v.inst?esc(v.inst):'<span class="muted">—</span>')+'</span></button>';
+     if(d&&!res)h+='<div class="flagnote">Differs · review</div>';
+     if(d&&res)h+='<div class="flagnote ok">'+(res==='accepted'?'Accepted':'Issue '+esc(res))+'</div>';
+     return '<td class="u'+cls+'">'+h+'</td>';
+    }).join('')+'</tr>';
+   }else{
+    body+='<tr><td>'+esc(l.label)+'</td>'+UNITS.map(function(u){
+     var v=S.res[u.tag][l.id],lab=v==='p'?'✓':v==='n'?'N/A':v==='f'?'✕':'·';
+     var ref=v==='f'&&S.issueAt[u.tag+'|'+l.id]?'<div class="ref mono">'+esc(S.issueAt[u.tag+'|'+l.id])+'</div>':'';
+     return '<td class="u"><button type="button" class="cellbtn '+(v||'')+'" data-act="cell" data-unit="'+u.tag+'" data-line="'+l.id+'" aria-label="'+esc(l.label)+' '+u.tag+'">'+lab+'</button>'+ref+'</td>';
+    }).join('')+'</tr>';
+   }
+  });
+ });
+ return '<div class="mtop"><div><h2>Rooftop units</h2><div class="note">One form per equipment type. Units across, items down. Sections belong to a trade, so each contractor only gets their own.</div></div><div class="chips">'+chips+'</div></div>'+
+  '<div class="mwrap"><table class="matrix"><thead><tr>'+head+'</tr></thead><tbody>'+body+'</tbody></table></div>'+
+  '<div class="legendm"><span>Tap a cell to cycle ✓ → N/A → ✕ → blank.</span><span>Spec = specified, Subm = submitted, Inst = installed. Differences are flagged automatically.</span></div>'+
+  '<div class="legendm narrow-only">On a phone the matrix is view-only. Open a unit to edit it.</div>';
+}
+
+/* ---------- agent: tests ---------- */
+function attStatus(a){
+ var lines=TESTLINES.filter(function(x){return x.t==='s';});
+ var ans=lines.filter(function(x){return a.res[x.id];}).length;
+ var fails=lines.filter(function(x){return a.res[x.id]==='f';}).length;
+ if(!ans)return 'notstarted';
+ if(ans<lines.length)return 'inprogress';
+ return fails?'failed':'passed';
+}
+function attStatusText(a){return {notstarted:'Not started',inprogress:'In progress',failed:'Failed',passed:'Passed'}[attStatus(a)];}
+function attStatusCls(a){return {notstarted:'',inprogress:'warn',failed:'fail',passed:'pass'}[attStatus(a)];}
+function vTests(){
+ var T=S.test,att=T.attempts.filter(function(a){return a.n===T.cur;})[0],last=T.attempts[T.attempts.length-1];
+ var lines=TESTLINES.filter(function(x){return x.t==='s';});
+ var num=0;
+ var body=TESTLINES.map(function(x){
+  if(x.t==='h')return '<div class="th">'+esc(x.x)+'</div>';
+  if(x.t==='tbl')return '<div class="tw" style="padding:10px 0"><table class="plain"><thead><tr>'+x.rows[0].map(function(c){return '<th>'+esc(c)+'</th>';}).join('')+'</tr></thead><tbody>'+x.rows.slice(1).map(function(r){return '<tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>';
+  num++;
+  var txt=esc(x.x).replace(/\{\{(\w+)\}\}/g,function(m,k){return '<span class="var" title="Filled from RTU-1 values">'+esc(TESTVARS[k])+'</span>';});
+  var v=att.res[x.id],ro=att.n!==last.n;
+  var iss=att.issue[x.id];
+  return '<div class="tline"><span class="n">'+num+'</span><div>'+txt+'</div><div class="ctl"><div class="pfseg" role="group" aria-label="Result for statement '+num+'">'+
+   ['p','f','n'].map(function(r){return '<button type="button" class="'+r+'" data-act="tres" data-line="'+x.id+'" data-val="'+r+'" aria-pressed="'+(v===r)+'"'+(ro?' disabled':'')+'>'+({p:'Pass',f:'Fail',n:'N/A'})[r]+'</button>';}).join('')+'</div>'+
+   (v==='f'&&!iss&&!ro?'<button type="button" class="btn sm" data-act="tissue" data-line="'+x.id+'">Create issue</button>':'')+
+   (iss?'<span class="pill fail mono">'+esc(iss)+'</span>':'')+'</div></div>';
+ }).join('');
+ var atts=T.attempts.map(function(a){return '<button type="button" class="chip" data-act="tatt" data-n="'+a.n+'" aria-pressed="'+(a.n===T.cur)+'">Attempt '+a.n+' · '+attStatusText(a)+'</button>';}).join('');
+ var retest=attStatus(last)==='failed'?'<button type="button" class="btn primary" data-act="retest">Start attempt '+(last.n+1)+' (retest)</button>':'';
+ var ans=lines.filter(function(x){return att.res[x.id];}).length;
+ return '<div class="test"><div class="mtop"><div><div class="note mono">TST-11</div><h2>RTU-1 sequence of operations</h2><div class="note">Assigned to Commissioning Authority · Asset RTU-1 · HVAC</div></div><div class="row">'+pill(attStatusCls(att),attStatusText(att))+'<span class="note num">'+ans+' of '+lines.length+' statements</span></div></div>'+
+  '<div class="attempts">'+atts+retest+'</div>'+
+  '<div class="panel" style="padding-block:4px">'+body+'</div>'+
+  '<div class="legendm"><span>Statements come from the controls sequence. Values in <span class="var">blue</span> are filled from each unit’s data, so setpoints are never retyped. A failed test can be re-run as a new attempt; earlier attempts are kept.</span></div></div>';
+}
+
+/* ---------- agent: issues ---------- */
+function vIssues(){
+ var f=S.issueFilter;
+ var chips=['All'].concat(ISTAT).map(function(s){var n=s==='All'?S.issues.length:S.issues.filter(function(i){return i.status===s;}).length;return '<button type="button" class="chip" data-act="ifilter" data-f="'+esc(s)+'" aria-pressed="'+(f===s)+'">'+esc(s)+' · '+n+'</button>';}).join('');
+ var rows=S.issues.filter(function(i){return f==='All'||i.status===f;}).map(function(i){
+  return '<tr class="click" data-act="issue" data-id="'+i.id+'" tabindex="0"><td class="mono">'+i.id+'</td><td>'+issuePill(i.status)+'</td><td><span class="pri '+i.pri+'">'+i.pri+'</span></td><td style="min-width:260px">'+esc(i.desc)+'</td><td>'+esc(i.asset)+'</td><td>'+esc(CO[i.trade])+'</td><td class="num">'+fmtDate(i.due)+'</td></tr>';
+ }).join('');
+ return '<div class="mtop"><div><h2>Issues</h2><div class="note">One compact row each. Contractors respond, you review and close.</div></div><button class="btn primary" type="button" data-act="issue-new">New issue</button></div>'+
+  '<div class="chips" style="margin-bottom:12px">'+chips+'</div>'+
+  '<div class="panel tw" style="padding:4px 8px"><table class="plain"><thead><tr><th>ID</th><th>Status</th><th>Priority</th><th>Description</th><th>Asset</th><th>Assigned to</th><th>Due</th></tr></thead><tbody>'+(rows||'<tr><td colspan="7" class="muted">No issues in this status.</td></tr>')+'</tbody></table></div>';
+}
+
+/* ---------- agent: reports ---------- */
+function vReports(){
+ var tabs='<div class="chips rtabs"><button class="chip" type="button" data-act="rtab" data-r="matrix" aria-pressed="'+(S.reportTab==='matrix')+'">Checklist</button><button class="chip" type="button" data-act="rtab" data-r="issues" aria-pressed="'+(S.reportTab==='issues')+'">Issues log</button></div>';
+ var note='<div class="note">Preview of the PDF output. It reflects the current data. History stays in the app and is not printed.</div>';
+ return '<div class="mtop"><div><h2>Reports</h2>'+note+'</div></div>'+tabs+(S.reportTab==='matrix'?paperMatrix():paperIssues());
+}
+function paperMatrix(){
+ var h='<tr><th>Item</th>'+UNITS.map(function(u){return '<th class="c">'+u.tag+'</th>';}).join('')+'</tr>';
+ var b='';
+ SECS.forEach(function(sec){
+  b+='<tr class="s"><td colspan="'+(UNITS.length+1)+'">'+esc(sec.title)+' <span style="font-weight:400;color:#4d5964">· '+TL[sec.trade]+'</span></td></tr>';
+  linesOf(sec.trade).filter(function(l){return l.sec===sec;}).forEach(function(l){
+   if(l.attr){
+    b+='<tr><td>'+esc(l.label)+'</td>'+UNITS.map(function(u){
+     var v=vals(u.tag,l.attr.k),d=differs(v);
+     var t=l.attr.instOnly?'Inst: '+esc(v.inst||'—'):'Spec: '+esc(v.spec)+'<br>Subm: '+esc(v.sub)+'<br>Inst: '+(v.inst?esc(v.inst):'—');
+     return '<td class="'+(d?'d':'')+'">'+t+'</td>';
+    }).join('')+'</tr>';
+   }else{
+    b+='<tr><td>'+esc(l.label)+'</td>'+UNITS.map(function(u){
+     var v=S.res[u.tag][l.id];var r=v==='p'?'✓':v==='n'?'N/A':v==='f'?'✕ '+esc(S.issueAt[u.tag+'|'+l.id]||''):'';
+     return '<td class="c">'+r+'</td>';
+    }).join('')+'</tr>';
+   }
+  });
+ });
+ var sign=TRADES.map(function(t){return '<tr><td>'+TL[t]+' · '+esc(CO[t])+'</td>'+UNITS.map(function(u){var s=S.st[u.tag][t];return '<td class="c">'+({notstarted:'Pending',inprogress:'Pending',complete:'Attested',verified:'Verified'})[s]+'</td>';}).join('')+'</tr>';}).join('');
+ return '<div class="paper"><h2>PC-RTU · Rooftop Unit Prefunctional Checklist</h2><div class="meta"><span>Riverside Elementary School · CX-2026-014</span><span>Printed '+new Date().toLocaleDateString()+'</span></div>'+
+  '<p style="margin:0 0 8px">Items that do not apply are marked N/A. Underlined values differ between specified, submitted and installed.</p>'+
+  '<table>'+h+b+'</table><h3 style="margin:14px 0 6px;font-size:12px">Sign-off</h3><table><tr><th>Trade</th>'+UNITS.map(function(u){return '<th class="c">'+u.tag+'</th>';}).join('')+'</tr>'+sign+'</table>'+
+  '<div class="foot"><span>CasperCX</span><span>Page 1 of 2</span></div></div>';
+}
+function paperIssues(){
+ var rows=S.issues.map(function(i){
+  var th='';for(var k=0;k<Math.min(i.photos,3);k++)th+='<span class="th2"></span>';
+  return '<tr><td>'+i.id+'</td><td>'+esc(i.desc)+'</td><td>'+esc(i.asset)+'</td><td>'+esc(CO[i.trade])+'</td><td>'+i.pri+'</td><td>'+esc(i.status)+'</td><td>'+fmtDate(i.due)+'</td><td>'+th+'</td></tr>';
+ }).join('');
+ return '<div class="paper"><h2>Construction Issues Log</h2><div class="meta"><span>Riverside Elementary School · CX-2026-014</span><span>Printed '+new Date().toLocaleDateString()+'</span></div>'+
+  '<table><tr><th>ID</th><th>Description</th><th>Asset</th><th>Assigned to</th><th>Priority</th><th>Status</th><th>Due</th><th>Photos</th></tr>'+rows+'</table><div class="foot"><span>CasperCX</span><span>Page 1 of 1</span></div></div>';
+}
+
+/* ---------- contractor phone ---------- */
+function phoneFoot(){
+ var P=S.phone;if(P.screen!=='checklist')return '<div class="note" style="text-align:center">Signed in by invite link · sees only Keystone Mechanical items</div>';
+ var u=P.unit,st=S.st[u].HVAC,p=prog(u,'HVAC');
+ if(st==='complete')return '<div class="banner ok" style="margin:0">Submitted. Waiting for the agent to verify.</div>';
+ if(st==='verified')return '<div class="banner ok" style="margin:0">Verified by the agent.</div>';
+ var left=p.total-p.done;
+ return '<button type="button" class="btn primary" data-act="complete"'+(left?' disabled':'')+'>'+(left?'Mark complete · '+left+' left':'Mark contractor complete')+'</button>';
+}
+function vPhone(){
+ var P=S.phone;
+ var offbar=P.offline?'<div class="offbar" id="offbar">No signal · '+P.queued+' change'+(P.queued===1?'':'s')+' saved on this device</div>':'';
+ var head;
+ if(P.screen==='home'){
+  head='<div class="ph-top"><div><div class="t1">'+esc(CO.HVAC)+'</div><div class="t2">Riverside Elementary · Sam Rivera</div></div><button type="button" class="sig'+(P.offline?' off':'')+'" data-act="offline" aria-label="Toggle signal">'+(P.offline?'No signal':'Online')+'</button></div>';
+ }else{
+  var p=prog(P.unit,'HVAC');
+  head='<div class="ph-top"><button class="back" type="button" data-act="pback">‹ My work</button><button type="button" class="sig'+(P.offline?' off':'')+'" data-act="offline" aria-label="Toggle signal">'+(P.offline?'No signal':'Online')+'</button></div>'+
+   '<div class="row spread" style="margin-top:6px"><div><div class="t1"><span class="mono">'+P.unit+'</span> · HVAC</div><div class="t2">Rooftop unit · '+esc(UNITS.filter(function(x){return x.tag===P.unit;})[0].loc)+'</div></div>'+statusPill(S.st[P.unit].HVAC)+'</div>'+
+   '<div class="bar" style="margin-top:8px;height:6px"><i style="width:'+(p.done/p.total*100)+'%;background:var(--accent)"></i></div><div class="t2 num" style="margin-top:4px">'+p.done+' of '+p.total+' lines</div>';
+ }
+ var body=P.screen==='home'?phoneHome():phoneList();
+ return '<div class="stage"><div class="cap">What a subcontractor sees after opening the link the agent emailed. No account needed. They only see their own company’s checklists and issues.</div>'+
+  '<div class="phone"><div class="ph-head">'+head+'</div>'+offbar+'<div class="ph-body">'+body+'</div><div class="ph-foot">'+phoneFoot()+'</div></div></div>';
+}
+function phoneHome(){
+ var cl=UNITS.map(function(u){
+  var p=prog(u.tag,'HVAC'),st=S.st[u.tag].HVAC;
+  return '<button type="button" class="pcard" data-act="popen" data-unit="'+u.tag+'"><div class="r1"><span><b class="mono">'+u.tag+'</b> · Rooftop unit</span>'+statusPill(st)+'</div><div class="r2">'+esc(u.loc)+' · '+p.done+' of '+p.total+' lines</div><div class="bar"><i style="width:'+(p.done/p.total*100)+'%"></i></div></button>';
+ }).join('');
+ var iss=S.issues.filter(function(i){return i.trade==='HVAC'&&i.status!=='Closed';}).map(function(i){
+  return '<button type="button" class="pcard" data-act="issue" data-id="'+i.id+'"><div class="r1"><span class="mono"><b>'+i.id+'</b></span>'+issuePill(i.status)+'</div><div class="r2 clamp">'+esc(i.desc)+'</div></button>';
+ }).join('')||'<div class="pcard muted">No open issues.</div>';
+ return '<div class="pgroup">Your checklists</div>'+cl+'<div class="pgroup">Your open issues</div>'+iss+'<div style="height:16px"></div>';
+}
+function collapsed(unit,sec){
+ var c=S.phone.collapsed[sec.id];if(c!==undefined)return c;
+ var ls=linesOf('HVAC').filter(function(l){return l.sec===sec;});
+ return ls.every(function(l){return isDone(unit,l);});
+}
+function phoneList(){
+ var u=S.phone.unit,st=S.st[u].HVAC,lock=locked(u,'HVAC'),out='';
+ var ret=S.returned[u+'|HVAC'];
+ if(ret&&st==='inprogress')out+='<div class="banner warn"><b>Returned by the agent:</b> '+esc(ret)+'</div>';
+ if(lock)out+='<div class="banner">This checklist is '+(st==='verified'?'verified':'submitted')+' and locked.</div>';
+ SECS.forEach(function(sec){
+  if(sec.trade!=='HVAC')return;
+  var ls=linesOf('HVAC').filter(function(l){return l.sec===sec;});
+  var d=ls.filter(function(l){return isDone(u,l);}).length,col=collapsed(u,sec);
+  out+='<div class="psec"><button type="button" class="psec-h" data-act="psec" data-sec="'+sec.id+'"><span>'+esc(sec.title)+'</span><small class="num">'+d+'/'+ls.length+' '+(col?'▸':'▾')+'</small></button>';
+  if(!col){
+   if(sec.kind==='check'&&!lock)out+='<div class="pl" style="padding-block:6px"><button type="button" class="plink" data-act="psecall" data-sec="'+sec.id+'">Mark every line in this section Passed</button></div>';
+   ls.forEach(function(l){
+    if(l.attr){
+     var v=vals(u,l.attr.k),d2=differs(v);
+     out+='<div class="pl"><p><b>'+esc(l.label)+'</b></p>'+
+      (l.attr.instOnly?'':'<div class="ref2">Specified <b>'+esc(v.spec)+'</b> · Submitted <b>'+esc(v.sub)+'</b></div>')+
+      '<div class="inrow"><input class="inp" id="inst-'+u+'-'+l.attr.k+'" data-inst-unit="'+u+'" data-inst-k="'+l.attr.k+'" value="'+esc(v.inst)+'" placeholder="Installed, from nameplate"'+(lock?' disabled':'')+' aria-label="Installed '+esc(l.label)+'">'+
+      '<button type="button" class="cam'+(S.photo[u+'|'+l.id]?' on':'')+'" data-act="photo" data-key="'+u+'|'+l.id+'" aria-label="Attach nameplate photo" title="Attach photo">'+(S.photo[u+'|'+l.id]?'✓':'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>')+'</button></div>'+
+      (d2&&v.inst?'<div class="warnline">Differs from what was specified or submitted. The agent will review.</div>':'')+'</div>';
+    }else{
+     var r=S.res[u][l.id];
+     out+='<div class="pl"><p>'+esc(l.label)+'</p><div class="p3">'+['p','f','n'].map(function(x){return '<button type="button" class="pfn '+x+'" data-act="pres" data-unit="'+u+'" data-line="'+l.id+'" data-val="'+x+'" aria-pressed="'+(r===x)+'"'+(lock?' disabled':'')+'>'+({p:'Pass',f:'Fail',n:'N/A'})[x]+'</button>';}).join('')+'</div>'+
+      (r==='f'&&S.issueAt[u+'|'+l.id]?'<div class="warnline">Issue '+esc(S.issueAt[u+'|'+l.id])+' raised</div>':'')+'</div>';
+    }
+   });
+  }
+  out+='</div>';
+ });
+ return out+'<div style="height:16px"></div>';
+}
+
+/* ---------- issue modals ---------- */
+function issueDetail(id){
+ var i=issueById(id);if(!i)return;
+ var agent=S.view==='agent',acts='';
+ if(!agent){
+  if(i.status==='Open')acts='<button class="btn primary" type="button" data-act="inext" data-id="'+id+'" data-to="In progress">Mark in progress</button>';
+  else if(i.status==='In progress')acts='<button class="btn primary" type="button" data-act="inext" data-id="'+id+'" data-to="Completed – CxA review">Mark completed for review</button>';
+  else acts='<span class="note">'+(i.status==='Closed'?'Closed by the agent.':'Waiting on the agent.')+'</span>';
+ }else{
+  if(i.status==='Completed – CxA review'||i.status==='Back-check'){
+   acts='<button class="btn" type="button" data-act="inext" data-id="'+id+'" data-to="Open">Return to contractor</button>'+(i.status==='Completed – CxA review'?'<button class="btn" type="button" data-act="inext" data-id="'+id+'" data-to="Back-check">Back-check later</button>':'')+'<button class="btn primary" type="button" data-act="inext" data-id="'+id+'" data-to="Closed">Close issue</button>';
+  }else if(i.status!=='Closed')acts='<span class="note">Waiting on the contractor.</span>';
+  else acts='<button class="btn" type="button" data-act="inext" data-id="'+id+'" data-to="Open">Reopen</button>';
+ }
+ var ph='';for(var k=0;k<i.photos;k++)ph+='<span class="ph" title="Photo '+(k+1)+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="m21 17-5-5-8 7"/></svg></span>';
+ var cm=i.comments.map(function(c){return '<div class="cm"><b>'+esc(c.who)+'</b><span>'+esc(c.t)+'</span><div>'+esc(c.text)+'</div></div>';}).join('')||'<div class="note">No comments yet.</div>';
+ modal('<div class="row spread"><h3 class="mono">'+i.id+'</h3><div class="row">'+issuePill(i.status)+'<span class="pri '+i.pri+'">'+i.pri+'</span></div></div>'+
+  '<p style="margin:8px 0 14px">'+esc(i.desc)+'</p>'+
+  '<dl class="kv"><dt>Asset</dt><dd>'+esc(i.asset)+'</dd><dt>Assigned to</dt><dd>'+esc(CO[i.trade])+'</dd><dt>Due</dt><dd>'+fmtDate(i.due)+'</dd><dt>Source</dt><dd>'+esc(i.source)+'</dd><dt>Created by</dt><dd>'+esc(i.by)+'</dd></dl>'+
+  (i.photos?'<div class="photos">'+ph+'</div>':'')+
+  '<div class="comments">'+cm+'</div>'+
+  '<div class="inrow" style="margin-bottom:4px"><input class="inp" id="cm-in" placeholder="Add a comment" aria-label="Add a comment"><button class="btn" type="button" data-act="icomment" data-id="'+id+'">Post</button></div>'+
+  '<div class="btnrow"><button class="btn" type="button" data-act="close">Close</button>'+acts+'</div>');
+}
+function issueSheet(ctx,defaults){
+ S.ctx=ctx;
+ var co='';TRADES.forEach(function(t){co+='<option value="'+t+'"'+(defaults.trade===t?' selected':'')+'>'+esc(CO[t])+'</option>';});
+ var pr=['URGENT','HIGH','MODERATE','LOW'].map(function(p){return '<option'+(p===(defaults.pri||'HIGH')?' selected':'')+'>'+p+'</option>';}).join('');
+ modal('<h3>'+(ctx.kind==='free'?'New issue':'Raise an issue')+'</h3><div class="sub">'+(ctx.kind==='free'?'Assign it to the company that has to fix it.':'This item failed. Describe what needs fixing.')+'</div>'+
+  '<div class="field"><label for="is-desc">What is wrong</label><textarea class="inp" id="is-desc">'+esc(defaults.desc||'')+'</textarea></div>'+
+  '<div class="field"><label for="is-asset">Asset</label><input class="inp" id="is-asset" value="'+esc(defaults.asset||'')+'"'+(ctx.kind==='free'?'':' disabled')+'></div>'+
+  '<div class="row" style="align-items:flex-start"><div class="field" style="flex:1;min-width:150px"><label for="is-co">Assigned to</label><select class="inp" id="is-co">'+co+'</select></div>'+
+  '<div class="field" style="flex:1;min-width:110px"><label for="is-pri">Priority</label><select class="inp" id="is-pri">'+pr+'</select></div></div>'+
+  '<div class="field"><label for="is-due">Due</label><input class="inp" id="is-due" type="date" value="2026-10-05"></div>'+
+  '<div class="row"><button type="button" class="btn" data-act="is-photo" id="is-photo">Add photo</button><span class="note" id="is-photo-n"></span></div>'+
+  '<div class="btnrow"><button class="btn" type="button" data-act="close">Cancel</button><button class="btn primary" type="button" data-act="is-save">Save issue</button></div>');
+}
+function saveIssue(){
+ var c=S.ctx,g=function(id){return document.getElementById(id);};
+ var desc=g('is-desc').value.trim();
+ if(!desc){g('is-desc').focus();toast('Describe the problem first');return;}
+ var trade=g('is-co').value;
+ var opts={desc:desc,asset:g('is-asset').value.trim()||'—',trade:trade,pri:g('is-pri').value,due:g('is-due').value||'2026-10-05',photo:g('is-photo').getAttribute('data-on')==='1'};
+ var it;
+ if(c.kind==='line'){
+  opts.chk=CHKNO[c.unit+'|'+c.trade];opts.source='Checklist '+c.unit;opts.by=S.view==='agent'?'Dana Ortiz (CxA)':'Sam Rivera';
+  it=newIssue(opts);S.res[c.unit][c.line]='f';S.issueAt[c.unit+'|'+c.line]=it.id;touch(c.unit,c.trade);
+  if(S.view==='contractor'&&S.phone.offline)S.phone.queued++;
+ }else if(c.kind==='attr'){
+  opts.chk=CHKNO[c.unit+'|HVAC'];opts.source='Checklist '+c.unit;opts.by='Dana Ortiz (CxA)';
+  it=newIssue(opts);S.resolve[c.unit][c.k]=it.id;
+ }else if(c.kind==='test'){
+  opts.chk=null;opts.source='Test TST-11, attempt '+c.n;opts.by='Dana Ortiz (CxA)';
+  it=newIssue(opts);var a=S.test.attempts.filter(function(x){return x.n===c.n;})[0];a.res[c.line]='f';a.issue[c.line]=it.id;
+ }else{
+  opts.source='Manual';opts.by='Dana Ortiz (CxA)';it=newIssue(opts);
+ }
+ log(S.view==='agent'?'Dana Ortiz':'Sam Rivera','raised issue '+it.id);
+ closeModal();render();toast('Issue '+it.id+' saved and assigned to '+CO[it.trade]);
+}
+
+/* ---------- actions ---------- */
+function verify(unit,trade){S.st[unit][trade]='verified';delete S.returned[unit+'|'+trade];log('Dana Ortiz','verified '+unit+' '+TL[trade]+' checklist');render();toast(unit+' '+TL[trade]+' verified');}
+function returnSheet(unit,trade){
+ modal('<h3>Return '+unit+' · '+TL[trade]+'</h3><div class="sub">The contractor gets it back with your comment.</div><div class="field"><label for="ret-c">What needs another look</label><textarea class="inp" id="ret-c">Please recheck the installed model against the submittal.</textarea></div><div class="btnrow"><button class="btn" type="button" data-act="close">Cancel</button><button class="btn primary" type="button" data-act="ret-save" data-unit="'+unit+'" data-trade="'+trade+'">Return checklist</button></div>');
+}
+function attrModal(unit,k){
+ var lab=ALL.filter(function(l){return l.attr&&l.attr.k===k;})[0].label;
+ var v=vals(unit,k),d=differs(v),res=S.resolve[unit][k];
+ var st=!d?pill('pass','Matches'):res?pill('pass',res==='accepted'?'Accepted':'Issue '+res):pill('warn','Differs');
+ var btns='<button class="btn" type="button" data-act="close">Close</button>';
+ if(d&&!res)btns+='<button class="btn" type="button" data-act="attr-issue" data-unit="'+unit+'" data-k="'+k+'">Raise issue</button><button class="btn primary" type="button" data-act="attr-accept" data-unit="'+unit+'" data-k="'+k+'">Accept as installed</button>';
+ modal('<div class="row spread"><h3><span class="mono">'+unit+'</span> · '+esc(lab)+'</h3>'+st+'</div><div class="sub">Model verification compares three sources.</div>'+
+  '<dl class="kv"><dt>Specified</dt><dd>'+(esc(v.spec)||'—')+'</dd><dt>Submitted</dt><dd>'+(esc(v.sub)||'—')+'</dd><dt>Installed</dt><dd>'+(esc(v.inst)||'<span class="muted">not entered yet</span>')+'</dd></dl>'+
+  (d&&!res?'<p class="note">Decide whether the difference is acceptable or needs to be fixed.</p>':'')+'<div class="btnrow">'+btns+'</div>');
+}
+function attestSheet(){
+ var u=S.phone.unit;
+ modal('<h3>Mark '+u+' complete</h3><div class="sub">You are confirming the statement below for '+esc(CO.HVAC)+'.</div>'+
+  '<div class="cm" style="margin-bottom:12px">Installation and start-up of this equipment is complete, required documentation has been provided, and the equipment is ready for functional performance testing.</div>'+
+  '<div id="att1"><div class="field"><label for="att-name">Your name</label><input class="inp" id="att-name" value="Sam Rivera"></div><div class="field"><label for="att-mail">Email for the code</label><input class="inp" id="att-mail" value="sam@keystonemech.example"></div><div class="btnrow"><button class="btn" type="button" data-act="close">Cancel</button><button class="btn primary" type="button" data-act="att-send">Email me a code</button></div></div>'+
+  '<div id="att2" hidden><div class="field"><label for="att-code">6-digit code (demo: type any 6 digits)</label><input class="inp mono" id="att-code" inputmode="numeric" maxlength="6" placeholder="000000"></div><div class="btnrow"><button class="btn" type="button" data-act="close">Cancel</button><button class="btn primary" type="button" data-act="att-submit">Confirm and submit</button></div></div>');
+}
+function selectAll(sec){
+ var s=SECS.filter(function(x){return x.id===sec;})[0],n=0;
+ UNITS.forEach(function(u){linesOf(s.trade).filter(function(l){return l.sec===s;}).forEach(function(l){if(!locked(u.tag,s.trade)&&S.res[u.tag][l.id]!=='p'){S.res[u.tag][l.id]='p';touch(u.tag,s.trade);n++;}});});
+ log('Dana Ortiz','marked '+s.title+' Passed for all units');
+ closeModal();render();toast(n+' lines marked Passed');
+}
+
+document.addEventListener('click',function(e){
+ var el=e.target.closest('[data-act]');if(!el)return;
+ var a=el.getAttribute('data-act'),d=el.dataset;
+ switch(a){
+ case 'view':S.view=d.v;closeModal();render();break;
+ case 'hint':S.hint=false;render();break;
+ case 'tab':S.tab=d.t;render();break;
+ case 'trade':S.trade=d.trade;render();break;
+ case 'goto-matrix':S.tab='checklists';S.trade=d.trade||'All';render();break;
+ case 'rtab':S.reportTab=d.r;render();break;
+ case 'ifilter':S.issueFilter=d.f;render();break;
+ case 'close':closeModal();break;
+ case 'verify':verify(d.unit,d.trade);break;
+ case 'return':returnSheet(d.unit,d.trade);break;
+ case 'ret-save':
+  S.st[d.unit][d.trade]='inprogress';S.returned[d.unit+'|'+d.trade]=document.getElementById('ret-c').value.trim()||'Please recheck.';
+  log('Dana Ortiz','returned '+d.unit+' '+TL[d.trade]+' checklist');closeModal();render();toast('Returned to '+CO[d.trade]);break;
+ case 'cell':{
+  if(isNarrow()){toast('The matrix is view-only on a phone');break;}
+  var l=ALL.filter(function(x){return x.id===d.line;})[0],tr=l.sec.trade,cur=S.res[d.unit][d.line];
+  var nxt={undefined:'p',p:'n',n:'f',f:''}[cur];
+  if(nxt==='f'){issueSheet({kind:'line',unit:d.unit,line:d.line,trade:tr},{desc:d.unit+': '+l.label+' — ',asset:d.unit,trade:tr,pri:'HIGH'});break;}
+  if(nxt==='')delete S.res[d.unit][d.line];else{S.res[d.unit][d.line]=nxt;touch(d.unit,tr);}
+  render();break;}
+ case 'attr':attrModal(d.unit,d.k);break;
+ case 'attr-accept':S.resolve[d.unit][d.k]='accepted';log('Dana Ortiz','accepted '+d.unit+' model difference');closeModal();render();toast('Accepted');break;
+ case 'attr-issue':{
+  var lab=ALL.filter(function(x){return x.attr&&x.attr.k===d.k;})[0].label,v=vals(d.unit,d.k);
+  issueSheet({kind:'attr',unit:d.unit,k:d.k},{desc:d.unit+' '+lab.toLowerCase()+' differs. Specified '+v.spec+', submitted '+v.sub+', installed '+(v.inst||'not entered')+'.',asset:d.unit,trade:'HVAC',pri:'HIGH'});break;}
+ case 'secall':{
+  var s=SECS.filter(function(x){return x.id===d.sec;})[0];
+  modal('<h3>Mark all Passed?</h3><div class="sub">Every open line in “'+esc(s.title)+'” becomes Passed for all '+UNITS.length+' units. Use this for identical units where each was checked.</div><div class="btnrow"><button class="btn" type="button" data-act="close">Cancel</button><button class="btn primary" type="button" data-act="secall-go" data-sec="'+d.sec+'">Mark Passed</button></div>');break;}
+ case 'secall-go':selectAll(d.sec);break;
+ case 'issue':issueDetail(d.id);break;
+ case 'issue-new':issueSheet({kind:'free'},{desc:'',asset:'',trade:'HVAC',pri:'MODERATE'});break;
+ case 'is-photo':{var on=el.getAttribute('data-on')==='1';el.setAttribute('data-on',on?'0':'1');el.textContent=on?'Add photo':'Photo added ✓';break;}
+ case 'is-save':saveIssue();break;
+ case 'inext':{
+  var it=issueById(d.id);it.status=d.to;
+  log(S.view==='agent'?'Dana Ortiz':'Sam Rivera','moved '+it.id+' to '+d.to);
+  closeModal();render();toast(it.id+': '+d.to);break;}
+ case 'icomment':{
+  var inp=document.getElementById('cm-in'),tx=inp.value.trim();if(!tx)break;
+  issueById(d.id).comments.push({who:S.view==='agent'?'Dana Ortiz':'Sam Rivera',text:tx,t:nowT()});issueDetail(d.id);break;}
+ case 'tres':{
+  var at=S.test.attempts.filter(function(x){return x.n===S.test.cur;})[0];
+  at.res[d.line]=at.res[d.line]===d.val?undefined:d.val;if(!at.res[d.line])delete at.res[d.line];
+  render();break;}
+ case 'tissue':{
+  var line=TESTLINES.filter(function(x){return x.id===d.line;})[0];
+  issueSheet({kind:'test',n:S.test.cur,line:d.line},{desc:'Test TST-11: '+line.x.replace(/\{\{(\w+)\}\}/g,function(m,k){return TESTVARS[k];}),asset:'RTU-1',trade:'HVAC',pri:'HIGH'});break;}
+ case 'tatt':S.test.cur=+d.n;render();break;
+ case 'retest':{var n=S.test.attempts.length+1;S.test.attempts.push({n:n,res:{},issue:{}});S.test.cur=n;log('Dana Ortiz','started attempt '+n+' of TST-11');render();toast('Attempt '+n+' started. Attempt '+(n-1)+' is kept.');break;}
+ /* phone */
+ case 'offline':
+  S.phone.offline=!S.phone.offline;
+  if(!S.phone.offline&&S.phone.queued){toast(S.phone.queued+' saved change'+(S.phone.queued===1?'':'s')+' synced');S.phone.queued=0;}
+  render();break;
+ case 'popen':S.phone.screen='checklist';S.phone.unit=d.unit;S.phone.collapsed={};render();break;
+ case 'pback':S.phone.screen='home';render();break;
+ case 'psec':{var s2=SECS.filter(function(x){return x.id===d.sec;})[0];S.phone.collapsed[d.sec]=!collapsed(S.phone.unit,s2);render();break;}
+ case 'psecall':{
+  var u=S.phone.unit,s3=SECS.filter(function(x){return x.id===d.sec;})[0];
+  linesOf('HVAC').filter(function(l){return l.sec===s3;}).forEach(function(l){if(!S.res[u][l.id]){S.res[u][l.id]='p';if(S.phone.offline)S.phone.queued++;}});
+  touch(u,'HVAC');render();break;}
+ case 'pres':{
+  if(d.val==='f'){
+   var l2=ALL.filter(function(x){return x.id===d.line;})[0];
+   issueSheet({kind:'line',unit:d.unit,line:d.line,trade:'HVAC'},{desc:l2.label+' — ',asset:d.unit,trade:'HVAC',pri:'HIGH'});break;}
+  S.res[d.unit][d.line]=S.res[d.unit][d.line]===d.val?undefined:d.val;
+  if(!S.res[d.unit][d.line])delete S.res[d.unit][d.line];else{touch(d.unit,'HVAC');if(S.phone.offline)S.phone.queued++;}
+  render();break;}
+ case 'photo':S.photo[d.key]=!S.photo[d.key];render();break;
+ case 'complete':attestSheet();break;
+ case 'att-send':document.getElementById('att1').hidden=true;document.getElementById('att2').hidden=false;document.getElementById('att-code').focus();toast('Code sent to '+document.getElementById('att-mail').value);break;
+ case 'att-submit':{
+  var code=document.getElementById('att-code').value.replace(/\D/g,'');
+  if(code.length!==6){toast('Enter the 6-digit code');break;}
+  var un=S.phone.unit;S.st[un].HVAC='complete';delete S.returned[un+'|HVAC'];
+  log('Sam Rivera','submitted '+un+' HVAC checklist (code verified)');
+  closeModal();render();toast('Submitted. The agent can now verify it.');break;}
+ }
+});
+document.addEventListener('keydown',function(e){
+ if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('tr.click')){e.preventDefault();e.target.click();}
+});
+document.addEventListener('input',function(e){
+ var t=e.target;if(!t.dataset||!t.dataset.instUnit)return;
+ S.inst[t.dataset.instUnit][t.dataset.instK]=t.value;touch(t.dataset.instUnit,'HVAC');
+ var pf=$('.ph-foot');if(pf)pf.innerHTML=phoneFoot();
+});
+document.addEventListener('change',function(e){
+ var t=e.target;if(!t.dataset||!t.dataset.instUnit)return;
+ if(S.phone.offline){S.phone.queued++;var ob=$('#offbar');if(ob)ob.textContent='No signal · '+S.phone.queued+' change'+(S.phone.queued===1?'':'s')+' saved on this device';}
+});
+
+render();
+})();
+</script>
+
+</body>
+</html>
