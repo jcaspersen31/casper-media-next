@@ -43,16 +43,6 @@ export default function Home() {
       tags: ["Web", "Mobile-first"],
       link: null,
     },
-    {
-      name: "Soil Reports",
-      icon: "🌱",
-      badge: "In development",
-      badgeClass: "badge-building",
-      featured: false,
-      desc: "Upload a soil lab report and get a clear deficiency report with recommendations and product suggestions, so growers spend less time decoding numbers and more time fixing what matters.",
-      tags: ["Next.js", "PostgreSQL"],
-      link: null,
-    },
   ];
 
   const clientWork = [
@@ -60,6 +50,12 @@ export default function Home() {
       name: "Gristmill Arms",
       icon: "🪵",
       desc: "Product catalog and deal-spinner site for a rustic gun shop in a historic gristmill. Showcases inventory with pricing, sale prices, and a daily spin wheel for special promotions.",
+      tags: ["Next.js", "PostgreSQL"],
+    },
+    {
+      name: "Soil Reports",
+      icon: "🌱",
+      desc: "Upload a soil lab report and get a clear deficiency report with recommendations and product suggestions, so growers spend less time decoding numbers and more time fixing what matters. Currently in development.",
       tags: ["Next.js", "PostgreSQL"],
     },
   ];
