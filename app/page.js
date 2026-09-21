@@ -30,7 +30,8 @@ export default function Home() {
       featured: false,
       desc: "Parts tracking, build journals, and tuning logs for car restorers, restomod builders, and track-day enthusiasts. Research parts anywhere, buy when ready, keep the history forever.",
       tags: ["React Native", "iOS & Android"],
-      link: null,
+      link: "https://yourgaragelog.com",
+      linkLabel: "yourgaragelog.com",
     },
     {
       name: "Commissioning",
@@ -240,8 +241,11 @@ export default function Home() {
           </div>
 
           <div className="secondary-row">
-            {products.filter(p => !p.featured).map(p => (
-              <div key={p.name} className="project-card">
+            {products.filter(p => !p.featured).map(p => {
+              const Card = p.link ? "a" : "div";
+              const linkProps = p.link ? { href: p.link, target: "_blank", rel: "noreferrer" } : {};
+              return (
+              <Card key={p.name} className="project-card" {...linkProps}>
                 <div className="project-header">
                   <div className="project-icon">{p.icon}</div>
                   <span className={`project-badge ${p.badgeClass}`}>{p.badge}</span>
@@ -251,8 +255,10 @@ export default function Home() {
                 <div className="project-tags">
                   {p.tags.map(t => <span key={t} className="project-tag">{t}</span>)}
                 </div>
-              </div>
-            ))}
+                {p.linkLabel && <div className="project-link">{p.linkLabel}</div>}
+              </Card>
+              );
+            })}
             <div className="project-card" style={{opacity: 0.45}}>
               <div className="project-header">
                 <div className="project-icon">⚡</div>
